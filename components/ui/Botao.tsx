@@ -24,7 +24,7 @@ const VARIANTES: Record<Variante, string> = {
   verde:
     'bg-verde text-white shadow-suave hover:bg-verde-escuro hover:shadow-media',
   contorno:
-    'border border-current/30 bg-transparent hover:border-current/70 hover:bg-current/8',
+    'border-2 border-current/70 bg-transparent hover:border-current hover:bg-current/10',
   claro:
     'bg-white text-azul-escuro border border-linha shadow-suave hover:border-azul/40 hover:text-azul',
   suave:

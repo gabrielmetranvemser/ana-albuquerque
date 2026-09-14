@@ -34,7 +34,8 @@ export async function SecaoFiltro() {
     // Verde de superfície, amarelo só nos detalhes: o número do passo,
     // o botão e o realce do título. Amarelo ocupando a seção inteira
     // gritava e achatava tudo o que estava por cima dele.
-    <Secao id="filtro" fundo="verde" espaco="solto">
+    <Secao id="filtro" fundo="azul-profundo" espaco="solto">
+      {/* ANA: marinho, e não laranja — o realce amarelo do título some sobre o laranja. */}
       <div className="grid items-center gap-14 lg:grid-cols-[1fr_0.85fr] lg:gap-20">
         <div>
           <CabecalhoSecao

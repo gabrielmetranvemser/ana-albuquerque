@@ -15,12 +15,15 @@
  * A ORDEM DA LISTA É A ORDEM DA PÁGINA. `SLOTS_POR_ONDE` preserva a
  * ordem de inserção, então quem abre o painel percorre os espaços na
  * mesma sequência em que o visitante percorre o site.
+ *
+ * ⚠️ ANA: OS ESPAÇOS DAS SEÇÕES DO MODELO SAÍRAM (origem, álbum, rua,
+ *    bandeiras, provas, prova social, retrato de fechamento). A página
+ *    dela segue o documento da campanha em capítulos, e as fotos agora
+ *    moram nos espaços `capitulo.<id>.<n>`. Cada um nasce com a foto que
+ *    a campanha mandou (`padrao`, em `public/fotos/`), e o painel troca.
  */
 
 import { campanha, g } from './campanha'
-
-/** O rótulo da seção de origem, com o nome de quem está na página. */
-const ONDE_ORIGEM = `Quem é ${campanha.primeiroNome}`
 
 export interface Slot {
   chave: string
@@ -38,6 +41,35 @@ export interface Slot {
   nota?: string
   /** Arquivo em /public usado enquanto o slot não tem imagem. */
   padrao?: string
+  /** Largura e altura do arquivo padrão. Sem isto o `padrao` é ignorado na página. */
+  padraoTamanho?: [number, number]
+  /** Texto alternativo da foto padrão. */
+  padraoAlt?: string
+}
+
+/** Um espaço de foto de capítulo, já com a foto que a campanha mandou. */
+function foto(
+  capitulo: string,
+  n: number,
+  onde: string,
+  proporcao: string,
+  [largura, altura]: [number, number],
+  arquivo: string,
+  alt: string,
+  nota?: string,
+): Slot {
+  return {
+    chave: `capitulo.${capitulo}.${n}`,
+    rotulo: `Foto ${n}`,
+    onde,
+    proporcao,
+    larguraMin: largura,
+    alturaMin: altura,
+    padrao: `/fotos/${arquivo}`,
+    padraoTamanho: [largura, altura],
+    padraoAlt: alt,
+    nota,
+  }
 }
 
 export const SLOTS: Slot[] = [
@@ -53,7 +85,7 @@ export const SLOTS: Slot[] = [
     larguraMin: 256,
     alturaMin: 190,
     alpha: true,
-    nota: 'O ícone ao lado do nome, no topo de toda página. PNG com fundo transparente — ele fica sobre o azul e sobre o branco. Sem imagem aqui, o site usa o símbolo desenhado em código, que nunca corta.',
+    nota: 'O escudo com a bandeira. PNG com fundo transparente — ele fica sobre o azul e sobre o papel. Sem imagem aqui, o site usa o escudo oficial que já vem no projeto.',
   },
   {
     chave: 'marca.favicon',
@@ -77,18 +109,17 @@ export const SLOTS: Slot[] = [
     proporcao: '1200/630',
     larguraMin: 1200,
     alturaMin: 630,
-    nota: 'A imagem que aparece quando alguém cola o link do site no WhatsApp, no Facebook ou no Telegram. Deitada, com o rosto e o número no meio — as bordas são aparadas em telas pequenas. Sem imagem aqui, o site desenha o cartão sozinho, com o nome e o número. O WhatsApp guarda o cartão de um link por semanas: trocar aqui não muda os links já enviados.',
+    nota: 'A imagem que aparece quando alguém cola o link do site no WhatsApp, no Facebook ou no Telegram. Deitada, com o rosto e o número no meio — as bordas são aparadas em telas pequenas. O WhatsApp guarda o cartão de um link por semanas: trocar aqui não muda os links já enviados.',
   },
-
   {
     chave: 'marca.logotipo',
-    rotulo: 'Logotipo deitado (branco)',
+    rotulo: 'Logotipo (branco)',
     onde: 'Marca',
     proporcao: null,
     larguraMin: 900,
     alturaMin: 145,
     alpha: true,
-    nota: 'A marca da campanha em faixa, com o nome escrito em BRANCO e fundo transparente. Aparece no rodapé, que é escuro. Sem imagem aqui, o site escreve o nome e o cargo na fonte de título — funciona, e é o estado normal enquanto a arte não chega.',
+    nota: 'O logotipo com o nome em BRANCO e fundo transparente. Aparece no rodapé e nas superfícies azuis. Sem imagem aqui, vale o logotipo oficial que já vem no projeto.',
   },
   {
     chave: 'marca.lockup',
@@ -98,7 +129,7 @@ export const SLOTS: Slot[] = [
     larguraMin: 700,
     alturaMin: 500,
     alpha: true,
-    nota: 'O bloco da arte de capa: nome em cima, número embaixo. Aparece na primeira dobra, no CELULAR. Fundo transparente e nome em branco — ele fica sobre a cor cheia. Sem imagem aqui, o site desenha o mesmo bloco com o nome e o número.',
+    nota: 'Nome em cima, número embaixo, fundo transparente. Aparece na primeira dobra e na assinatura do fim da página. Sem imagem aqui, vale a arte oficial do 7766 laranja.',
   },
   {
     chave: 'marca.lockupDeitado',
@@ -108,7 +139,7 @@ export const SLOTS: Slot[] = [
     larguraMin: 1400,
     alturaMin: 227,
     alpha: true,
-    nota: 'A mesma coisa em faixa 6:1 — nome à esquerda, número à direita. É a versão do DESKTOP, sobreposta às figuras da primeira dobra. Sem imagem aqui, o site desenha a faixa.',
+    nota: 'Nome à esquerda, número à direita, em faixa. Sem imagem aqui, vale a versão montada com o logotipo e o 7766 oficiais.',
   },
 
   // ── Primeira dobra ─────────────────────────────────────────────
@@ -120,9 +151,12 @@ export const SLOTS: Slot[] = [
     larguraMin: 1200,
     alturaMin: 1500,
     alpha: true,
-    nota: 'PNG recortado, sem fundo. É a única imagem em que o recorte importa: ela fica sobre o azul. O recortador aqui só enquadra — quem tira o fundo é o editor de imagem, antes.',
+    // ⚠️ SEM FOTO PADRÃO, E DE PROPÓSITO. A primeira versão vinha com um
+    //    recorte automático de foto de celular, e a campanha reprovou:
+    //    "deixa que eu escolho". Vazio, a primeira dobra mostra a marca
+    //    com o número no lugar da foto — ver components/ana/Abertura.tsx.
+    nota: 'O retrato da primeira dobra: PNG recortado, sem fundo. Sem imagem aqui, a primeira dobra mostra a marca com o número no lugar da foto.',
   },
-
   {
     chave: 'hero.apoio',
     rotulo: 'Segunda figura (padrinho político)',
@@ -131,156 +165,40 @@ export const SLOTS: Slot[] = [
     larguraMin: 1200,
     alturaMin: 1500,
     alpha: true,
-    nota: 'Opcional, e VAZIO É O ESTADO NORMAL. É a segunda pessoa da primeira dobra — o padrinho político, o chefe do grupo, quem empresta voto. PNG recortado, sem fundo, de corpo inteiro e olhando para o mesmo lado. Sem imagem aqui a dobra fica com uma figura só, centralizada, e continua certa. ⚠️ Uso de imagem de terceiro exige autorização por escrito.',
+    nota: 'Opcional, e VAZIO É O ESTADO NORMAL. ⚠️ Uso de imagem de terceiro exige autorização por escrito.',
   },
 
-  // ── Quem é (origem) ────────────────────────────────────────────
-  {
-    chave: 'origem.retrato',
-    rotulo: 'Retrato',
-    onde: ONDE_ORIGEM,
-    proporcao: '4/5',
-    larguraMin: 1000,
-    alturaMin: 1250,
-    nota: 'Vertical. Uma foto de serviço, de farda: é a história da página numa imagem só.',
-  },
-  {
-    chave: 'origem.detalhe.1',
-    rotulo: 'Detalhe 1',
-    onde: ONDE_ORIGEM,
-    proporcao: '1/1',
-    larguraMin: 800,
-    alturaMin: 800,
-    nota: 'Quadrada. A vida fora da farda — a causa animal, a família.',
-  },
-  {
-    chave: 'origem.detalhe.2',
-    rotulo: 'Detalhe 2',
-    onde: ONDE_ORIGEM,
-    proporcao: '1/1',
-    larguraMin: 800,
-    alturaMin: 800,
-    nota: 'Quadrada. O rosto e o ofício no mesmo quadro: ela de farda.',
-  },
-
-  // ── O álbum ────────────────────────────────────────────────────
-  // Oito fotos de papel. O mínimo é baixo de propósito: o acervo de
-  // família é analógico, fotografado de celular, e algumas não passam
-  // de 500px. Elas aparecem pequenas na galeria — exigir 1200 aqui
-  // seria barrar justamente o material que o documento chama de ouro.
-  ...Array.from({ length: 8 }, (_, i) => ({
-    chave: `album.${i + 1}`,
-    rotulo: `Foto ${i + 1}`,
-    onde: 'O álbum',
-    proporcao: '3/4',
-    larguraMin: 600,
-    alturaMin: 800,
-    nota:
-      i === 0
-        ? 'Fotos de papel. Recorte na borda do papel e endireite antes de subir — várias do acervo estão giradas 90°.'
-        : undefined,
-  })),
-
-  // ── A rua ──────────────────────────────────────────────────────
-  {
-    chave: 'rua.1',
-    rotulo: 'Foto 1 — a mais forte',
-    onde: 'A rua',
-    proporcao: '4/3',
-    larguraMin: 1000,
-    alturaMin: 750,
-    nota: 'De farda, em serviço. É a prova visual de "eu queria proteger as pessoas".',
-  },
-  {
-    chave: 'rua.2',
-    rotulo: 'Foto 2',
-    onde: 'A rua',
-    proporcao: '4/3',
-    larguraMin: 1000,
-    alturaMin: 750,
-    nota: 'Outra cena de serviço, de preferência outra missão que não a da foto 1.',
-  },
-  {
-    chave: 'rua.3',
-    rotulo: 'Foto 3',
-    onde: 'A rua',
-    proporcao: '4/3',
-    larguraMin: 1000,
-    alturaMin: 750,
-    nota: '⚠️ Confira a marca d’água: as melhores fotos da rua são de terceiros e precisam de autorização.',
-  },
-
-  // ── Minhas bandeiras ───────────────────────────────────────────
-  {
-    chave: 'valores.imagem',
-    rotulo: 'Foto de apoio',
-    onde: 'Minhas bandeiras',
-    proporcao: '3/4',
-    larguraMin: 800,
-    alturaMin: 1066,
-    nota: 'A foto que fecha "Minhas causas". Farda e bicho no mesmo quadro juntam as duas pontas da seção. ⚠️ Foto com arma pesa em classificador de rede social e derruba o alcance orgânico.',
-  },
-
-  // ── O que já foi feito ─────────────────────────────────────────
-  // Os três espaços de foto de entrega saíram. As entregas são LEIS, e
-  // não existe foto de uma lei — foto ilustrativa ao lado de "Lei
-  // 3.285/2025" enfraquece o único bloco documental da página. No lugar
-  // entra o registro público, que é o que o documento de campanha pede.
-  {
-    chave: 'provas.documento',
-    rotulo: 'Print do registro público',
-    onde: 'O que já foi feito',
-    proporcao: null,
-    larguraMin: 900,
-    alturaMin: 500,
-    nota: 'Captura de tela do registro público (SAPL, portal da Câmara, Diário Oficial) com o que foi aprovado. É prova documental: separa mandato de influencer. Fica clicável para o portal oficial.',
-  },
-
-  // ── Prova social ───────────────────────────────────────────────
-  // Proporção livre porque print de comentário não tem proporção: os
-  // do acervo variam de 1179×335 a 1179×1074. O recortador deixa
-  // escolher a proporção, que é o que serve para aparar o "Responder"
-  // do rodapé do print.
-  ...Array.from({ length: 6 }, (_, i) => ({
-    chave: `social.comentario.${i + 1}`,
-    rotulo: `Comentário ${i + 1}`,
-    onde: 'Prova social',
-    proporcao: null,
-    larguraMin: 600,
-    alturaMin: 160,
-    nota:
-      i === 0
-        ? '⚠️ Jurídico: borre a foto de perfil. Mantenha o @ só de quem autorizou o uso.'
-        : undefined,
-  })),
-  {
-    chave: 'social.ataque.1',
-    rotulo: 'Ataque 1',
-    onde: 'Prova social',
-    proporcao: null,
-    larguraMin: 600,
-    alturaMin: 160,
-    nota: '⚠️ Aqui borre NOME e foto. Não se dá palanque a quem ataca, e o risco de ação por uso de imagem é maior justamente neste par.',
-  },
-  {
-    chave: 'social.ataque.2',
-    rotulo: 'Ataque 2',
-    onde: 'Prova social',
-    proporcao: null,
-    larguraMin: 600,
-    alturaMin: 160,
-  },
-
-  // ── Chamada final ──────────────────────────────────────────────
-  {
-    chave: 'cta.retrato',
-    rotulo: 'Retrato de fechamento',
-    onde: 'Chamada final',
-    proporcao: '4/5',
-    larguraMin: 1000,
-    alturaMin: 1250,
-    nota: 'Olhando para a câmera, luz natural. É a última imagem da página — o rosto que fica associado ao número.',
-  },
+  // ── Capítulos (a ordem do documento da campanha) ──────────────
+  // A carta de abertura ganhou foto ao lado: "o formato ficou legal, mas
+  // precisa ter espaço do lado pra foto".
+  foto('abertura', 1, 'Quem é a Ana', '3/4', [600, 800], 'familia-1.webp',
+    'Ana com a família', 'Vertical. A foto que acompanha a carta de abertura.'),
+  foto('historia', 1, 'Uma história feita de trabalho', '4/5', [800, 1000], 'historia-farda.webp',
+    'Ana de farda, com um cachorro, em serviço', 'Vertical. Ela de farda: é o capítulo em uma imagem.'),
+  foto('historia', 2, 'Uma história feita de trabalho', '1/1', [700, 700], 'historia-selfie.webp',
+    'Ana de farda, dentro da viatura'),
+  foto('infancia', 1, 'Uma infância que ensinou o valor da comunidade', '3/4', [600, 800], 'infancia-cachorros.webp',
+    'Foto antiga: Ana jovem com quatro cachorros', 'Fotos de papel. Endireite e recorte na borda antes de subir.'),
+  foto('infancia', 2, 'Uma infância que ensinou o valor da comunidade', '3/4', [600, 800], 'infancia-gato.webp',
+    'Foto antiga: Ana jovem com um gato no colo'),
+  foto('infancia', 3, 'Uma infância que ensinou o valor da comunidade', '3/4', [600, 800], 'familia-1.webp',
+    'Ana com a família'),
+  foto('infancia', 4, 'Uma infância que ensinou o valor da comunidade', '3/4', [600, 800], 'familia-2.webp',
+    'Dia de formatura, com a família'),
+  foto('seguranca', 1, 'Uma policial que conhece a realidade', '4/3', [900, 675], 'seguranca-campo.webp',
+    'Ana de farda, em campo', 'De farda, em serviço.'),
+  foto('seguranca', 2, 'Uma policial que conhece a realidade', '4/3', [900, 675], 'seguranca-ibama.webp',
+    'Ana em campo, ao lado do helicóptero do Ibama'),
+  foto('seguranca', 3, 'Uma policial que conhece a realidade', '4/3', [900, 675], 'seguranca-treinamento.webp',
+    'Treinamento de reanimação', '⚠️ Aparece um colega de farda: autorização de uso de imagem.'),
+  foto('linha-de-frente', 1, 'Valorizar quem está na linha de frente', '4/5', [800, 1000], 'linha-de-frente.webp',
+    'Ana de farda, dentro da viatura'),
+  foto('animal', 1, 'Defesa da causa animal', '1/1', [800, 800], 'animal-1.webp',
+    'Ana com um filhote no colo'),
+  foto('animal', 2, 'Defesa da causa animal', '3/4', [800, 1066], 'animal-2.webp',
+    'Ana de farda camuflada, com um cachorro'),
+  foto('animal', 3, 'Defesa da causa animal', '4/5', [800, 1000], 'animal-3.webp',
+    'Ana com um cachorro no colo'),
 
   // ── Gerador de filtro ──────────────────────────────────────────
   {
@@ -312,21 +230,16 @@ export const SLOTS: Slot[] = [
 
   // ── Os apoiadores de exemplo ───────────────────────────────────
   // As fotos que giram DENTRO das duas molduras, na seção do site que
-  // convida a usar o filtro. Substituem a silhueta cinza desenhada em
-  // código — que mostra onde a foto entra, mas não mostra o resultado.
+  // convida a usar o filtro.
   //
   // ⚠️ SÃO PARES, E O PAR É A UNIDADE. Cada apoiador tem as duas fotos,
-  //    story e perfil, e as duas molduras trocam JUNTAS: quem olha vê a
-  //    mesma pessoa nos dois formatos, que é o que faz o exemplo
-  //    funcionar como exemplo. Par incompleto simplesmente não entra na
-  //    roda — ver `resolverExemplos` em lib/molduras.ts. Não é um
-  //    erro a corrigir: é o que permite subir o apoiador 1 hoje e o 2
-  //    na semana que vem sem a seção quebrar no meio do caminho.
+  //    story e perfil, e as duas molduras trocam JUNTAS. Par incompleto
+  //    simplesmente não entra na roda — ver `resolverExemplos` em
+  //    lib/molduras.ts.
   //
   // ⚠️ MÍNIMOS BAIXOS DE PROPÓSITO. Estas fotos aparecem com menos de
-  //    300px de largura na tela, e a origem delas é o rolo da câmera de
-  //    um apoiador — muitas chegam por WhatsApp, já comprimidas. Exigir
-  //    1080 aqui barraria exatamente o material que a seção quer.
+  //    300px de largura na tela, e muitas chegam por WhatsApp, já
+  //    comprimidas.
   ...Array.from({ length: 6 }, (_, i) => [
     {
       chave: `filtro.exemplo.${i + 1}.story`,
@@ -362,31 +275,22 @@ export const SLOTS_POR_CHAVE: Record<string, Slot> = Object.fromEntries(
 /**
  * DE QUAL SEÇÃO DO PAINEL CADA ESPAÇO FAZ PARTE.
  *
- * O painel deixou de ser organizado por TIPO (uma aba de textos, outra
- * de imagens) e passou a ser organizado por SEÇÃO — porque é assim que
- * quem edita pensa: "quero mexer em Quem é <nome>", e não "quero mexer
- * numa imagem". Para juntar texto, imagem e vídeo na mesma tela, cada
+ * O painel é organizado por SEÇÃO — porque é assim que quem edita
+ * pensa: "quero mexer na primeira dobra", e não "quero mexer numa
+ * imagem". Para juntar texto, imagem e vídeo na mesma tela, cada
  * espaço precisa dizer a que seção pertence.
  *
  * ⚠️ POR PREFIXO, e não um campo em cada objeto. A chave do espaço já
- *    carrega a informação (`origem.retrato` é de `origem`), e repetir
- *    isso 25 vezes seria 25 oportunidades de divergir. As três exceções
- *    estão declaradas primeiro, pela chave inteira: a marca e o ícone
- *    não pertencem a nenhuma seção da página — aparecem em todas — e
- *    por isso moram nas telas de Identidade.
+ *    carrega a informação (`capitulo.historia.1` é de `capitulos`). As
+ *    exceções estão declaradas primeiro, pela chave inteira: a marca e o
+ *    ícone não pertencem a nenhuma seção da página — aparecem em todas.
  */
 const SECAO_DO_ESPACO: Record<string, string> = {
   'marca.simbolo': 'candidato',
   'marca.favicon': 'meta',
   'marca.cartaoLink': 'meta',
   hero: 'hero',
-  origem: 'origem',
-  album: 'album',
-  rua: 'rua',
-  valores: 'valores',
-  provas: 'provas',
-  social: 'social',
-  cta: 'ctaFinal',
+  capitulo: 'capitulos',
   moldura: 'filtro',
   filtro: 'filtro',
 }

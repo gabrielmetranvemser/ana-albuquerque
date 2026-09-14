@@ -158,19 +158,21 @@ export const paginas = {
 // (a constraint `jsonb_typeof(dados) = 'object'` existe para impedir
 // que uma ação forjada grave um tipo inesperado).
 //
-// O documento da Ana sugere oito itens de menu (Início, Minha história,
-// Minhas causas, O que levarei para Brasília, Ana na segurança pública,
-// Mãe e defensora da inclusão, Causa animal, Acompanhe a Ana). O menu
-// aceita seis. Ficaram os que têm seção própria na página — os três
-// temáticos moram dentro de "Minhas causas", e um link que cai no meio
-// de uma seção leva a pessoa para um lugar que não parece o prometido.
+// ANA: são os nove itens da "sugestão de menu" do documento, na ordem
+// dele. Todos aparecem no menu aberto; `noTopo` escolhe os poucos que
+// cabem na barra do desktop — nove itens em linha viram letra miúda, e
+// a barra deixa de ser lida.
 export const navegacao = {
   itens: [
-    { id: 'nav-01', rotulo: 'Minha história', href: '/#origem' },
-    { id: 'nav-02', rotulo: 'Minhas causas', href: '/#valores' },
-    { id: 'nav-03', rotulo: 'O que levo a Brasília', href: '/#futuro' },
-    { id: 'nav-04', rotulo: 'Grupos de WhatsApp', href: '/#grupos' },
-    { id: 'nav-05', rotulo: `Coloque o ${campanha.numero}`, href: '/filtro' },
+    { id: 'nav-01', rotulo: 'Início', href: '/#inicio', noTopo: false },
+    { id: 'nav-02', rotulo: 'Minha história', href: '/#minha-historia', noTopo: true },
+    { id: 'nav-03', rotulo: 'Minhas causas', href: '/#causas', noTopo: true },
+    { id: 'nav-04', rotulo: 'O que levarei para Brasília', href: '/#propostas', noTopo: true },
+    { id: 'nav-05', rotulo: 'Ana na segurança pública', href: '/#seguranca', noTopo: false },
+    { id: 'nav-06', rotulo: 'Mãe e defensora da inclusão', href: '/#inclusao', noTopo: false },
+    { id: 'nav-07', rotulo: 'Causa animal', href: '/#causa-animal', noTopo: false },
+    { id: 'nav-08', rotulo: 'Acompanhe a Ana', href: '/#acompanhe', noTopo: true },
+    { id: 'nav-09', rotulo: campanha.numero, href: '/filtro', noTopo: false },
   ],
 } as const
 
@@ -202,11 +204,10 @@ export const ctas = {
 //    passou para a primeira, que é a regra deste projeto. Nenhum fato
 //    foi acrescentado: o que não está no documento não está aqui.
 export const hero = {
-  etiqueta: `${g.Candidato} a ${campanha.cargo}`,
-  titulo: ['Uma vida de trabalho.', '[[Uma história de coragem.]]'],
-  subtitulo:
-    'Sou policial militar, psicóloga, mãe e defensora de causas que conheço de perto. Agora quero ' +
-    'levar para Brasília a experiência de quem vive os problemas de verdade.',
+  // As três primeiras linhas do documento, na ordem dele.
+  etiqueta: `${campanha.cargo} por ${campanha.estado}`,
+  titulo: ['Uma vida de trabalho.', 'Uma história de coragem.', '[[Compromisso com pessoas.]]'],
+  subtitulo: 'Sou policial militar, psicóloga, mãe e defensora de causas que conheço de perto.',
   numeroLegenda: `Escreva ${campanha.numero} na urna`,
   /**
    * A assinatura da arte oficial, abaixo do número. Apagar aqui tira
@@ -215,12 +216,346 @@ export const hero = {
   lema: 'Trabalho, coragem e cuidado',
   ctaPrimario: ctas.grupo,
   ctaSecundario: 'Conhecer minha história',
-  ctaSecundarioHref: '#origem',
+  ctaSecundarioHref: '#minha-historia',
   rodapeHero: `${g.Candidato} a ${campanha.cargo} por ${campanha.estado}.`,
 } as const
 
 // ─────────────────────────────────────────────────────────────
+// CAPÍTULOS — a página da Ana, na ordem do documento da campanha
+//
+// ⚠️ POR QUE UMA LISTA, E NÃO UMA SEÇÃO POR BLOCO. O documento tem doze
+//    blocos de história e causa, e a campanha pediu a página "exatamente
+//    na ordem do doc". As seções do modelo (origem, álbum, rua,
+//    problema, bandeiras, cena) obrigavam o texto a caber em formas
+//    pensadas para outra pessoa — foi o que deixou a página "100% igual
+//    ao template". Como lista, cada bloco é um capítulo com o mesmo
+//    conjunto de campos, o painel reordena e acrescenta sem deploy, e o
+//    `layout` escolhe a forma que o texto pede.
+//
+// ⚠️ TODO CAPÍTULO TEM TODOS OS CAMPOS, mesmo vazios. Campo ausente num
+//    item e presente em outro vira união de tipos, e o componente
+//    passaria a checar existência campo por campo. Vazio esconde.
+//
+// A ordem dos campos na tela é sempre a mesma, e é a ordem em que o
+// documento os usa: título, primeiro parágrafo, citação, demais
+// parágrafos, marcos, lista, fecho.
+//
+// ✍️ Texto do documento, passado para a primeira pessoa (regra do
+//    projeto). Nenhum fato acrescentado.
+// ─────────────────────────────────────────────────────────────
+export interface Capitulo {
+  /** Estável: batiza os espaços de foto (`capitulo.<id>.<n>`). */
+  id: string
+  /** O endereço na página (`/#ancora`). É para onde o menu aponta. */
+  ancora: string
+  layout: 'carta' | 'foto' | 'album' | 'indice' | 'fotos' | 'manifesto' | 'destaque' | 'lista'
+  fundo: 'papel' | 'areia' | 'branco' | 'azul' | 'marinho' | 'laranja'
+  /** De que lado fica a foto, nos layouts que têm foto ao lado. */
+  lado: 'esquerda' | 'direita'
+  /** O título em caixa alta do documento. */
+  etiqueta: string
+  titulo: string
+  citacao: string
+  paragrafos: string[]
+  lista: string[]
+  fecho: string
+  marcos: { id: string; ano: string; texto: string }[]
+  atalhos: { id: string; rotulo: string; href: string }[]
+}
+
+function capitulo(
+  c: Pick<Capitulo, 'id' | 'ancora' | 'layout' | 'etiqueta' | 'titulo'> & Partial<Capitulo>,
+): Capitulo {
+  return {
+    fundo: 'papel',
+    lado: 'direita',
+    citacao: '',
+    paragrafos: [],
+    lista: [],
+    fecho: '',
+    marcos: [],
+    atalhos: [],
+    ...c,
+  }
+}
+
+export const capitulos: { itens: Capitulo[] } = {
+  itens: [
+    capitulo({
+      id: 'abertura',
+      ancora: 'quem-e',
+      layout: 'carta',
+      fundo: 'papel',
+      etiqueta: `Quem é ${g.o} ${campanha.primeiroNome}`,
+      titulo: 'Minha história começou [[muito antes da política.]]',
+      paragrafos: [
+        'Sou filha de um homem que veio do Nordeste para Rondônia como soldado da borracha e depois ' +
+          'se tornou comerciante. Cresci aprendendo, desde cedo, o valor do trabalho.',
+        'Ainda criança, acompanhava meu pai no comércio. Depois, comecei a trabalhar fora muito cedo. ' +
+          'Foi assim que construí quem eu sou: com disciplina, responsabilidade, coragem e disposição ' +
+          'para enfrentar desafios.',
+        'Hoje, depois de décadas dedicadas à segurança pública, coloco meu nome à disposição para uma ' +
+          'nova missão: levar para Brasília a experiência de quem vive os problemas de verdade — e ' +
+          'transformar essa experiência em propostas.',
+      ],
+      fecho: campanha.nome,
+    }),
+    capitulo({
+      id: 'historia',
+      ancora: 'minha-historia',
+      layout: 'foto',
+      fundo: 'branco',
+      lado: 'direita',
+      etiqueta: 'Uma história feita de trabalho',
+      titulo: 'Antes da política, [[veio o trabalho.]]',
+      paragrafos: [
+        'Comecei minha trajetória profissional muito cedo. Entrei na universidade e cursei dois anos de ' +
+          'Direito antes de prestar concurso para a Polícia Militar. Depois, fiz Psicologia na ' +
+          'Universidade Federal e tive experiência na área, inclusive na Secretaria de Segurança ' +
+          'Pública. Mas, mesmo com outra formação, permaneci na Polícia Militar. Porque, como eu mesma digo:',
+        'Poderia ter escolhido outro caminho. Não escolhi. Permaneci na segurança pública porque ' +
+          'entendi que aquela era a minha missão.',
+      ],
+      citacao: 'A policialidade sempre foi o que teve de mais forte dentro do meu coração.',
+      marcos: [
+        { id: 'marco-01', ano: '1995', texto: 'Concurso para a Polícia Militar' },
+        { id: 'marco-02', ano: '1998', texto: 'Entrada na Polícia Militar' },
+        { id: 'marco-03', ano: '2000', texto: 'Psicologia na Universidade Federal' },
+      ],
+    }),
+    capitulo({
+      id: 'infancia',
+      ancora: 'infancia',
+      layout: 'album',
+      fundo: 'areia',
+      etiqueta: 'Uma infância que ensinou o valor da comunidade',
+      titulo: '[[Todas as mães eram mães de todo mundo.]]',
+      paragrafos: [
+        'Cresci numa época em que as crianças brincavam na rua, caminhavam até o cinema, entravam na ' +
+          'casa dos amigos e tinham liberdade para viver a infância. As casas permaneciam abertas. Os ' +
+          'vizinhos cuidavam uns dos outros.',
+        'Essa memória me marcou. E despertou uma preocupação que hoje está entre as minhas causas: o ' +
+          'desenvolvimento saudável de crianças e adolescentes. A infância não deveria ser substituída ' +
+          'pelo isolamento, pela violência ou pelo excesso de tecnologia.',
+      ],
+      lista: [
+        'Criança precisa de proteção.',
+        'Precisa de convivência.',
+        'Precisa brincar.',
+        'Precisa ter condições de viver cada fase da vida.',
+      ],
+    }),
+    // O índice das causas não é um bloco do documento: é a porta do
+    // item "Minhas causas" do menu, que o documento sugere. Ele não
+    // reordena nada — só aponta para os três capítulos que vêm depois.
+    capitulo({
+      id: 'causas',
+      ancora: 'causas',
+      layout: 'indice',
+      fundo: 'azul',
+      etiqueta: 'Minhas causas',
+      titulo: 'Causas que eu [[conheço de perto.]]',
+      atalhos: [
+        { id: 'atalho-01', rotulo: 'Segurança pública', href: '#seguranca' },
+        { id: 'atalho-02', rotulo: 'Mãe e defensora da inclusão', href: '#inclusao' },
+        { id: 'atalho-03', rotulo: 'Causa animal', href: '#causa-animal' },
+      ],
+    }),
+    capitulo({
+      id: 'seguranca',
+      ancora: 'seguranca',
+      layout: 'fotos',
+      fundo: 'marinho',
+      etiqueta: 'Uma policial que conhece a realidade',
+      titulo: '[[Eu queria proteger as pessoas.]]',
+      paragrafos: [
+        'Foi essa vontade que me levou para a Polícia Militar. No começo, havia o sonho de vestir a ' +
+          'farda, proteger pessoas e fazer a diferença.',
+      ],
+      lista: [
+        'Depois veio a realidade.',
+        'Os obstáculos.',
+        'As limitações.',
+        'As dificuldades de quem está na linha de frente.',
+      ],
+      fecho:
+        'E foi vivendo essa realidade que percebi: proteger a população também passa por cuidar de ' +
+        'quem está todos os dias nas ruas para protegê-la.',
+    }),
+    capitulo({
+      id: 'ser-humano',
+      ancora: 'saude-mental',
+      layout: 'manifesto',
+      fundo: 'papel',
+      etiqueta: 'Policial também é ser humano',
+      titulo: 'A farda transmite força. [[Mas existe uma pessoa dentro dela.]]',
+      paragrafos: [
+        'Um profissional que tem família, problemas, medos, preocupações e limites. A saúde mental dos ' +
+          'profissionais de segurança precisa deixar de ser tratada como uma questão secundária.',
+        'O caminho precisa começar pela prevenção. Não basta esperar o problema aparecer: é preciso ' +
+          'criar políticas, programas e mecanismos permanentes de acompanhamento psicológico e cuidado ' +
+          'com os agentes de segurança.',
+      ],
+      fecho: 'Porque um [[policial cuidado]] também está mais preparado para cuidar da sociedade.',
+    }),
+    capitulo({
+      id: 'linha-de-frente',
+      ancora: 'linha-de-frente',
+      layout: 'foto',
+      fundo: 'branco',
+      lado: 'esquerda',
+      etiqueta: 'Valorizar quem está na linha de frente',
+      titulo: 'Segurança pública também começa pela [[valorização do policial.]]',
+      paragrafos: [
+        'Conheço a rotina de quem trabalha nas ruas. Especialmente das praças, que estão diariamente na ' +
+          'linha de frente — profissionais que saem de casa sem saber como será o dia e, muitas vezes, ' +
+          'sem saber se voltarão para casa.',
+        'Por isso defendo uma valorização mais cuidadosa dos profissionais de segurança pública, ' +
+          'incluindo melhores condições de trabalho e valorização salarial. Não apenas por uma questão ' +
+          'financeira: um profissional exausto não consegue oferecer o melhor serviço possível.',
+        'Quando o policial consegue descansar, cuidar da família, investir na própria formação e ' +
+          'cuidar da saúde, a população também ganha.',
+      ],
+      fecho: '[[Policial valorizado é segurança pública fortalecida.]]',
+    }),
+    capitulo({
+      id: 'leis',
+      ancora: 'leis',
+      layout: 'destaque',
+      fundo: 'laranja',
+      etiqueta: 'Lei que existe precisa funcionar',
+      titulo: 'Não basta criar uma lei [[bonita no papel.]]',
+      paragrafos: [
+        'Brasília precisa olhar também para um problema que muitas vezes passa despercebido: é preciso ' +
+          'garantir que a lei seja efetivamente aplicada. Existem direitos e normas que já estão ' +
+          'previstos, mas que encontram dificuldades para chegar à vida real.',
+        'Por isso, uma das minhas bandeiras é trabalhar para que a legislação tenha mecanismos capazes ' +
+          'de garantir sua efetivação.',
+      ],
+      fecho: 'Lei precisa sair do papel e chegar às pessoas.',
+    }),
+    capitulo({
+      id: 'inclusao',
+      ancora: 'inclusao',
+      layout: 'lista',
+      fundo: 'papel',
+      etiqueta: 'Mãe antes de ser candidata',
+      titulo: 'Algumas causas a gente [[conhece porque vive.]]',
+      paragrafos: [
+        'A maternidade me mudou. Ser mãe de crianças que precisam de cuidados diferenciados fez com que ' +
+          'eu enxergasse desafios que, antes, conhecia apenas de fora. Descobri, de perto:',
+      ],
+      lista: [
+        'As dificuldades do diagnóstico.',
+        'O custo dos atendimentos.',
+        'A falta de informação.',
+        'Os desafios da inclusão escolar.',
+        'A falta de preparo de profissionais.',
+        'O bullying.',
+        'A burocracia para acessar direitos que já estão garantidos em lei.',
+      ],
+      fecho:
+        'E, principalmente, percebi que muitas famílias precisam de apoio para entender e enfrentar ' +
+        'essa realidade.',
+    }),
+    capitulo({
+      id: 'familias-atipicas',
+      ancora: 'familias-atipicas',
+      layout: 'lista',
+      fundo: 'azul',
+      etiqueta: 'A causa das famílias atípicas',
+      titulo: 'Não basta exigir inclusão. [[É preciso oferecer estrutura.]]',
+      paragrafos: [
+        'Defendo políticas que aproximem educação, saúde e família, para que a inclusão aconteça de ' +
+          'verdade. Isso significa:',
+      ],
+      lista: [
+        'Capacitação de profissionais da educação.',
+        'Treinamento específico para trabalhar com crianças atípicas.',
+        'Programas e projetos de inclusão.',
+        'Recursos destinados à formação desses profissionais.',
+        'Apoio e orientação às famílias.',
+        'Suporte psicológico e social aos pais.',
+        'Redução da burocracia para acesso aos direitos já garantidos.',
+      ],
+      fecho:
+        '[[Inclusão não é apenas colocar na sala.]] É garantir que a criança consiga aprender, ' +
+        'conviver, participar e desenvolver seu potencial.',
+    }),
+    capitulo({
+      id: 'burocracia',
+      ancora: 'burocracia',
+      layout: 'destaque',
+      fundo: 'branco',
+      etiqueta: 'Direitos não podem ficar presos à burocracia',
+      titulo: 'A lei existe. [[Mas o caminho até ela pode ser difícil.]]',
+      paragrafos: [
+        'Conheço, na própria experiência, a dificuldade de acessar direitos que já existem. Para muitas ' +
+          'famílias, conseguir um direito significa enfrentar documentos, comprovações, questionamentos ' +
+          'e desconfiança.',
+        'Defendo políticas que reduzam essa burocracia e facilitem o acesso das famílias aos direitos ' +
+          'assegurados.',
+      ],
+      fecho:
+        'Quem já enfrenta uma rotina difícil não deveria precisar enfrentar também um labirinto ' +
+        'burocrático.',
+    }),
+    capitulo({
+      id: 'animal',
+      ancora: 'causa-animal',
+      layout: 'foto',
+      fundo: 'areia',
+      lado: 'direita',
+      etiqueta: 'Defesa da causa animal',
+      titulo: '[[Eu sempre fui muito envolvida com os animais.]]',
+      paragrafos: [
+        'A defesa dos animais me acompanha desde a infância. Conheço a sensação de encontrar um animal ' +
+          'abandonado, atropelado ou doente e não ter estrutura para ajudar.',
+        'Hoje, o custo de uma consulta veterinária, de um exame ou de um tratamento pode ser alto demais ' +
+          'para quem cuida por conta própria. Por isso defendo políticas públicas que fortaleçam a ' +
+          'proteção animal. Entre as propostas que pretendo defender:',
+      ],
+      lista: [
+        'Programas amplos de castração.',
+        'Recursos destinados à proteção animal.',
+        'Apoio a ONGs.',
+        'Apoio a cuidadores independentes.',
+        'Incentivo a estruturas de atendimento veterinário.',
+        'Políticas de prevenção ao abandono.',
+        'Mecanismos que ampliem o atendimento aos animais em situação de vulnerabilidade.',
+      ],
+      fecho: '[[Quem ama e cuida também precisa de apoio.]]',
+    }),
+    capitulo({
+      id: 'por-que',
+      ancora: 'por-que-a-politica',
+      layout: 'manifesto',
+      fundo: 'marinho',
+      etiqueta: 'Por que a política?',
+      titulo: 'Não era um [[projeto de vida.]]',
+      paragrafos: [
+        'Não passei anos planejando uma carreira política. O convite surgiu quando eu já estava no final ' +
+          'da carreira policial. E foi justamente a experiência acumulada ao longo dos anos que fez ' +
+          'nascer uma pergunta:',
+        'Percebi que algumas mudanças não poderiam ser feitas individualmente. Seria necessário sair da ' +
+          'zona de conforto.',
+      ],
+      citacao: 'Se eu não lutar por isso, quem vai?',
+      lista: ['Aprender.', 'Estudar.', 'Dialogar.', 'Propor.', 'Cobrar.'],
+      fecho:
+        'E tentar transformar em políticas públicas aquilo que eu já conhecia na prática. Foi assim que ' +
+        'decidi colocar meu nome à disposição.',
+    }),
+  ],
+}
+
+// ─────────────────────────────────────────────────────────────
 // 2. ORIGEM — de onde veio
+//
+// ⚠️ ANA: ESTA E AS SEÇÕES 2.5, 2.6, 3, 4, 4b, 5, 5.5 E 5.8 ESTÃO FORA
+//    DA PÁGINA DELA (ver `exibir` e CAPÍTULOS, acima). Continuam aqui
+//    porque o motor do painel ainda as tipa; o conteúdo delas não vai
+//    ao ar.
 //
 // ✍️ ESCREVER. É a seção que faz a página não ser um santinho.
 //    Quatro parágrafos, primeira pessoa, fatos concretos: lugar,
@@ -533,12 +868,14 @@ export const trilha = {
 //    PENDENCIAS.md: a campanha precisa dizer COMO cada um se mede
 //    (um projeto de lei, um programa, um valor no orçamento).
 export const futuro = {
-  etiqueta: 'O que eu levo para Brasília',
+  etiqueta: 'O que levo para Brasília',
   titulo: 'Experiência de quem [[viveu os problemas.]]',
   intro:
-    'Não prometo saber tudo: estou entrando numa área nova e ainda tenho muito a aprender. Mas sei ' +
-    'o que levo comigo — força de vontade, disciplina, honestidade, experiência e trabalho. E vou ' +
-    'fazer o melhor que eu puder.',
+    'Não prometo saber tudo. Reconheço que estou entrando em uma nova área e que ainda tenho muito a ' +
+    'aprender sobre a política. Mas sei o que levo comigo:',
+  /** As cinco palavras que o documento lista, uma a uma. Vazia, some. */
+  bagagem: ['Força de vontade', 'Disciplina', 'Honestidade', 'Experiência', 'Trabalho'],
+  fecho: 'E, principalmente, disposição para fazer o melhor que eu puder.',
   itens: [
     {
       id: 'item-11',
@@ -600,13 +937,41 @@ export const futuro = {
 } as const
 
 // ─────────────────────────────────────────────────────────────
+// UMA NOVA MISSÃO — o penúltimo bloco do documento
+//
+// Fica fora de CAPÍTULOS porque o documento o põe DEPOIS das
+// propostas: a lista de capítulos termina em "Por que a política?", as
+// propostas vêm, e só então a missão. Como seção própria, a ordem da
+// página continua sendo a do documento sem truque de posição.
+// ─────────────────────────────────────────────────────────────
+export const missao = {
+  etiqueta: 'Uma nova missão',
+  titulo: 'Da farda [[para Brasília.]]',
+  paragrafos: [
+    'Durante décadas, estive na linha de frente da segurança pública. Aprendi que proteger pessoas ' +
+      'exige preparo. Que cuidar de alguém exige responsabilidade. Que nenhuma instituição é forte se ' +
+      'não cuidar das pessoas que fazem parte dela.',
+    'Agora, quero levar essa experiência para outro espaço. Não para abandonar aquilo que construí, ' +
+      'mas para ampliar a luta.',
+  ],
+  por: [
+    'Pela segurança.',
+    'Pelas famílias.',
+    'Pelas crianças.',
+    'Pelos profissionais que cuidam da sociedade.',
+    'Pelos animais.',
+    'Pelas pessoas que precisam que seus direitos saiam do papel.',
+  ],
+}
+
+// ─────────────────────────────────────────────────────────────
 // 7. GRUPOS — o objetivo número um da página
 //
 // Estes rótulos são de INTERFACE, não de campanha: quase nenhum
 // precisa ser reescrito. Os que precisam estão marcados.
 // ─────────────────────────────────────────────────────────────
 export const grupos = {
-  etiqueta: 'Entre no grupo',
+  etiqueta: 'Acompanhe a Ana',
   // ✍️ ESCREVER
   titulo: `Tem um grupo ${g.do} ${campanha.primeiroNome} [[na sua ${REGIAO.rotuloBusca}.]]`,
   intro:
@@ -729,11 +1094,14 @@ export const compartilhar = {
 // 10. CTA FINAL
 // ─────────────────────────────────────────────────────────────
 export const ctaFinal = {
-  // "Conheça. Acompanhe. Participe." fecha o documento da campanha.
-  titulo: [`${campanha.eleicao.dataVotacao}.`, '[[Conheça. Acompanhe. Participe.]]'],
+  // ANA: é o último bloco do documento, a assinatura — nome, lema,
+  // cargo com número e "Conheça. Acompanhe. Participe.".
+  titulo: ['Trabalho, coragem', '[[e cuidado.]]'],
   texto:
-    'Decidi entrar na política porque algumas mudanças precisam ser construídas também em ' +
-    'Brasília. Tudo tem um primeiro passo. Eu vou fazer o melhor que eu puder.',
+    'Sou uma policial que decidiu entrar na política porque entendeu que algumas mudanças precisam ' +
+    'ser construídas também em Brasília.',
+  cargo: `${campanha.cargo} — ${campanha.numero}`,
+  chamada: 'Conheça. Acompanhe. Participe.',
   ctaPrimario: ctas.grupo,
   ctaSecundario: ctas.filtro,
 } as const
@@ -745,13 +1113,15 @@ export const ctaFinal = {
 // ─────────────────────────────────────────────────────────────
 export const faixa = {
   itens: [
-    { id: 'faixa-01', texto: nomeComNumero },
-    { id: 'faixa-02', texto: `${campanha.cargo} · ${campanha.partidoExtenso} ${campanha.partidoNumero}` },
-    { id: 'faixa-03', texto: 'Trabalho, coragem e cuidado' },
-    { id: 'faixa-04', texto: 'Policial militar desde 1998' },
-    { id: 'faixa-05', texto: 'Psicóloga e mãe' },
-    { id: 'faixa-06', texto: 'Lei precisa sair do papel' },
-    { id: 'faixa-07', texto: 'Da farda para Brasília' },
+    // ANA: as oito "frases-chave para o design do site" do documento.
+    { id: 'faixa-01', texto: 'Eu não posso lutar sozinha' },
+    { id: 'faixa-02', texto: 'A farda representa força. Mas dentro dela existe uma pessoa' },
+    { id: 'faixa-03', texto: 'Lei precisa sair do papel e chegar às pessoas' },
+    { id: 'faixa-04', texto: 'Inclusão não é apenas colocar na sala' },
+    { id: 'faixa-05', texto: 'Policial valorizado é segurança pública fortalecida' },
+    { id: 'faixa-06', texto: 'Algumas causas a gente conhece porque vive' },
+    { id: 'faixa-07', texto: 'Tudo tem um primeiro passo' },
+    { id: 'faixa-08', texto: 'Eu vou fazer o melhor que eu puder' },
   ],
 } as const
 
@@ -1059,24 +1429,25 @@ export const social = {
 // ─────────────────────────────────────────────────────────────
 export const exibir = {
   faixa: true,
-  origem: true,
-  album: true,
-  rua: true,
-  problema: true,
-  valores: true,
-  cena: true,
-  /**
-   * Desligada para a Ana: não há mandato anterior, logo não há registro
-   * público para mostrar. Ver a regra no cabeçalho da seção de provas.
-   */
-  provas: false,
-  /** ⛔ Desligada de fábrica: direito de imagem e jurídico. Ver acima. */
-  social: false,
-  trilha: true,
+  capitulos: true,
   futuro: true,
+  missao: true,
   grupos: true,
   filtro: true,
   compartilhar: true,
+  // ⚠️ ANA: as seções do modelo abaixo não fazem parte da página dela
+  //    (ver CAPÍTULOS). Ficam falsas e fora do painel; a página nem as
+  //    importa. Provas já estaria desligada de qualquer jeito: não há
+  //    mandato anterior, logo não há registro público para mostrar.
+  origem: false,
+  album: false,
+  rua: false,
+  problema: false,
+  valores: false,
+  cena: false,
+  provas: false,
+  social: false,
+  trilha: false,
 } as const
 
 // ─────────────────────────────────────────────────────────────
@@ -1122,6 +1493,8 @@ export const PADRAO = {
   navegacao,
   ctas,
   hero,
+  capitulos,
+  missao,
   origem,
   album,
   rua,

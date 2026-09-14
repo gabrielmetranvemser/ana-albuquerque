@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Archivo, Inter, Kaushan_Script } from 'next/font/google'
+import { Bricolage_Grotesque, Figtree, Kaushan_Script } from 'next/font/google'
 import { candidato } from '@/content/copy'
 import { campanha } from '@/content/campanha'
 import { config } from '@/lib/config'
@@ -27,15 +27,32 @@ import './globals.css'
  * principal ficar clicável — texto invisível esperando fonte é o
  * jeito mais barato de estourar esse teto.
  */
-const titulo = Archivo({
+/*
+ * ⚠️ ANA: AS DUAS FONTES ACIMA SAÍRAM. Archivo e Inter eram as do
+ *    modelo, e a campanha reclamou com razão que a página estava "100%
+ *    igual ao template". A tipografia é o que mais denuncia isso.
+ *
+ *    TÍTULO — Bricolage Grotesque. Uma grotesca moderna com traço de
+ *    mão nas curvas: "modernidade com humanidade", nas palavras da
+ *    campanha. Variável, então é um arquivo só para todos os pesos.
+ *
+ *    ⚠️ ANTES DELA FOI A BARLOW CONDENSED, EM CAIXA ALTA ITÁLICA — a
+ *       letra dos posts — e foi reprovada: no site, título inteiro em
+ *       condensada itálica, somado a adesivo e fita, leu como cartum.
+ *       O que funciona num post de 1080px, olhado por dois segundos,
+ *       cansa numa página que se lê por dois minutos.
+ *
+ *    CORPO — Figtree. Legível a 18px para quem tem 60 anos, e com a
+ *    curva arredondada do "deputada federal" do logotipo — o Inter é
+ *    neutro demais para uma página que precisa parecer gente.
+ */
+const titulo = Bricolage_Grotesque({
   subsets: ['latin'],
-  weight: ['500', '600', '700', '800'],
-  style: ['normal', 'italic'],
   variable: '--fonte-titulo',
   display: 'swap',
 })
 
-const corpo = Inter({
+const corpo = Figtree({
   subsets: ['latin'],
   variable: '--fonte-corpo',
   display: 'swap',
@@ -48,7 +65,9 @@ const corpo = Inter({
  * e do Solidariedade, a palavra que importa vem num pincel itálico por
  * cima do título pesado ("SEGURANÇA é compromisso"). A Kaushan é a
  * pincelada do Google Fonts mais próxima daquela, e tem os acentos do
- * português. Só entra no trecho [[realçado]] — ver TextoComDestaque.
+ * português. Só entra no trecho [[realçado]] de ATÉ TRÊS PALAVRAS — a
+ * campanha achou a frase inteira em pincel "muito ruim de ler", e a
+ * regra agora é do código, não de quem escreve. Ver TextoComDestaque.
  *
  * Um peso só, e é o único que ela tem: o arquivo é pequeno, e o
  * `display: swap` segura o teto de 3 segundos como nas outras duas.

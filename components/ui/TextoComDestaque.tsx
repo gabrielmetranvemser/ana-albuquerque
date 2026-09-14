@@ -25,22 +25,33 @@ import { interpretar, semMarcacao, type Marca } from '@/lib/texto/marcacao'
 
 type Tom = 'amarelo' | 'azul' | 'grifo' | 'verde' | 'branco' | 'capa'
 
-// ⚠️ ANA: O DESTAQUE GANHOU A "FONTE RABISCADA" (`rabisco`, ver
-//    globals.css). A campanha pediu a pincelada dos posts dela e do
-//    Solidariedade, em que a palavra que importa vem num pincel por
-//    cima do título pesado. Só nos tons de COR: `grifo` e `branco`
-//    aparecem em corpo de texto, onde letra de pincel a 18px atrapalha
-//    a leitura de quem tem 60 anos.
 const CLASSES: Record<Tom, string> = {
-  amarelo: 'text-amarelo rabisco',
-  azul: 'text-azul rabisco',
-  verde: 'text-verde-escuro rabisco',
+  amarelo: 'text-amarelo',
+  azul: 'text-azul',
+  verde: 'text-verde-escuro',
   branco: 'text-white',
   grifo: 'grifo',
   // A primeira dobra tem seis esquemas de cor, e o realce muda com
   // eles. `realce-capa` lê a variável que o esquema define — assim o
   // componente não precisa saber quantos esquemas existem.
-  capa: 'realce-capa rabisco',
+  capa: 'realce-capa',
+}
+
+/**
+ * ⚠️ ANA: A LETRA DE PINCEL SÓ ENTRA EM DESTAQUE DE ATÉ TRÊS PALAVRAS.
+ *    A primeira versão punha todo [[destaque]] em pincel, e havia título
+ *    inteiro assim ("Eu queria proteger as pessoas."). A campanha: "MUITO
+ *    RUIM de ler — no máximo uma ou três palavras numa fonte rabiscada".
+ *    A regra mora aqui, e não num aviso para quem escreve, porque o
+ *    painel deixa qualquer um marcar a frase inteira: acima de três
+ *    palavras o destaque continua existindo, só que na cor, e legível.
+ *    `grifo` e `branco` nunca levam pincel: são tons de corpo de texto.
+ */
+const PALAVRAS_NO_PINCEL = 3
+
+function levaPincel(texto: string, tom: Tom): boolean {
+  if (tom === 'grifo' || tom === 'branco') return false
+  return texto.trim().split(/\s+/).filter(Boolean).length <= PALAVRAS_NO_PINCEL
 }
 
 export function TextoComDestaque({
@@ -72,7 +83,7 @@ function vestir(texto: string, marcas: Marca[], tom: Tom): ReactNode {
   for (const marca of [...marcas].reverse()) {
     if (marca === 'italico') no = <em>{no}</em>
     else if (marca === 'negrito') no = <strong>{no}</strong>
-    else no = <span className={CLASSES[tom]}>{no}</span>
+    else no = <span className={`${CLASSES[tom]}${levaPincel(texto, tom) ? ' rabisco' : ''}`}>{no}</span>
   }
   return no
 }

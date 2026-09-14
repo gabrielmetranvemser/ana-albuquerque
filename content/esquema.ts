@@ -570,13 +570,141 @@ export const ESQUEMA: Record<string, SecaoEsquema> = {
     },
   },
 
+  // ── ANA: a página dela, capítulo a capítulo, na ordem do documento ──
+  // Ver CAPÍTULOS em content/copy.ts para o porquê da lista.
+  capitulos: {
+    rotulo: 'Capítulos da página',
+    grupo: 'Página',
+    nota:
+      'Cada capítulo é um bloco do documento da campanha, na ordem em que aparece na página. ' +
+      '"Forma" escolhe o desenho; campo vazio some. As fotos de cada capítulo ficam logo abaixo, em Imagens.',
+    campos: {
+      itens: {
+        tipo: 'lista',
+        rotulo: 'Capítulos',
+        rotuloItem: 'Capítulo',
+        titulo: 'etiqueta',
+        min: 1,
+        max: 20,
+        item: {
+          id: ID,
+          ancora: {
+            tipo: 'texto',
+            rotulo: 'Endereço na página',
+            max: 30,
+            ajuda: 'Sem acento e sem espaço. É para onde o menu aponta. Ex.: minha-historia',
+          },
+          layout: {
+            tipo: 'escolha',
+            rotulo: 'Forma',
+            opcoes: [
+              { valor: 'carta', rotulo: 'Carta — texto corrido com assinatura' },
+              { valor: 'foto', rotulo: 'Foto ao lado do texto' },
+              { valor: 'album', rotulo: 'Álbum — fotos de papel' },
+              { valor: 'indice', rotulo: 'Índice — atalhos para outros capítulos' },
+              { valor: 'fotos', rotulo: 'Fotos em faixa' },
+              { valor: 'manifesto', rotulo: 'Manifesto — frase grande' },
+              { valor: 'destaque', rotulo: 'Destaque — texto num cartão' },
+              { valor: 'lista', rotulo: 'Lista — itens marcados' },
+            ],
+          },
+          fundo: {
+            tipo: 'escolha',
+            rotulo: 'Fundo',
+            opcoes: [
+              { valor: 'papel', rotulo: 'Papel' },
+              { valor: 'areia', rotulo: 'Areia' },
+              { valor: 'branco', rotulo: 'Branco' },
+              { valor: 'azul', rotulo: 'Azul' },
+              { valor: 'marinho', rotulo: 'Marinho' },
+              { valor: 'laranja', rotulo: 'Laranja' },
+            ],
+          },
+          lado: {
+            tipo: 'escolha',
+            rotulo: 'Lado da foto',
+            opcoes: [
+              { valor: 'direita', rotulo: 'Direita' },
+              { valor: 'esquerda', rotulo: 'Esquerda' },
+            ],
+          },
+          etiqueta: { tipo: 'texto', rotulo: 'Título do documento (caixa alta)', max: 60 },
+          titulo: { tipo: 'texto', rotulo: 'Frase principal', max: 90, destaque: true },
+          paragrafos: { tipo: 'listaTexto', rotulo: 'Parágrafos', min: 0, max: 8, maxItem: 500 },
+          citacao: {
+            tipo: 'longo',
+            rotulo: 'Citação',
+            max: 200,
+            linhas: 2,
+            ajuda: 'Entra logo depois do primeiro parágrafo.',
+          },
+          marcos: {
+            tipo: 'lista',
+            rotulo: 'Linha do tempo',
+            rotuloItem: 'Marco',
+            titulo: 'ano',
+            min: 0,
+            max: 8,
+            item: {
+              id: ID,
+              ano: { tipo: 'texto', rotulo: 'Ano', max: 12 },
+              texto: { tipo: 'texto', rotulo: 'O que aconteceu', max: 80 },
+            },
+          },
+          lista: { tipo: 'listaTexto', rotulo: 'Lista', min: 0, max: 12, maxItem: 120 },
+          fecho: { tipo: 'longo', rotulo: 'Frase de fecho', max: 220, linhas: 2, },
+          atalhos: {
+            tipo: 'lista',
+            rotulo: 'Atalhos (só na forma Índice)',
+            rotuloItem: 'Atalho',
+            titulo: 'rotulo',
+            min: 0,
+            max: 6,
+            item: {
+              id: ID,
+              rotulo: { tipo: 'texto', rotulo: 'Texto', max: 40 },
+              href: { tipo: 'ancora', rotulo: 'Destino' },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  missao: {
+    rotulo: 'Uma nova missão',
+    grupo: 'Página',
+    campos: {
+      etiqueta: { tipo: 'texto', rotulo: 'Etiqueta', max: 40 },
+      titulo: { tipo: 'texto', rotulo: 'Título', max: 70, destaque: true },
+      paragrafos: { tipo: 'listaTexto', rotulo: 'Parágrafos', min: 0, max: 4, maxItem: 400 },
+      por: {
+        tipo: 'listaTexto',
+        rotulo: 'Pela… / Pelos…',
+        min: 0,
+        max: 8,
+        maxItem: 80,
+        ajuda: 'Uma frase por linha. Aparecem uma embaixo da outra, grandes.',
+      },
+    },
+  },
+
   futuro: {
-    rotulo: 'Compromissos',
+    rotulo: 'O que levo para Brasília',
     grupo: 'Página',
     campos: {
       etiqueta: { tipo: 'texto', rotulo: 'Etiqueta', max: 40 },
       titulo: { tipo: 'texto', rotulo: 'Título', max: 70, destaque: true },
       intro: { tipo: 'longo', rotulo: 'Introdução', max: 300, linhas: 3 },
+      bagagem: {
+        tipo: 'listaTexto',
+        rotulo: 'O que levo comigo',
+        min: 0,
+        max: 8,
+        maxItem: 30,
+        ajuda: 'Uma palavra ou expressão curta por linha.',
+      },
+      fecho: { tipo: 'texto', rotulo: 'Frase depois das palavras', max: 120 },
       itens: {
         tipo: 'lista',
         rotulo: 'Compromissos',
@@ -735,18 +863,20 @@ export const ESQUEMA: Record<string, SecaoEsquema> = {
   },
 
   ctaFinal: {
-    rotulo: 'Chamada final',
+    rotulo: 'Assinatura',
     grupo: 'Página',
     campos: {
       titulo: {
         tipo: 'listaTexto',
-        rotulo: 'Título',
+        rotulo: 'Lema',
         min: 1,
         max: 3,
         maxItem: 40,
         destaque: true,
       },
       texto: { tipo: 'longo', rotulo: 'Texto', max: 240, linhas: 3 },
+      cargo: { tipo: 'texto', rotulo: 'Cargo e número', max: 40 },
+      chamada: { tipo: 'texto', rotulo: 'Chamada', max: 60, ajuda: 'Ex.: Conheça. Acompanhe. Participe.' },
       ctaPrimario: { tipo: 'texto', rotulo: 'Botão principal', max: 42 },
       ctaSecundario: { tipo: 'texto', rotulo: 'Botão secundário', max: 42 },
     },
@@ -766,7 +896,8 @@ export const ESQUEMA: Record<string, SecaoEsquema> = {
         max: 8,
         item: {
           id: ID,
-          texto: { tipo: 'texto', rotulo: 'Texto', max: 40 },
+          // 60: as frases-chave da campanha da Ana passam de 40.
+          texto: { tipo: 'texto', rotulo: 'Texto', max: 60 },
         },
       },
     },
@@ -777,17 +908,12 @@ export const ESQUEMA: Record<string, SecaoEsquema> = {
     grupo: 'Página',
     nota: '⚠️ Desligar uma seção tira ela da página inteira, inclusive do menu do topo. A primeira dobra, a chamada final e o rodapé não podem ser desligados — o rodapé carrega a identificação exigida pela lei eleitoral.',
     campos: {
-      faixa: { tipo: 'booleano', rotulo: 'Faixa corrida', ajuda: 'A tarja amarela logo abaixo da primeira dobra.' },
-      origem: { tipo: 'booleano', rotulo: `Quem é ${campanha.primeiroNome}`, ajuda: 'A história de origem.' },
-      album: { tipo: 'booleano', rotulo: 'O álbum', ajuda: 'As fotos do acervo de família.' },
-      rua: { tipo: 'booleano', rotulo: 'Na linha de frente', ajuda: 'As três fotos de serviço. Desligue enquanto não houver autorização de uso.' },
-      problema: { tipo: 'booleano', rotulo: 'O que está errado' },
-      valores: { tipo: 'booleano', rotulo: 'Minhas bandeiras' },
-      cena: { tipo: 'booleano', rotulo: 'Cena da bandeira', ajuda: 'A animação de rolagem entre bandeiras e provas.' },
-      provas: { tipo: 'booleano', rotulo: 'O que já foi feito' },
-      social: { tipo: 'booleano', rotulo: 'Prova social', ajuda: 'Comentários e processos. Desligue enquanto o jurídico não liberar os prints.' },
-      trilha: { tipo: 'booleano', rotulo: 'Trilha de vídeos', ajuda: 'A fita de vídeos acima dos compromissos.' },
-      futuro: { tipo: 'booleano', rotulo: 'Compromissos' },
+      // ANA: só as seções da página dela. As do modelo ficam falsas em
+      // content/copy.ts e fora daqui.
+      faixa: { tipo: 'booleano', rotulo: 'Fita de frases', ajuda: 'A fita com as frases-chave, logo abaixo da primeira dobra.' },
+      capitulos: { tipo: 'booleano', rotulo: 'Capítulos', ajuda: 'A história e as causas, na ordem do documento.' },
+      futuro: { tipo: 'booleano', rotulo: 'O que levo para Brasília' },
+      missao: { tipo: 'booleano', rotulo: 'Uma nova missão' },
       grupos: {
         tipo: 'booleano',
         rotulo: 'Grupos de WhatsApp',
@@ -876,11 +1002,17 @@ export const ESQUEMA: Record<string, SecaoEsquema> = {
         rotuloItem: 'Item',
         titulo: 'rotulo',
         min: 1,
-        max: 6,
+        // 10, e não 6: a sugestão de menu do documento da Ana tem nove.
+        max: 10,
         item: {
           id: ID,
           rotulo: { tipo: 'texto', rotulo: 'Texto', max: 30 },
           href: { tipo: 'ancora', rotulo: 'Destino' },
+          noTopo: {
+            tipo: 'booleano',
+            rotulo: 'Mostrar na barra do topo',
+            ajuda: 'No computador, a barra só cabe quatro ou cinco. Todos aparecem no menu aberto.',
+          },
         },
       },
     },

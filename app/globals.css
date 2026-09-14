@@ -38,10 +38,16 @@
   --color-amarelo-suave: #fef8e0;
 
   --color-branco: #ffffff;
-  --color-areia: #f7f7f4;
-  --color-tinta: #10243a;         /* texto principal                  */
-  --color-grafite: #4c5866;       /* texto secundário                 */
-  --color-linha: #e3e6ea;
+  /* ANA: os neutros viraram PAPEL. O cinza-frio do modelo é o que dava
+     à página cara de sistema; o creme com grão é o que dá cara de
+     material de campanha feito à mão. */
+  --color-papel: #fbf5e9;
+  --color-areia: #f2e7d2;
+  --color-laranja: #f47a20;       /* só forma e adesivo — nunca texto */
+  --color-verde-bandeira: #14a438; /* só a faixa do logotipo           */
+  --color-tinta: #141a3d;         /* texto principal                  */
+  --color-grafite: #4b4f68;       /* texto secundário                 */
+  --color-linha: #e6dcc6;
   --color-linha-escura: #0a4477;
 
   /* ── Tipografia ─────────────────────────────────────────────
@@ -107,13 +113,21 @@
   h1, h2, h3, h4 {
     font-family: var(--font-titulo);
     font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.025em;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
     text-wrap: balance;
     color: inherit;
   }
 
-  h1 { letter-spacing: -0.035em; line-height: 1.02; }
+  h1 { letter-spacing: -0.03em; line-height: 1; }
+
+  /* O grão do papel e o das superfícies de cor. Ruído SVG estático:
+     textura, não degradê — é o que tira o ar de tela lisa sem pintar
+     transição de cor nenhuma. */
+  :root {
+    --grao-escuro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .1 0 0 0 0 .32 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    --grao-claro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
 
   p { text-wrap: pretty; }
   a { color: inherit; }
@@ -215,20 +229,25 @@
   }
 }
 
+/* ANA: DUAS MEDIDAS DE TÍTULO, E SÓ DUAS. A primeira versão tinha
+   quatro vozes disputando cada seção — caixa alta itálica, pincel,
+   condensada e corpo — e a campanha resumiu: "muito ruim toda a
+   hierarquia". Cartaz é a primeira dobra e as frases-manifesto; seção
+   é todo o resto. Nenhuma em caixa alta. */
 @utility titulo-cartaz {
   font-family: var(--font-titulo);
   font-weight: 700;
-  font-size: clamp(2.4rem, 6.2vw, 4.5rem);
+  font-size: clamp(2.5rem, 5.6vw, 4.5rem);
   line-height: 1.02;
-  letter-spacing: -0.036em;
+  letter-spacing: -0.03em;
 }
 
 @utility titulo-secao {
   font-family: var(--font-titulo);
   font-weight: 700;
-  font-size: clamp(1.85rem, 3.8vw, 2.9rem);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: clamp(2rem, 3.8vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
 }
 
 @utility etiqueta {
@@ -254,17 +273,93 @@
 /* ANA: a "fonte rabiscada" dos destaques — pincel por cima do título
    pesado, como nos posts da campanha. Ver TextoComDestaque.tsx.
 
-   ⚠️ 1.12em E NÃO 1em: letra de pincel tem olho pequeno, e no mesmo
-   corpo ela parece um número menor que a Archivo ao lado.
+   ⚠️ SÓ EM ATÉ TRÊS PALAVRAS — quem decide é o TextoComDestaque. Frase
+   inteira em pincel foi reprovada por ser difícil de ler.
+
+   ⚠️ 1.15em E NÃO 1em: letra de pincel tem olho pequeno, e no mesmo
+   corpo ela parece um número menor que a letra de título ao lado.
    ⚠️ `text-transform: none`: pincel em maiúsculas vira garrancho, e há
    títulos que herdam caixa alta. */
 @utility rabisco {
   font-family: var(--fonte-rabisco), var(--font-titulo);
   font-weight: 400;
   font-style: normal;
-  font-size: 1.12em;
+  font-size: 1.15em;
   letter-spacing: 0;
   text-transform: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANA — O ESTILO ORGÂNICO
+
+   A campanha pediu a página "mais orgânica, menos degradê". A regra
+   que saiu disso: COR CHAPADA, FORMA RECORTADA À MÃO, PAPEL. Nenhuma
+   superfície nova usa gradiente; a profundidade vem de sobreposição
+   (foto de papel com fita, adesivo com sombra dura, borda ondulada) e
+   do grão. As formas SVG moram em components/ana/Organico.tsx.
+   ═══════════════════════════════════════════════════════════════ */
+
+@utility papel {
+  background-color: var(--color-papel);
+  background-image: var(--grao-escuro);
+}
+
+/* Grão claro por cima de uma cor chapada: `bg-azul grao`. */
+@utility grao {
+  background-image: var(--grao-claro);
+}
+
+/* Recorte de papel: três contornos tortos, para duas fotos vizinhas
+   nunca terem a mesma forma. */
+@utility bolha-1 { border-radius: 62% 38% 54% 46% / 48% 58% 42% 52%; }
+@utility bolha-2 { border-radius: 42% 58% 38% 62% / 56% 42% 58% 44%; }
+@utility bolha-3 { border-radius: 54% 46% 64% 36% / 40% 60% 40% 60%; }
+
+/* Adesivo: contorno marinho e sombra DURA, sem desfoque. É o que faz
+   um botão parecer colado na página e não flutuando sobre ela. */
+@utility adesivo {
+  border: 2.5px solid var(--color-azul-escuro);
+  box-shadow: 4px 5px 0 var(--color-azul-escuro);
+}
+
+@utility polaroide {
+  background-color: #fff;
+  padding: 0.55rem 0.55rem 2rem;
+  box-shadow: 0 18px 30px -18px rgb(16 32 132 / 0.5);
+}
+
+/* Fita crepe, com as pontas rasgadas. */
+@utility fita-crepe {
+  position: absolute;
+  width: 5.5rem;
+  height: 1.55rem;
+  background-color: color-mix(in srgb, var(--color-amarelo) 72%, transparent);
+  clip-path: polygon(3% 8%, 97% 0, 100% 46%, 96% 100%, 2% 92%, 0 50%);
+}
+
+/* O rótulo dos capítulos: é o título em caixa alta do documento. Pequeno
+   e espaçado, na letra do corpo — é sinalização, não segunda manchete. */
+@utility rotulo-ana {
+  font-family: var(--font-corpo);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+/* Foto e cartão: canto arredondado e sombra longa e macia. É a
+   profundidade "com humanidade" que substituiu a sombra dura do
+   adesivo, reprovada como cartum. */
+@utility foto-ana {
+  border-radius: 1.75rem;
+  box-shadow: 0 32px 60px -36px rgb(10 20 82 / 0.5);
+}
+
+@utility cartao-ana {
+  background-color: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 1px 2px rgb(10 20 82 / 0.06), 0 20px 44px -28px rgb(10 20 82 / 0.38);
 }
 
 /* Grifo amarelo sob a palavra-chave. */
@@ -730,12 +825,15 @@
   }
 }
 
+/* ANA: chapados, com grão. Eram degradês — ver "O estilo orgânico". */
 @utility fundo-azul-profundo {
-  background-image: linear-gradient(168deg, var(--color-azul-escuro) 0%, var(--color-azul-noite) 100%);
+  background-color: var(--color-azul-escuro);
+  background-image: var(--grao-claro);
 }
 
 @utility fundo-verde {
-  background-image: linear-gradient(168deg, color-mix(in srgb, var(--color-verde) 88%, #ff9a3c) 0%, var(--color-verde) 30%, var(--color-verde-escuro) 100%);
+  background-color: var(--color-verde);
+  background-image: var(--grao-claro);
 }
 
 @utility fundo-verde-profundo {

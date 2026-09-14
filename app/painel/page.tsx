@@ -53,29 +53,12 @@ export default async function PainelInicio() {
   }
   if (semLink > 0)
     pendencias.push({ texto: `${semLink} município${semLink === 1 ? '' : 's'} sem link de grupo`, onde: '/painel/grupos' })
-  // A pendência de "números de exemplo" em "O que já foi feito" saiu
-  // junto com os números: a campanha pediu a remoção da faixa de
-  // 9 leis / 1 comissão / 7 projetos / 14.634 votos, e sem o campo a
-  // conferência ficou apontando para `undefined` — que era o que
-  // derrubava esta página inteira.
-  //
-  // No lugar entram os vídeos: oito espaços que não quebram nada
-  // vazios, mas que a campanha precisa lembrar de preencher.
-  const videosVazios = [
-    conteudo.origem.video.url,
-    conteudo.rua.video.url,
-    conteudo.problema.video.url,
-    conteudo.provas.video.url,
-    ...conteudo.social.videos.map((v) => v.url),
-    ...conteudo.social.processos.flatMap((p) => p.videos.map((v) => v.url)),
-    ...conteudo.trilha.itens.map((v) => v.url),
-  ].filter((url) => !url.trim()).length
-
-  if (videosVazios > 0)
-    pendencias.push({
-      texto: `${videosVazios} espaço${videosVazios === 1 ? '' : 's'} de vídeo ainda sem endereço`,
-      onde: '/painel/videos',
-    })
+  // ⚠️ ANA: A PENDÊNCIA DE VÍDEOS SAIU. Ela contava os espaços de vídeo
+  //    das seções do modelo (origem, rua, problema, provas, prova
+  //    social, trilha), que não estão na página dela: o Início ficaria
+  //    cobrando, para sempre, oito vídeos que não aparecem em lugar
+  //    nenhum. Quando a página ganhar espaço de vídeo, a conferência
+  //    volta — apontando para os campos que vão ao ar.
 
   return (
     <>
@@ -142,7 +125,10 @@ export default async function PainelInicio() {
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="text-lg">Seções</h2>
           <p className="text-sm text-grafite">
-            {SECOES_DO_PAINEL.length - naoTocadas.size} de {SECOES_DO_PAINEL.length} editadas
+            {/* Contado pela lista, e não por subtração: as seções do
+                modelo fora da página da Ana continuam no conteúdo e
+                entravam na conta, dando número negativo. */}
+            {SECOES_DO_PAINEL.filter((s) => !naoTocadas.has(s.chave)).length} de {SECOES_DO_PAINEL.length} editadas
           </p>
         </div>
         <p className="mt-1 text-sm text-grafite">

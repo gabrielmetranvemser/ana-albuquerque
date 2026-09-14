@@ -26,26 +26,31 @@ import { SLOTS_POR_SECAO, type Slot } from './slots'
  */
 
 /** A ordem em que as seções aparecem na página. */
+// ANA: a ordem do documento da campanha — ver app/page.tsx.
 const ORDEM_DA_PAGINA = [
   'hero',
   'faixa',
-  'origem',
-  'album',
-  'rua',
-  'problema',
-  'valores',
-  'cena',
-  'provas',
-  'social',
-  'trilha',
+  'capitulos',
   'futuro',
+  'missao',
+  'ctaFinal',
   'grupos',
   'filtro',
   'compartilhar',
-  'ctaFinal',
   'rodape',
   'exibir',
 ] as const
+
+/**
+ * ⚠️ ANA: AS SEÇÕES DO MODELO QUE NÃO ESTÃO NA PÁGINA DELA SOMEM DO
+ *    PAINEL. O comentário de SECOES_DO_PAINEL diz que perder acesso a
+ *    uma seção é pior que mostrá-la fora de ordem — e é, quando a seção
+ *    vai ao ar. Estas não vão: editar "O álbum" no painel e não ver nada
+ *    mudar no site é exatamente o painel mentindo.
+ */
+const FORA_DA_PAGINA = new Set([
+  'origem', 'album', 'rua', 'problema', 'valores', 'cena', 'provas', 'social', 'trilha',
+])
 
 /**
  * A âncora de cada seção no site.
@@ -57,6 +62,8 @@ const ORDEM_DA_PAGINA = [
 const ANCORA: Record<string, string | null> = {
   hero: '/',
   faixa: '/',
+  capitulos: '/#quem-e',
+  missao: '/#missao',
   origem: '/#origem',
   album: '/#album',
   rua: '/#rua',
@@ -66,11 +73,11 @@ const ANCORA: Record<string, string | null> = {
   provas: '/#provas',
   social: '/#prova-social',
   trilha: '/#trilha',
-  futuro: '/#futuro',
+  futuro: '/#propostas',
   grupos: '/#grupos',
   filtro: '/#filtro',
   compartilhar: '/#compartilhar',
-  ctaFinal: '/#votar',
+  ctaFinal: '/#acompanhe',
   rodape: '/',
 }
 
@@ -80,7 +87,9 @@ const ANCORA: Record<string, string | null> = {
  */
 const RESUMO: Record<string, string> = {
   hero: 'A primeira tela: título, botões e a foto com o número.',
-  faixa: 'A tarja amarela que corre logo abaixo da primeira tela.',
+  faixa: 'A fita com as frases-chave, logo abaixo da primeira tela.',
+  capitulos: 'A história e as causas, capítulo a capítulo, na ordem do documento.',
+  missao: '"Uma nova missão": da farda para Brasília.',
   origem: 'A história de origem, com retrato, fotos de detalhe e vídeo.',
   album: 'Oito fotos do acervo de família, com legenda.',
   rua: 'As fotos e o vídeo de 2020, quando ela foi para a rua.',
@@ -90,11 +99,11 @@ const RESUMO: Record<string, string> = {
   provas: 'Prestação de contas do mandato: leis, registro público e vídeo.',
   social: 'Comentários de terceiros, os ataques e os processos vencidos.',
   trilha: 'A fita de vídeos que corre de lado, acima dos compromissos.',
-  futuro: 'Os compromissos de mandato, em fita.',
+  futuro: 'O que ela leva para Brasília: as palavras e as propostas numeradas.',
   grupos: 'Os textos da busca de grupos de WhatsApp.',
   filtro: 'Os textos do gerador de foto de perfil e as molduras.',
   compartilhar: 'O bloco de compartilhar a página.',
-  ctaFinal: 'A última chamada, antes do rodapé.',
+  ctaFinal: 'A assinatura: nome, lema, cargo com número e a chamada final.',
   rodape: 'Assinatura, links e a identificação eleitoral obrigatória.',
   exibir: 'Liga e desliga seções inteiras da página.',
   ctas: 'Os botões que se repetem em vários pontos do site.',
@@ -115,9 +124,8 @@ const RESUMO: Record<string, string> = {
  * corresponde ao que se está editando, o que é pior que não mostrar.
  */
 const VISUAIS = new Set([
-  'hero', 'faixa', 'origem', 'album', 'rua', 'problema', 'valores', 'cena',
-  'provas', 'social', 'trilha', 'futuro', 'grupos', 'filtro', 'compartilhar',
-  'ctaFinal', 'rodape',
+  'hero', 'faixa', 'capitulos', 'futuro', 'missao', 'ctaFinal', 'grupos', 'filtro',
+  'compartilhar', 'rodape',
 ])
 
 export interface SecaoDoPainel {
@@ -199,7 +207,9 @@ function montar(chave: string): SecaoDoPainel {
  */
 export const SECOES_DO_PAINEL: SecaoDoPainel[] = (() => {
   const naOrdem = ORDEM_DA_PAGINA.filter((c) => ESQUEMA[c])
-  const restantes = Object.keys(ESQUEMA).filter((c) => !naOrdem.includes(c as never))
+  const restantes = Object.keys(ESQUEMA).filter(
+    (c) => !naOrdem.includes(c as never) && !FORA_DA_PAGINA.has(c),
+  )
   return [...naOrdem, ...restantes].map(montar)
 })()
 

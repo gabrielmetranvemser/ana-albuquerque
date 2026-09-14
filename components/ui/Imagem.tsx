@@ -30,6 +30,26 @@ export function Imagem({
   const img = slots[slot]
 
   if (!img) {
+    // ⚠️ ANA: ESPAÇO COM FOTO PADRÃO NÃO MOSTRA QUADRO VAZIO. O campo
+    //    `padrao` já existia no slot ("arquivo em /public usado enquanto
+    //    o slot não tem imagem"), mas só as molduras o liam. A página da
+    //    Ana nasce com as fotos que a campanha mandou, então o site fica
+    //    de pé com cara de pronto antes de o banco existir — e o painel
+    //    troca qualquer uma sem deploy. Exige `padraoTamanho`: sem a
+    //    medida, o `next/image` não tem como reservar o espaço.
+    if (def?.padrao && def.padraoTamanho) {
+      return (
+        <Image
+          src={def.padrao}
+          alt={def.padraoAlt ?? ''}
+          width={def.padraoTamanho[0]}
+          height={def.padraoTamanho[1]}
+          sizes={sizes ?? '(max-width: 768px) 100vw, 50vw'}
+          priority={prioridade}
+          className={className}
+        />
+      )
+    }
     if (vazio === 'silhueta') {
       return (
         <Silhueta

@@ -39,7 +39,7 @@ export function Compartilhar({ siteUrl }: { siteUrl: string }) {
 
   return (
     <Secao id="compartilhar" fundo="branco">
-      <div className="relative isolate overflow-hidden rounded-[2rem] fundo-verde p-8 text-white md:p-14">
+      <div className="relative isolate overflow-hidden rounded-[2rem] bg-azul grao p-8 text-white md:p-14">
         <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
           <CabecalhoSecao etiqueta={copy.etiqueta} titulo={copy.titulo} intro={copy.intro} tom="escuro" />
 

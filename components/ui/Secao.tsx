@@ -16,7 +16,8 @@ interface Props {
 
 const FUNDOS = {
   branco: 'bg-white text-tinta',
-  areia: 'bg-areia text-tinta',
+  // ANA: areia é papel com grão.
+  areia: 'papel text-tinta',
   // superfícies cheias: um matiz só, do claro ao escuro
   'azul-profundo': 'fundo-azul-profundo text-white',
   verde: 'fundo-verde text-white',
@@ -75,18 +76,16 @@ export function CabecalhoSecao({
           porque amarelo em 13px sobre o verde não passa em contraste.
           O traço, sim, é amarelo — é detalhe, não é leitura. */}
       {etiqueta ? (
+        // ANA: a etiqueta é a dos capítulos — caixa alta condensada com
+        // a estrela do logotipo —, para grupos e filtro falarem a mesma
+        // língua do resto da página.
         <p
           data-revelar
-          className={`etiqueta ${centro ? 'justify-center' : ''} ${
+          className={`rotulo-ana flex items-center gap-2.5 ${centro ? 'justify-center' : ''} ${
             tom === 'escuro' ? 'text-white' : 'text-azul-escuro'
           }`}
         >
-          <span
-            className={`inline-block h-px w-8 ${
-              tom === 'escuro' ? 'bg-amarelo' : 'bg-azul/45'
-            }`}
-            aria-hidden
-          />
+          <span aria-hidden className={`h-0.5 w-6 shrink-0 rounded-full ${tom === 'escuro' ? 'bg-amarelo' : 'bg-laranja'}`} />
           {etiqueta}
         </p>
       ) : null}
@@ -97,7 +96,10 @@ export function CabecalhoSecao({
         {typeof titulo === 'string' ? (
           <TextoComDestaque
             texto={titulo}
-            tom={destaque === 'grifo' ? 'grifo' : tom === 'escuro' ? 'amarelo' : 'azul'}
+            // ANA: `grifo` virou pincel também. O traço amarelo por baixo
+            // era a assinatura visual do modelo; aqui o realce de todo
+            // título é a letra de pincel.
+            tom={destaque === 'grifo' && tom !== 'escuro' ? 'azul' : tom === 'escuro' ? 'amarelo' : 'azul'}
           />
         ) : (
           titulo

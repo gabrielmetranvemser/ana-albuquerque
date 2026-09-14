@@ -41,7 +41,11 @@ Sem isto o site está no ar, mas não faz o que veio fazer.
 - [ ] **Instalar o banco** — Supabase ▸ SQL Editor ▸ colar e rodar
       `sql/01-instalacao.sql`, depois `sql/02-seed-municipios.sql`
       (Rondônia, 52 municípios). O fuso já está em
-      `America/Porto_Velho`
+      `America/Porto_Velho`, e a trava de seções já aceita `capitulos`
+      e `missao`. Para o Claude rodar sozinho: a conta logada na CLI do
+      Supabase precisa ser membro do projeto, ou um
+      `SUPABASE_ACCESS_TOKEN` da conta dona no `.env.local` — a chave
+      `service_role` não executa SQL
 - [ ] **Trocar a senha do banco** no Supabase depois da instalação
 - [ ] **Subir as imagens** — prontas em `_imagens-painel/` (fora do
       git), um arquivo por espaço do painel. Ver o `LEIA-ME.md` de lá
@@ -69,18 +73,24 @@ acrescentado. Precisam da revisão de quem responde pela campanha.
       está em cada foto e quando não veio escrito. Trocar pelo que a
       família contar
 - [ ] **Cidade da Ana** (`cidadeBase`) — não informada
-- [ ] **Menu** — o documento sugere oito itens; o menu aceita seis e
-      ficaram cinco, os que têm seção própria
+- [x] **Menu** — os nove itens sugeridos pelo documento, na ordem dele
+      (quatro na barra do computador, todos no menu aberto)
+- [ ] **Índice "Minhas causas"** — não é bloco do documento: é a porta do
+      item de menu de mesmo nome. Confirmar se a campanha quer
 
 ---
 
 ## 🖼 Material
 
-- [ ] **Retrato profissional recortado** (PNG sem fundo, mínimo
-      1200×1500) para a primeira dobra. O de `_imagens-painel/` é
-      **provisório**: recorte automático de foto de WhatsApp, ampliado.
-      O retrato de camisa branca dos posts é o indicado
-- [ ] **Retrato de fechamento** (`cta.retrato`) — também provisório
+- [ ] **Foto da primeira dobra** — a campanha vai escolher. Até lá a
+      dobra mostra a marca com o 7766 no lugar da foto, que é um estado
+      pronto e não um buraco. PNG recortado, sem fundo, mínimo 1200×1500
+- [ ] **Fotos dos capítulos** — as que estão no ar vieram de "Fotos
+      apoio site" e moram em `public/fotos/`. Trocar pelo painel (espaços
+      `capitulo.*`) ou substituindo o arquivo de mesmo nome
+- [ ] ⚠️ **As fotos de `public/fotos/` vão para o git, e o repositório é
+      público.** O site mostra essas fotos de qualquer jeito, mas no git
+      elas ficam no histórico para sempre: confirmar antes do push
 - [ ] **Fotos de apoiadores** para o filtro, em pares story + perfil,
       com autorização
 - [ ] **Vídeos** — links do YouTube ou Vimeo. Todo espaço nasce vazio e
@@ -113,6 +123,9 @@ acrescentado. Precisam da revisão de quem responde pela campanha.
 - **Cores fixas da primeira campanha** em `app/globals.css` (um ciano e
   um verde nos degradês) e em `app/opengraph-image.tsx` — aqui viraram
   cores da paleta.
+- **A trava de seções do banco dizia `candidata`**, e a seção se chama
+  `candidato`: salvar "Quem é" no painel batia na trava. Corrigido na
+  migração `20260914120000_secoes_ana.sql`.
 
 ---
 
