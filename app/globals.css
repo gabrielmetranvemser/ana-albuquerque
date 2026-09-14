@@ -66,6 +66,14 @@
      em título (texto grande pede 3:1). O laranja claro, ali, dá 2,5:1 e
      fica para forma — o número grande, o risco da manuscrita, o botão. */
   --color-laranja-forte: #f25a12;
+  /* ANA: as cores da BANDEIRA, só para a cena pintada pela rolagem
+     (`.cena-*`). Na paleta da Ana os papéis `verde` e `amarelo` viraram
+     laranjas, e a cena sairia em dois tons de laranja — a campanha pediu
+     ela "mais verde, amarelo e azul". O verde é um tom abaixo do da
+     bandeira (#009c3b) para a letra branca passar em texto pequeno
+     (4,9:1); o amarelo é o do escudo do logotipo. */
+  --color-bandeira-verde: #00843d;
+  --color-bandeira-amarelo: #ffcc00;
   --color-verde-bandeira: #14a438; /* só a faixa do logotipo           */
   --color-tinta: #141a3d;         /* texto principal                  */
   --color-grafite: #4b4f68;       /* texto secundário                 */
@@ -929,11 +937,13 @@
   background-image: linear-gradient(168deg, var(--color-verde) 0%, var(--color-verde-escuro) 100%);
 }
 
-/* Brilho suave sobre fundo claro. */
+/* Brilho suave sobre fundo claro.
+   ⚠️ ANA: DESLIGADO. Sobre o papel quadriculado o brilho em azul e laranja
+   virava mancha em cima da grade, e a campanha pediu fundo "branco com
+   quadriculado sutil". A classe fica, sem efeito, porque as páginas
+   internas (/grupos, /filtro, privacidade) a usam. */
 @utility brilho-claro {
-  background-image:
-    radial-gradient(55% 50% at 12% 0%, color-mix(in srgb, var(--color-azul) 9%, transparent) 0%, transparent 70%),
-    radial-gradient(45% 45% at 98% 15%, color-mix(in srgb, var(--color-verde) 9%, transparent) 0%, transparent 70%);
+  background-image: none;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1190,9 +1200,12 @@
     align-items: center;
   }
 
-  .cena-verde   { background-color: var(--color-verde); color: var(--color-branco); }
-  .cena-amarelo { background-color: var(--color-amarelo); color: var(--color-azul-escuro); }
-  .cena-azul    { background-color: var(--color-azul-escuro); color: var(--color-branco); }
+  /* ANA: as cores da bandeira, e não os papéis da paleta — ver
+     `--color-bandeira-verde`. O azul é o da marca, e não o marinho: a
+     campanha pediu a cena "mais verde, amarelo e azul", vivo. */
+  .cena-verde   { background-color: var(--color-bandeira-verde); color: var(--color-branco); }
+  .cena-amarelo { background-color: var(--color-bandeira-amarelo); color: var(--color-azul-escuro); }
+  .cena-azul    { background-color: var(--color-azul); color: var(--color-branco); }
 
   /* ── Como cada cor entra ──────────────────────────────────────
      Dois desenhos, um por largura de tela, e não por gosto.
@@ -1231,7 +1244,14 @@
     clip-path: circle(max(0%, calc((var(--palco-p) - 0.55) * 375%)) at 100% 50%);
   }
 
-  @media (max-width: 767px) {
+  /* ⚠️ ANA: NO COMPUTADOR TAMBÉM SOBE DE BAIXO. A campanha viu a cunha
+     entrando pelo lado e pediu: "no web, faça tudo vindo de baixo, ao
+     invés do lado". A gramática do celular, descrita abaixo, passou a
+     valer em qualquer largura: o bloco que era só do celular virou
+     `@media all`, e as regras de tela larga acima ficam por baixo dele,
+     sem efeito. Na tela deitada só muda a proporção do losango — ver
+     "ANA: o losango na tela deitada", mais abaixo. */
+  @media all {
     /* --cena-q é o avanço da camada, de 0 (ainda um ponto abaixo da
        tela) a 1 (cobrindo tudo). O clamp é o que dá as esperas: antes
        de 0.10 é tudo verde, entre 0.42 e 0.55 é tudo amarelo, de 0.87
@@ -1299,12 +1319,25 @@
     --cena-y: 0;
   }
 
-  @media (max-width: 767px) {
-    .cena-camada {
-      --cena-entrada: 24svh;
-      --cena-saida: 24svh;
-      --cena-x: 0;
-      --cena-y: 1;
+  /* ANA: o texto também anda na vertical em qualquer largura — acompanha
+     as cores, que agora sobem de baixo também no computador. */
+  .cena-camada {
+    --cena-entrada: 24svh;
+    --cena-saida: 24svh;
+    --cena-x: 0;
+    --cena-y: 1;
+  }
+
+  /* ANA: o losango na tela deitada. As meias-diagonais do celular (215% e
+     72%) foram contadas para uma tela em pé; numa de 1280×820 elas dão um
+     losango quase cinco vezes mais largo que alto, que sobe como uma
+     faixa chata. 110% e 105% devolvem a proporção da bandeira (perto de
+     1,6 : 1 em pixels) e ainda cobrem os quatro cantos quando --cena-q
+     chega a 1: 50/110 + 50/105 = 0,93. */
+  @media (min-width: 768px) {
+    .cena-amarelo {
+      --cena-rx: calc(var(--cena-q) * 110%);
+      --cena-ry: calc(var(--cena-q) * 105%);
     }
   }
 

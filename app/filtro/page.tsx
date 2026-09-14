@@ -52,9 +52,10 @@ export default async function PaginaFiltro() {
         {/* A abertura é curta de propósito: quem chega aqui já decidiu
             fazer a foto. Título, uma linha e o fluxo — a explicação
             longa empurrava o primeiro controle para fora da tela. */}
-        <section className="relative isolate overflow-hidden bg-white pt-10 pb-10 md:pt-14">
-          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 brilho-claro" />
-
+        {/* ANA: as duas seções desta página não têm fundo — o papel
+            quadriculado do <body> aparece nelas, como na página principal.
+            Eram branco com brilho em cima e areia embaixo. */}
+        <section className="relative isolate overflow-hidden pt-10 pb-10 md:pt-14">
           <div className="container-lp">
             <Link
               href="/"
@@ -73,7 +74,7 @@ export default async function PaginaFiltro() {
           </div>
         </section>
 
-        <section className="bg-areia pt-10 pb-16 md:pt-14 md:pb-24">
+        <section className="pt-10 pb-16 md:pt-14 md:pb-24">
           <div className="container-lp">
             <Fluxo molduras={molduras} apoios={apoios ? formatarApoios(apoios) : null} />
           </div>

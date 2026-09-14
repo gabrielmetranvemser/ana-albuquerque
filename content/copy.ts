@@ -248,7 +248,7 @@ export interface Capitulo {
   id: string
   /** O endereço na página (`/#ancora`). É para onde o menu aponta. */
   ancora: string
-  layout: 'carta' | 'foto' | 'album' | 'indice' | 'fotos' | 'manifesto' | 'destaque' | 'lista'
+  layout: 'carta' | 'foto' | 'album' | 'indice' | 'fotos' | 'manifesto' | 'destaque' | 'lista' | 'bandeira'
   fundo: 'papel' | 'areia' | 'branco' | 'azul' | 'marinho' | 'laranja'
   /** De que lado fica a foto, nos layouts que têm foto ao lado. */
   lado: 'esquerda' | 'direita'
@@ -421,7 +421,10 @@ export const capitulos: { itens: Capitulo[] } = {
     capitulo({
       id: 'leis',
       ancora: 'leis',
-      layout: 'destaque',
+      // Cena da bandeira pintada pela rolagem: título no verde, texto no
+      // amarelo, fecho no azul. Foi "destaque" sobre o laranja — "tá
+      // desalinhada, estranha, contraste ruim". O fundo é ignorado ali.
+      layout: 'bandeira',
       fundo: 'laranja',
       etiqueta: 'Lei que existe precisa funcionar',
       titulo: 'Não basta criar uma lei [[bonita no papel.]]',
@@ -432,7 +435,7 @@ export const capitulos: { itens: Capitulo[] } = {
         'Por isso, uma das minhas bandeiras é trabalhar para que a legislação tenha mecanismos capazes ' +
           'de garantir sua efetivação.',
       ],
-      fecho: 'Lei precisa sair do papel e chegar às pessoas.',
+      fecho: 'Lei precisa sair do papel e [[chegar às pessoas.]]',
     }),
     capitulo({
       id: 'inclusao',

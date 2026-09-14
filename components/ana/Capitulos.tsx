@@ -3,6 +3,7 @@ import { lerConteudo } from '@/lib/conteudo/ler'
 import { lerSlots, type ImagemDoSlot } from '@/lib/midia/ler'
 import { Imagem } from '@/components/ui/Imagem'
 import { TextoComDestaque, Texto } from '@/components/ui/TextoComDestaque'
+import { PalcoMotor } from '@/components/animacao/PalcoMotor'
 import { SLOTS, type Slot } from '@/content/slots'
 import type { Conteudo } from '@/lib/conteudo/tipos'
 
@@ -15,7 +16,7 @@ import type { Conteudo } from '@/lib/conteudo/tipos'
  *    crepe, adesivos tortos, títulos em caixa alta itálica, citação e
  *    lista em letra de pincel e fotos recortadas em bolha — que cortavam
  *    cabeça. A campanha: "muito ruim toda a hierarquia, a diagramação".
- *    As regras que saíram disso valem para as oito formas:
+ *    As regras que saíram disso valem para todas as formas:
  *
  *    · UMA HIERARQUIA SÓ: rótulo pequeno → título → parágrafo. O rótulo
  *      nunca compete com o título, e o título nunca é caixa alta.
@@ -49,8 +50,8 @@ type Slots = Record<string, ImagemDoSlot>
  * ⚠️ EXISTE PORQUE O LARANJA VIROU FUNDO DE VERDADE. Com claro e escuro
  *    bastava um booleano. O laranja claro da logo é um terceiro caso: a
  *    letra é escura como no papel, mas o acento não pode ser laranja,
- *    senão some. Um booleano a mais em cada peça espalharia a regra pelas
- *    oito formas; a variável deixa a regra aqui, num lugar só.
+ *    senão some. Um booleano a mais em cada peça espalharia a regra por
+ *    todas as formas; a variável deixa a regra aqui, num lugar só.
  *
  *    · `--acento` ........ traço do rótulo, borda da citação, ponto, visto
  *    · `--sobre-acento` .. o que vai desenhado em cima do acento
@@ -116,6 +117,10 @@ export async function Capitulos(_props: { corDepois?: string } = {}) {
 }
 
 function Capitulo({ cap, slots }: { cap: Cap; slots: Slots }) {
+  // A bandeira é um palco de tela cheia, e não uma seção com respiro e
+  // container: ela desenha a própria moldura.
+  if (cap.layout === 'bandeira') return <Bandeira cap={cap} />
+
   const f = FUNDOS[cap.fundo] ?? FUNDOS.papel
   const fotos = SLOTS.filter((s) => s.chave.startsWith(`capitulo.${cap.id}.`))
   const escuro = f.escuro
@@ -562,5 +567,107 @@ function ListaMarcada({ cap, escuro }: { cap: Cap; escuro: boolean }) {
       </div>
       <Fecho texto={cap.fecho} escuro={escuro} />
     </>
+  )
+}
+
+/**
+ * Bandeira: a cena pintada pela rolagem, com a mecânica da cena do modelo
+ * (components/animacao/CenaBandeira.tsx e "PALCO" em globals.css). A tela
+ * fica presa; o verde recebe o losango amarelo e depois o círculo azul —
+ * a bandeira — e cada cor traz uma parte do capítulo: o título no verde,
+ * o texto no amarelo, o fecho no azul. Rolar para cima desfaz.
+ *
+ * ⚠️ NASCEU PARA "LEI QUE EXISTE PRECISA FUNCIONAR", que era título ao lado
+ *    de um cartão branco sobre o laranja. A campanha: "tá desalinhada,
+ *    estranha, mal diagramada, contraste ruim — talvez pudesse ser uma
+ *    animação, semelhante à do Brasil que tem no template, mais verde,
+ *    amarelo e azul".
+ *
+ * ⚠️ O `fundo` DO CAPÍTULO É IGNORADO nesta forma: as três cores são as da
+ *    bandeira. E NÃO HÁ `data-revelar` AQUI DENTRO: quem mostra o texto é
+ *    a rolagem, e a revelação por entrada na tela brigaria com ela.
+ *
+ * ⚠️ SEM ANIMAÇÃO POR ROLAGEM (navegador sem suporte e sem JavaScript, ou
+ *    movimento reduzido), o CSS empilha as três telas. O texto nunca fica
+ *    recortado para fora — ver "Onde não existe animation-timeline".
+ *
+ * Sem fecho, o azul repete o título: a cena termina sempre com uma frase.
+ */
+function Bandeira({ cap }: { cap: Cap }) {
+  const final = cap.fecho || cap.titulo
+  const cores: CSSProperties = {
+    ['--capa-realce' as string]: 'var(--color-bandeira-amarelo)',
+    ['--risco' as string]: 'var(--risco-branco)',
+  }
+
+  return (
+    <section id={cap.ancora || undefined} data-palco aria-label={cap.etiqueta || undefined} style={cores}>
+      <div className="palco-trilho">
+        <div className="palco-fixa">
+          <PalcoMotor />
+
+          <div className="cena-camada cena-verde">
+            <div className="container-lp w-full">
+              <div className="cena-texto max-w-4xl py-16">
+                {cap.etiqueta ? (
+                  <p className="rotulo-ana flex items-center gap-3 text-white/90">
+                    <span aria-hidden className="h-0.5 w-8 shrink-0 rounded-full bg-bandeira-amarelo" />
+                    {cap.etiqueta}
+                  </p>
+                ) : null}
+                {cap.titulo ? (
+                  <h2 className="mt-6 titulo-cartaz text-white">
+                    <TextoComDestaque texto={cap.titulo} tom="capa" />
+                  </h2>
+                ) : null}
+              </div>
+            </div>
+          </div>
+
+          <div className="cena-camada cena-amarelo">
+            <div className="container-lp w-full">
+              <div className="cena-texto max-w-3xl py-16">
+                {cap.paragrafos.map((p, i) => (
+                  <p
+                    key={i}
+                    className={
+                      i === 0
+                        ? 'font-[family-name:var(--font-titulo)] text-[1.625rem] leading-snug font-medium tracking-[-0.02em] md:text-[2.1rem]'
+                        : 'mt-6 text-lg leading-relaxed font-medium md:text-xl'
+                    }
+                  >
+                    <Texto>{p}</Texto>
+                  </p>
+                ))}
+                {cap.citacao ? (
+                  <p className="mt-8 border-l-4 border-azul-escuro pl-5 font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold">
+                    “{cap.citacao}”
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          </div>
+
+          <div className="cena-camada cena-azul">
+            <div className="container-lp w-full">
+              <div className="cena-texto max-w-4xl py-16">
+                <p className="titulo-cartaz text-white">
+                  <TextoComDestaque texto={final} tom="capa" />
+                </p>
+                {cap.lista.length > 0 ? (
+                  <ul className="mt-8 space-y-2 text-xl font-medium text-white/90">
+                    {cap.lista.map((item, i) => (
+                      <li key={i}>
+                        <Texto>{item}</Texto>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }

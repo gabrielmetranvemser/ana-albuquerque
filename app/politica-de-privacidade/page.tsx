@@ -33,7 +33,7 @@ export default async function PaginaPrivacidade() {
       <Header silencio={emSilencioEleitoral()} simbolo={simboloDaMarca} />
 
       <main id="conteudo" className="pt-24 md:pt-28">
-        <section className="relative isolate overflow-hidden bg-white pb-12 pt-8">
+        <section className="relative isolate overflow-hidden pb-12 pt-8">
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 brilho-claro" />
 
           <div className="container-lp">
@@ -58,7 +58,7 @@ export default async function PaginaPrivacidade() {
           </div>
         </section>
 
-        <section className="bg-white pb-24">
+        <section className="pb-24">
           <div className="container-lp">
             <div className="max-w-3xl space-y-10">
               {privacidade.secoes.map((s) => (

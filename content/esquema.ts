@@ -606,6 +606,10 @@ export const ESQUEMA: Record<string, SecaoEsquema> = {
               { valor: 'manifesto', rotulo: 'Manifesto — frase grande' },
               { valor: 'destaque', rotulo: 'Destaque — texto num cartão' },
               { valor: 'lista', rotulo: 'Lista — itens marcados' },
+              {
+                valor: 'bandeira',
+                rotulo: 'Bandeira — três telas pintadas pela rolagem (título no verde, texto no amarelo, fecho no azul)',
+              },
             ],
           },
           fundo: {

@@ -71,9 +71,10 @@ export default async function PaginaGrupos({
       <Header silencio={emSilencioEleitoral()} simbolo={simboloDaMarca} />
 
       <main id="conteudo" className="pt-24 md:pt-28">
-        <section className="relative isolate overflow-hidden bg-white pb-12 pt-8 md:pb-16">
-          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 brilho-claro" />
-
+        {/* ANA: as duas seções desta página não têm fundo — o papel
+            quadriculado do <body> aparece nelas, como na página principal.
+            Eram branco com brilho em cima e areia embaixo. */}
+        <section className="relative isolate overflow-hidden pb-12 pt-8 md:pb-16">
           <div className="container-lp">
             <Link
               href="/"
@@ -92,7 +93,7 @@ export default async function PaginaGrupos({
           </div>
         </section>
 
-        <section className="bg-areia pb-20 pt-2 md:pb-28">
+        <section className="pb-20 pt-2 md:pb-28">
           <div className="container-lp">
             {emSilencio ? (
               <Aviso tom="info" className="mb-2">
