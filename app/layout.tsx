@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { Figtree, Outfit, Sriracha } from 'next/font/google'
-import { candidato } from '@/content/copy'
 import { campanha } from '@/content/campanha'
 import { config } from '@/lib/config'
 import { lerSlots } from '@/lib/midia/ler'
@@ -114,7 +113,9 @@ export async function generateMetadata(): Promise<Metadata> {
     lerTrafegoPublico(),
     lerConteudo(),
   ])
-  const meta = conteudo.meta
+  // ANA: o nome do autor também sai do painel. Era o `candidato` de
+  // content/copy.ts, o único campo desta função que o painel não alcançava.
+  const { meta, candidato: pessoa } = conteudo
 
   return {
   metadataBase: new URL(config.siteUrl),
@@ -124,9 +125,9 @@ export async function generateMetadata(): Promise<Metadata> {
   },
   description: meta.descricao,
   keywords: [...meta.palavrasChave],
-  authors: [{ name: candidato.nome }],
-  creator: candidato.nome,
-  publisher: candidato.nome,
+  authors: [{ name: pessoa.nome }],
+  creator: pessoa.nome,
+  publisher: pessoa.nome,
   applicationName: meta.tituloCurto,
   category: 'politics',
   alternates: { canonical: '/' },

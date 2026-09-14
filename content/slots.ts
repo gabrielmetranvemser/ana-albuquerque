@@ -293,6 +293,13 @@ export const SLOTS_POR_CHAVE: Record<string, Slot> = Object.fromEntries(
  */
 const SECAO_DO_ESPACO: Record<string, string> = {
   'marca.simbolo': 'candidato',
+  // ANA: o logotipo e as duas marcas com o 7766 estavam sem seção, e o
+  // painel só mostra espaço de imagem dentro de uma seção — o site usava
+  // as três (cabeçalho, rodapé, primeira dobra, assinatura) e o painel não
+  // oferecia onde trocá-las. Ficam na Identidade, junto do símbolo.
+  'marca.logotipo': 'candidato',
+  'marca.lockup': 'candidato',
+  'marca.lockupDeitado': 'candidato',
   'marca.favicon': 'meta',
   'marca.cartaoLink': 'meta',
   hero: 'hero',

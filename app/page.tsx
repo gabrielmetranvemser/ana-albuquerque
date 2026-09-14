@@ -3,7 +3,6 @@ import { headers } from 'next/headers'
 import { listarMunicipiosComStatus } from '@/lib/dados'
 import { casarCidadePorHeader } from '@/lib/geo'
 import { config, emSilencioEleitoral } from '@/lib/config'
-import { candidato, meta } from '@/content/copy'
 import { lerConteudo } from '@/lib/conteudo/ler'
 import { destinoGrupo, secoesOcultas } from '@/lib/conteudo/secoes'
 
@@ -50,7 +49,10 @@ export const revalidate = 3600
  *    desde a primeira dobra, então o funil não espera a página acabar.
  */
 export default async function Home() {
-  const { exibir } = await lerConteudo()
+  // ANA: `candidato` e `meta` saem do painel, e não de content/copy.ts —
+  // eram lidos direto do arquivo só para os dados estruturados abaixo, e
+  // trocar o nome ou a descrição no painel não chegava ao que o Google lê.
+  const { exibir, candidato, meta } = await lerConteudo()
   const [municipios, cabecalhos] = await Promise.all([listarMunicipiosComStatus(), headers()])
 
   // Sugestão silenciosa por IP: o header vem da Vercel, de graça,

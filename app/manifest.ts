@@ -1,13 +1,20 @@
 import type { MetadataRoute } from 'next'
-import { meta } from '@/content/copy'
 import { campanha } from '@/content/campanha'
+import { lerConteudo } from '@/lib/conteudo/ler'
 import { lerSlots } from '@/lib/midia/ler'
 
 // Assíncrono para ler o ícone do painel. O atalho na tela inicial do
 // celular usa ESTES ícones, não o da aba — então trocar um sem o outro
 // deixaria o site com duas caras.
+//
+// ANA: o nome e a descrição também saem do painel ("Busca e
+// compartilhamento"), e não de content/copy.ts. A aba já lia do painel;
+// o atalho na tela inicial ficava com o texto de fábrica.
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
-  const icone = (await lerSlots())['marca.favicon']?.url ?? null
+  const [icone, { meta }] = await Promise.all([
+    lerSlots().then((s) => s['marca.favicon']?.url ?? null),
+    lerConteudo(),
+  ])
 
   return {
     name: meta.titulo,

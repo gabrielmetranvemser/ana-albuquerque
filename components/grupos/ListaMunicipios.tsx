@@ -1,6 +1,6 @@
 'use client'
 
-import { grupos as copy } from '@/content/copy'
+import { useConteudo } from '@/lib/conteudo/contexto'
 import type { MunicipioComGrupo } from '@/lib/tipos'
 import { achatarDestinos } from '@/lib/destinos'
 import { LinhaMunicipio } from './LinhaMunicipio'
@@ -13,8 +13,13 @@ import { LinhaMunicipio } from './LinhaMunicipio'
  * sede. Por isso a conta ao lado do título perdeu o "de 52": a lista
  * mostra 54 linhas e continuam sendo 52 municípios. Número que não
  * bate com o que está na tela lê como defeito.
+ *
+ * ⚠️ ANA: o título da lista vem do painel (`useConteudo`), como o resto
+ *    dos textos de grupos. Era importado direto de content/copy.ts, e
+ *    editar "Grupos" no painel mudava tudo nesta tela menos este título.
  */
 export function ListaMunicipios({ municipios }: { municipios: MunicipioComGrupo[] }) {
+  const { grupos: copy } = useConteudo()
   const linhas = achatarDestinos(municipios)
   const abertos = linhas.filter((l) => l.destino.disponivel).length
 
