@@ -96,26 +96,46 @@ export function Circulo({ className = '' }: { className?: string }) {
 }
 
 /**
- * A faixa verde, estrela, amarela — tirada do logotipo. É a assinatura
- * "Brasil" da página, e aparece pequena: faixa grande vira bandeira de
- * torcida, e a campanha é de deputada, não de seleção.
+ * A faixa verde, estrela, amarela — tirada do logotipo ("Ana ★
+ * Albuquerque"). É a assinatura "Brasil" da página, e aparece pequena:
+ * faixa grande vira bandeira de torcida, e a campanha é de deputada, não
+ * de seleção.
+ *
+ * ⚠️ ANA: VOLTOU COMO O TRAÇO DOS RÓTULOS. Tinha saído na terceira rodada,
+ *    junto com estrelas e adesivos ("cinco vozes na mesma tela"), e a
+ *    campanha pediu de volta: "sinto falta dessa barra verde, estrela,
+ *    barra amarela". Agora ela vai num lugar só — antes de cada rótulo de
+ *    seção, e sob a assinatura da carta —, sempre igual. É isso que faz
+ *    dela assinatura, e não enfeite.
+ *
+ * ⚠️ O AMARELO É O DA BANDEIRA, e não a cor de ação: a ação virou laranja.
+ *    A estrela pega a cor do texto em volta (`currentColor`): marinho no
+ *    papel, branca no azul.
+ *
+ * `curta` é a dos rótulos: barras menores, para a estrela não sumir numa
+ * faixa de 90px.
  */
 export function FaixaBrasil({
   className = '',
-  estrela = '#ffffff',
+  variante = 'longa',
 }: {
   className?: string
-  /** Branca sobre azul, marinho sobre papel. */
-  estrela?: string
+  variante?: 'longa' | 'curta'
 }) {
+  if (variante === 'curta') {
+    return (
+      <svg aria-hidden viewBox="0 0 120 16" className={className}>
+        <path d="M4 5h38l8 3-8 3H0Z" fill="var(--color-verde-bandeira)" />
+        <path fill="currentColor" d="m60 0 2.4 5.2 5.6.5-4.3 3.8 1.3 5.5-5-3-5 3 1.3-5.5-4.3-3.8 5.6-.5Z" />
+        <path d="M78 5h42l-4 6H78l-8-3Z" fill="var(--color-bandeira-amarelo)" />
+      </svg>
+    )
+  }
   return (
     <svg aria-hidden viewBox="0 0 240 16" className={className}>
       <path d="M4 5h98l8 3-8 3H0Z" fill="var(--color-verde-bandeira)" />
-      <path
-        fill={estrela}
-        d="m120 0 2.4 5.2 5.6.5-4.3 3.8 1.3 5.5-5-3-5 3 1.3-5.5-4.3-3.8 5.6-.5Z"
-      />
-      <path d="M138 5h102l-4 6H138l-8-3Z" fill="var(--color-amarelo)" />
+      <path fill="currentColor" d="m120 0 2.4 5.2 5.6.5-4.3 3.8 1.3 5.5-5-3-5 3 1.3-5.5-4.3-3.8 5.6-.5Z" />
+      <path d="M138 5h102l-4 6H138l-8-3Z" fill="var(--color-bandeira-amarelo)" />
     </svg>
   )
 }

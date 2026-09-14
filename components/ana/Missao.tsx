@@ -1,6 +1,6 @@
 import { lerConteudo } from '@/lib/conteudo/ler'
 import { TextoComDestaque, Texto } from '@/components/ui/TextoComDestaque'
-import { Mancha } from './Organico'
+import { FaixaBrasil, Mancha } from './Organico'
 
 /**
  * "UMA NOVA MISSÃO" — da farda para Brasília.
@@ -14,8 +14,8 @@ import { Mancha } from './Organico'
  *    são letra de título em caixa normal, com um ponto — a força vem de
  *    estarem uma embaixo da outra, não do tamanho.
  *
- * Sobre este azul, o laranja é o pêssego: no realce, no traço, nos pontos
- * e no risco sob a manuscrita. Laranja cheio aqui vibrava — ver
+ * Sobre este azul, o laranja é o pêssego: no realce, nos pontos e no
+ * risco sob a manuscrita. Laranja cheio aqui vibrava — ver
  * `--color-pessego`. De ponta a ponta, e com borda reta — ver
  * Capitulos.tsx.
  */
@@ -36,7 +36,7 @@ export async function Missao() {
       <div className="container-lp relative grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
         <div>
           <p data-revelar className="rotulo-ana flex items-center gap-3 text-white/85">
-            <span aria-hidden className="h-0.5 w-8 rounded-full bg-pessego" />
+            <FaixaBrasil variante="curta" className="h-3 w-[5.625rem] shrink-0 text-white" />
             {missao.etiqueta}
           </p>
           <h2 data-revelar className="mt-5 titulo-cartaz">

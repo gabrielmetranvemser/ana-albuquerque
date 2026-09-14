@@ -1,5 +1,6 @@
 import { lerConteudo } from '@/lib/conteudo/ler'
 import { TextoComDestaque, Texto } from '@/components/ui/TextoComDestaque'
+import { FaixaBrasil } from './Organico'
 
 /**
  * "O QUE ANA LEVA PARA BRASÍLIA" — as palavras e as sete propostas.
@@ -44,7 +45,7 @@ export async function Propostas() {
         <div className="grid gap-12 lg:grid-cols-2 lg:items-end lg:gap-20">
           <div>
             <p data-revelar className="rotulo-ana flex items-center gap-3 text-azul-escuro">
-              <span aria-hidden className="h-0.5 w-8 rounded-full bg-laranja" />
+              <FaixaBrasil variante="curta" className="h-3 w-[5.625rem] shrink-0" />
               {futuro.etiqueta}
             </p>
             <h2 data-revelar className="mt-5 titulo-cartaz text-azul-escuro">

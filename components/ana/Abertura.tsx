@@ -7,6 +7,7 @@ import { BotaoLink } from '@/components/ui/Botao'
 import { CliqueGrupo } from '@/components/site/CliqueGrupo'
 import { destinoGrupo } from '@/lib/conteudo/secoes'
 import { SLOTS } from '@/content/slots'
+import { FaixaBrasil } from './Organico'
 
 /**
  * A PRIMEIRA DOBRA DA ANA.
@@ -38,8 +39,7 @@ import { SLOTS } from '@/content/slots'
  *    celular.
  *
  * ⚠️ A COLUNA DO TEXTO É LARGA (1.35fr) para a linha da manuscrita caber
- *    inteira no computador: quebrada em duas, ela ganhava dois riscos
- *    laranja empilhados.
+ *    inteira no computador.
  *
  * ⚠️ A FOTO É `public/ana.png`, entregue pela campanha: recorte sem fundo,
  *    cortado na cintura — por isso encosta no pé da dobra. O arquivo tem
@@ -99,7 +99,7 @@ export async function Abertura({ silencio = false }: { silencio?: boolean }) {
       <div className="container-lp relative grid gap-6 lg:grid-cols-[1.35fr_0.65fr] lg:items-end lg:gap-8">
         <div className="relative z-10 pb-4 lg:pt-8 lg:pb-28">
           <p className="anima-hero rotulo-ana flex items-center gap-3 text-azul-escuro">
-            <span aria-hidden className="h-0.5 w-8 rounded-full bg-laranja" />
+            <FaixaBrasil variante="curta" className="h-3 w-[5.625rem] shrink-0" />
             {hero.etiqueta}
           </p>
 

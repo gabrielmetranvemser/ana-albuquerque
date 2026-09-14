@@ -6,6 +6,7 @@ import { TextoComDestaque, Texto } from '@/components/ui/TextoComDestaque'
 import { PalcoMotor } from '@/components/animacao/PalcoMotor'
 import { SLOTS, type Slot } from '@/content/slots'
 import type { Conteudo } from '@/lib/conteudo/tipos'
+import { FaixaBrasil } from './Organico'
 
 /**
  * OS CAPÍTULOS DA PÁGINA DA ANA — a história e as causas, na ordem do
@@ -25,6 +26,10 @@ import type { Conteudo } from '@/lib/conteudo/tipos'
  *    · FOTO É RETÂNGULO DE CANTO ARREDONDADO. Rosto não se recorta.
  *    · NADA TORTO, exceto as fotos de papel do álbum: ali o giro é o que
  *      diz "foto de família", e é o único lugar em que diz algo.
+ *    · TEXTO NÃO VAI EM CAIXA. Cartão ao lado de título ("desalinhada,
+ *      estranha, mal diagramada") e itens em cartões translúcidos ("não
+ *      gosto dessa diagramação") foram reprovados; o que sobrou de cartão
+ *      é a carta, que é folha de papel de propósito, e as fotos.
  *
  * ⚠️ O `layout` ESCOLHE A FORMA, E A FORMA SEGUE O TEXTO. Um capítulo que
  *    é uma frase-manifesto não cabe no desenho de um capítulo de lista.
@@ -53,7 +58,7 @@ type Slots = Record<string, ImagemDoSlot>
  *    senão some. Um booleano a mais em cada peça espalharia a regra por
  *    todas as formas; a variável deixa a regra aqui, num lugar só.
  *
- *    · `--acento` ........ traço do rótulo, borda da citação, ponto, visto
+ *    · `--acento` ........ borda da citação e do fecho, ponto, visto
  *    · `--sobre-acento` .. o que vai desenhado em cima do acento
  *    · `--texto-suave` ... parágrafo e legenda
  *    · `--risco` ......... o risco à mão sob a manuscrita (globals.css)
@@ -147,12 +152,16 @@ function Capitulo({ cap, slots }: { cap: Cap; slots: Slots }) {
 
 // ── Peças comuns ──────────────────────────────────────────────────
 
+/**
+ * Rótulo e título. O traço antes do rótulo é a faixa verde, estrela,
+ * amarela do logotipo — ver FaixaBrasil. A estrela pega a cor do rótulo.
+ */
 function Cabeca({ cap, escuro, cartaz = false }: { cap: Cap; escuro: boolean; cartaz?: boolean }) {
   return (
     <>
       {cap.etiqueta ? (
         <p data-revelar className={`rotulo-ana flex items-center gap-3 ${escuro ? 'text-white/85' : 'text-azul-escuro'}`}>
-          <span aria-hidden className="h-0.5 w-8 shrink-0 rounded-full bg-(--acento)" />
+          <FaixaBrasil variante="curta" className={`h-3 w-[5.625rem] shrink-0 ${escuro ? 'text-white' : ''}`} />
           {cap.etiqueta}
         </p>
       ) : null}
@@ -269,6 +278,29 @@ function Fecho({ texto, escuro, className = '' }: { texto: string; escuro: boole
   )
 }
 
+/**
+ * O fecho das formas de texto (lista e destaque): um tamanho abaixo do
+ * título, com o traço do acento à esquerda.
+ *
+ * ⚠️ NO TAMANHO DO `Fecho` ele era maior que o próprio título. "Inclusão
+ *    não é apenas colocar na sala. É garantir que a criança consiga
+ *    aprender, conviver, participar e desenvolver seu potencial." em 2.4rem
+ *    ocupava quatro linhas e virava a manchete do capítulo.
+ */
+function FechoMarcado({ texto, escuro }: { texto: string; escuro: boolean }) {
+  if (!texto) return null
+  return (
+    <p
+      data-revelar
+      className={`mt-16 max-w-4xl border-l-4 border-(--acento) pl-6 font-[family-name:var(--font-titulo)] text-[1.5rem] leading-snug font-semibold tracking-[-0.02em] md:text-[1.875rem] ${
+        escuro ? 'text-white' : 'text-azul-escuro'
+      }`}
+    >
+      <TextoComDestaque texto={texto} tom="capa" />
+    </p>
+  )
+}
+
 /** Uma foto de capítulo: retângulo de canto arredondado, sem cortar ninguém. */
 function Foto({ slot, slots, sizes, className = '' }: { slot: Slot; slots: Slots; sizes: string; className?: string }) {
   return (
@@ -287,7 +319,8 @@ function Foto({ slot, slots, sizes, className = '' }: { slot: Slot; slots: Slots
  * Carta: a abertura em primeira pessoa, numa folha colada com fita,
  * assinada — e com a foto ao lado ("precisa ter espaço do lado pra foto").
  * A folha é sempre clara, então leva a tinta clara qualquer que seja o
- * fundo do capítulo.
+ * fundo do capítulo. Sob a assinatura, a faixa do logotipo inteira: é o
+ * "Ana ★ Albuquerque" da marca, escrito à mão.
  */
 function Carta({ cap, fotos, slots }: { cap: Cap; fotos: Slot[]; slots: Slots }) {
   return (
@@ -300,6 +333,7 @@ function Carta({ cap, fotos, slots }: { cap: Cap; fotos: Slot[]; slots: Slots })
           {cap.fecho ? (
             <footer className="mt-9 border-t border-linha pt-6">
               <p className="font-[family-name:var(--fonte-rabisco)] text-4xl text-azul">{cap.fecho}</p>
+              <FaixaBrasil className="mt-3 h-3 w-[11.25rem] text-azul-escuro" />
             </footer>
           ) : null}
         </article>
@@ -509,55 +543,77 @@ function Manifesto({ cap, escuro }: { cap: Cap; escuro: boolean }) {
 }
 
 /**
- * Destaque: o título de um lado e o texto num cartão claro do outro.
+ * Destaque: o título de um lado, o texto do outro, alinhados pelo topo.
  *
- * ⚠️ O CARTÃO É SEMPRE CLARO, e é por leitura: parágrafo comprido direto
- *    sobre cor chapada cansa, e no laranja claro só o marinho passa em
- *    contraste. O fundo colorido fica para o título, a lista e a frase de
- *    fecho. O cartão leva a tinta clara, qualquer que seja o fundo.
+ * ⚠️ O TEXTO JÁ FOI UM CARTÃO CLARO ao lado do título, centrado na altura.
+ *    No capítulo das leis a campanha disse "desalinhada, estranha, mal
+ *    diagramada, contraste ruim": o título boiava no meio da altura do
+ *    cartão, e o cartão brigava com o fundo. Sem cartão, o primeiro
+ *    parágrafo abre maior, como linha fina, e tudo começa na altura do
+ *    título.
  */
 function Destaque({ cap, escuro }: { cap: Cap; escuro: boolean }) {
+  const [primeiro, ...resto] = cap.paragrafos
   return (
     <>
-      <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-        <div>
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-6">
           <Cabeca cap={cap} escuro={escuro} cartaz />
         </div>
         {cap.paragrafos.length > 0 || cap.citacao ? (
-          <div data-revelar style={tinta(TINTA_CLARA)} className="cartao-ana px-7 py-8 md:px-10 md:py-10">
-            <Corpo cap={cap} escuro={false} colado />
+          <div className="lg:col-span-6 lg:mt-10">
+            {primeiro ? (
+              <p
+                data-revelar
+                className={`font-[family-name:var(--font-titulo)] text-[1.375rem] leading-snug font-medium tracking-[-0.015em] md:text-[1.625rem] ${
+                  escuro ? 'text-white' : 'text-azul-escuro'
+                }`}
+              >
+                <Texto>{primeiro}</Texto>
+              </p>
+            ) : null}
+            <Citacao texto={cap.citacao} escuro={escuro} />
+            {resto.length > 0 ? <Paragrafos itens={resto} className={cap.citacao ? '' : 'mt-6'} /> : null}
           </div>
         ) : null}
       </div>
       <Lista itens={cap.lista} escuro={escuro} colunas />
-      <Fecho texto={cap.fecho} escuro={escuro} />
+      <FechoMarcado texto={cap.fecho} escuro={escuro} />
     </>
   )
 }
 
-/** Lista marcada: os itens em cartões, em duas colunas. */
+/**
+ * Lista marcada: título e texto de um lado, a lista do outro — uma linha
+ * por item, com um fio entre elas.
+ *
+ * ⚠️ OS ITENS JÁ FORAM CARTÕES, dois por linha, translúcidos sobre o azul.
+ *    A campanha: "não gosto dessa diagramação". Eram sete caixas de altura
+ *    desigual, a coluna da direita duas vezes mais alta que a da esquerda,
+ *    e o fecho em corpo de título, maior que o próprio título. Agora a
+ *    lista é uma coluna só — lê como lista de verificação e começa na
+ *    altura do título —, e o fecho desce um tamanho (`FechoMarcado`).
+ */
 function ListaMarcada({ cap, escuro }: { cap: Cap; escuro: boolean }) {
-  const impar = cap.lista.length % 2 === 1
+  const fio = escuro ? 'border-white/20' : 'border-azul/15'
   return (
     <>
-      <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-        <div>
+      <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-5">
           <Cabeca cap={cap} escuro={escuro} />
           <Corpo cap={cap} escuro={escuro} />
         </div>
         {cap.lista.length > 0 ? (
-          <ul className="grid gap-3 self-start sm:grid-cols-2 lg:pt-2">
+          <ul className={`self-start border-t lg:col-span-7 lg:mt-10 ${fio}`}>
             {cap.lista.map((item, i) => (
               <li
                 key={i}
                 data-revelar
                 style={{ ['--atraso' as string]: `${i * 40}ms` }}
-                className={`flex items-start gap-3 rounded-2xl px-5 py-4 ${impar && i === cap.lista.length - 1 ? 'sm:col-span-2' : ''} ${
-                  escuro ? 'bg-white/10 ring-1 ring-white/15' : 'cartao-ana'
-                }`}
+                className={`flex items-start gap-4 border-b py-4 md:py-[1.125rem] ${fio}`}
               >
                 <Visto />
-                <span className={`text-[1.0625rem] leading-snug font-medium ${escuro ? 'text-white' : 'text-tinta'}`}>
+                <span className={`text-lg leading-snug font-medium md:text-[1.1875rem] ${escuro ? 'text-white' : 'text-tinta'}`}>
                   <Texto>{item}</Texto>
                 </span>
               </li>
@@ -565,7 +621,7 @@ function ListaMarcada({ cap, escuro }: { cap: Cap; escuro: boolean }) {
           </ul>
         ) : null}
       </div>
-      <Fecho texto={cap.fecho} escuro={escuro} />
+      <FechoMarcado texto={cap.fecho} escuro={escuro} />
     </>
   )
 }
@@ -581,11 +637,15 @@ function ListaMarcada({ cap, escuro }: { cap: Cap; escuro: boolean }) {
  *    de um cartão branco sobre o laranja. A campanha: "tá desalinhada,
  *    estranha, mal diagramada, contraste ruim — talvez pudesse ser uma
  *    animação, semelhante à do Brasil que tem no template, mais verde,
- *    amarelo e azul".
+ *    amarelo e azul". E depois: "no web, faça tudo vindo de baixo, ao
+ *    invés do lado" — ver "ANA: NO COMPUTADOR TAMBÉM SOBE DE BAIXO".
  *
  * ⚠️ O `fundo` DO CAPÍTULO É IGNORADO nesta forma: as três cores são as da
  *    bandeira. E NÃO HÁ `data-revelar` AQUI DENTRO: quem mostra o texto é
  *    a rolagem, e a revelação por entrada na tela brigaria com ela.
+ *
+ * ⚠️ O RÓTULO NÃO LEVA A FAIXA DO LOGOTIPO aqui: a barra verde some sobre o
+ *    verde. Fica o traço amarelo.
  *
  * ⚠️ SEM ANIMAÇÃO POR ROLAGEM (navegador sem suporte e sem JavaScript, ou
  *    movimento reduzido), o CSS empilha as três telas. O texto nunca fica

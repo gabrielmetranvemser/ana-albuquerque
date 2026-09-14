@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { TextoComDestaque } from './TextoComDestaque'
+import { FaixaBrasil } from '@/components/ana/Organico'
 
 interface Props {
   id?: string
@@ -92,7 +93,9 @@ export function CabecalhoSecao({
             tom === 'escuro' ? 'text-white' : 'text-azul-escuro'
           }`}
         >
-          <span aria-hidden className={`h-0.5 w-6 shrink-0 rounded-full ${tom === 'escuro' ? 'bg-pessego' : 'bg-laranja'}`} />
+          {/* ANA: o traço é a faixa verde, estrela, amarela do logotipo, a
+              mesma dos capítulos — ver FaixaBrasil. */}
+          <FaixaBrasil variante="curta" className={`h-3 w-[5.625rem] shrink-0 ${tom === 'escuro' ? 'text-white' : ''}`} />
           {etiqueta}
         </p>
       ) : null}
