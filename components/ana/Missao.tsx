@@ -11,11 +11,11 @@ import { Mancha, Onda } from './Organico'
  *
  * ⚠️ JÁ FORAM LINHAS EM CAIXA ALTA ITÁLICA, alternando branco e amarelo.
  *    Reprovadas junto com o resto: seis linhas gritando cansam. Agora
- *    são letra de título em caixa normal, com um ponto laranja — a
- *    força vem de estarem uma embaixo da outra, não do tamanho.
+ *    são letra de título em caixa normal, com um ponto — a força vem de
+ *    estarem uma embaixo da outra, não do tamanho.
  *
- * O realce do título é o laranja claro da logo: 3,2:1 sobre este azul,
- * que passa porque título é texto grande. Em texto pequeno, aqui, não.
+ * Sobre este azul, o laranja é o pêssego: no realce, no traço e nos
+ * pontos. Laranja cheio aqui vibrava — ver `--color-pessego`.
  */
 export async function Missao() {
   const { missao } = await lerConteudo()
@@ -23,7 +23,7 @@ export async function Missao() {
   return (
     <section
       id="missao"
-      style={{ ['--capa-realce' as string]: 'var(--color-laranja)' }}
+      style={{ ['--capa-realce' as string]: 'var(--color-pessego)' }}
       className="relative isolate overflow-hidden bg-azul grao py-20 text-white md:py-28"
     >
       <Mancha
@@ -34,7 +34,7 @@ export async function Missao() {
       <div className="container-lp relative grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
         <div>
           <p data-revelar className="rotulo-ana flex items-center gap-3 text-white/85">
-            <span aria-hidden className="h-0.5 w-8 rounded-full bg-laranja" />
+            <span aria-hidden className="h-0.5 w-8 rounded-full bg-pessego" />
             {missao.etiqueta}
           </p>
           <h2 data-revelar className="mt-5 titulo-cartaz">
@@ -60,7 +60,7 @@ export async function Missao() {
                 style={{ ['--atraso' as string]: `${i * 80}ms` }}
                 className="relative font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.015em] md:text-[1.85rem]"
               >
-                <span aria-hidden className="absolute top-[0.6em] -left-[2.1rem] size-3 rounded-full bg-laranja ring-4 ring-azul" />
+                <span aria-hidden className="absolute top-[0.6em] -left-[2.1rem] size-3 rounded-full bg-pessego ring-4 ring-azul" />
                 <Texto>{linha}</Texto>
               </li>
             ))}

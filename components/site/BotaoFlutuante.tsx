@@ -68,7 +68,8 @@ export function BotaoFlutuante({
         // ANA: contorno marinho porque a ação virou o laranja claro, e a
         // página tem seções laranja (a faixa, "Lei que existe precisa
         // funcionar", a assinatura): ali o botão laranja sumia no fundo.
-        // É o mesmo contorno marinho do 7766 na arte.
+        // O contorno é o marinho fosco da página, o mesmo das letras
+        // sobre o laranja.
         className="toque flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-amarelo px-7 font-semibold text-azul-escuro shadow-alta ring-2 ring-azul-escuro transition-all duration-300 hover:brightness-110 md:w-auto"
       >
         <svg viewBox="0 0 24 24" className="size-5 shrink-0" fill="currentColor" aria-hidden>

@@ -210,9 +210,9 @@ export const campanha = {
   //    laranja (#fb7f3d a #ff8a46 no "Ana"); `acao` é o meio dos dois.
   //
   //    O que isso obriga, e por quê:
-  //    · em cima dele a letra é MARINHO (5,5:1). Branco dá 2,5:1;
-  //    · sobre o azul da marca ele só serve em TÍTULO (3,2:1 — texto
-  //      grande pede 3:1). Sobre o marinho, em qualquer tamanho;
+  //    · em cima dele a letra é o MARINHO FOSCO (5,9:1). Branco dá 2,5:1;
+  //    · em LETRA ele não vai sobre o azul: ali entra o pêssego
+  //      (`--color-pessego`, globals.css). Botão laranja sobre azul pode;
   //    · a SECUNDÁRIA continua laranja, mas escura o bastante para texto
   //      PEQUENO sobre a areia de /filtro (4,7:1), o branco (5,8:1) e
   //      para letra branca em cima (5,8:1): é o laranja dos avisos e selos
@@ -221,21 +221,31 @@ export const campanha = {
   //      é `bg-laranja`, que lê a ação — nunca a secundária;
   //    · o amarelo saiu da página: ficou no escudo do logotipo, que é
   //      imagem, e na fita da carta (`fita-crepe`, globals.css).
+  //
+  // ⚠️ O MARINHO FICOU FOSCO (quinta rodada). #102084 é o marinho do
+  //    logotipo, e é saturado: ao lado do laranja claro os dois vibravam
+  //    na borda — "o contraste tá meio feio, desses azul com laranja". A
+  //    campanha pediu, sobre o laranja, "azul mais escuro, menos
+  //    saturado". Quatro tons foram postos lado a lado sobre o laranja
+  //    (marinho, tinta, marinho fosco, ardósia); ficou o marinho fosco,
+  //    que continua lendo como azul. Ele é superfície e texto em toda a
+  //    página, e o `noite` do rodapé acompanhou. O logotipo segue com o
+  //    marinho dele: é imagem, não lê daqui.
   cores: {
-    /** Superfície escura: primeira dobra, chamada final, rodapé. */
-    primariaEscura: '#102084',
+    /** Superfície escura e texto forte. Fosco de propósito — ver acima. */
+    primariaEscura: '#1c2650',
     /** A cor de marca. */
     primaria: '#1f45c4',
     /** Superfície escura alternativa. */
     secundariaEscura: '#8a3608',
     /** Laranja de TEXTO e de selo com letra branca. Superfície é `acao`. */
     secundaria: '#ad450b',
-    /** AÇÃO: botões, realce de título, a faixa e a chamada final. */
+    /** AÇÃO: botões, a faixa e a chamada final. Nunca letra sobre azul. */
     acao: '#fd8440',
     /** Texto que fica em cima da cor de ação. */
-    acaoTexto: '#102084',
-    /** O fim do gradiente da primeira dobra. Mais escuro que a primária. */
-    noite: '#0a1452',
+    acaoTexto: '#1c2650',
+    /** O fundo do rodapé. Mais escuro que o marinho, e fosco também. */
+    noite: '#131a38',
   },
 
   // ═══════════════════════════════════════════════════════════════

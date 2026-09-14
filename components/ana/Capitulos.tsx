@@ -49,12 +49,18 @@ type Slots = Record<string, ImagemDoSlot>
  *    · `--acento` ........ traço do rótulo, borda da citação, ponto, visto
  *    · `--sobre-acento` .. o que vai desenhado em cima do acento
  *    · `--texto-suave` ... parágrafo e legenda
+ *
+ * ⚠️ NO ESCURO O ACENTO É PÊSSEGO, E NÃO LARANJA. Laranja cheio sobre o
+ *    azul foi reprovado ("o contraste tá meio feio, desses azul com
+ *    laranja"): duas cores saturadas encostadas vibram. O pêssego é o
+ *    mesmo matiz, mais claro e menos saturado. No claro o acento continua
+ *    laranja cheio — sobre papel e branco não há o que vibrar.
  */
 type Tinta = { acento: string; sobreAcento: string; suave: string }
 
 const TINTA_CLARA: Tinta = { acento: 'var(--color-laranja)', sobreAcento: 'var(--color-azul-escuro)', suave: 'var(--color-grafite)' }
-const TINTA_ESCURA: Tinta = { acento: 'var(--color-laranja)', sobreAcento: 'var(--color-azul-escuro)', suave: 'rgb(255 255 255 / 0.88)' }
-// Grafite sobre o laranja claro dá 3,3:1 — parágrafo ali é marinho (5,5:1).
+const TINTA_ESCURA: Tinta = { acento: 'var(--color-pessego)', sobreAcento: 'var(--color-azul-escuro)', suave: 'rgb(255 255 255 / 0.88)' }
+// Grafite sobre o laranja claro dá 3,3:1 — parágrafo ali é o marinho fosco (5,9:1).
 const TINTA_LARANJA: Tinta = { acento: 'var(--color-azul-escuro)', sobreAcento: '#ffffff', suave: 'var(--color-azul-escuro)' }
 
 function tinta(t: Tinta): CSSProperties {
@@ -67,9 +73,9 @@ function tinta(t: Tinta): CSSProperties {
 
 /**
  * `realce` é a cor do trecho [[entre colchetes]] do título — o que o tom
- * `capa` do TextoComDestaque lê. No azul e no marinho é o laranja claro
- * (3,2:1 e 5,5:1: passa porque título é texto grande). Sobre o laranja é
- * o azul da marca (3,2:1), porque laranja sobre laranja some.
+ * `capa` do TextoComDestaque lê. No azul e no marinho é o pêssego (4,6:1 e
+ * 8,7:1). Sobre o laranja é o próprio marinho fosco: a letra de pincel já
+ * separa o trecho, e o azul da marca ali vibrava.
  *
  * ⚠️ O FUNDO `laranja` JÁ FOI O LARANJA QUEIMADO DA PALETA, com letra
  *    branca. A campanha pediu um laranja "mais claro, mais vivo, da cor
@@ -80,9 +86,9 @@ const FUNDOS: Record<string, { classe: string; cor: string; escuro: boolean; rea
   papel: { classe: 'papel text-tinta', cor: 'var(--color-papel)', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
   areia: { classe: 'bg-areia text-tinta', cor: 'var(--color-areia)', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
   branco: { classe: 'bg-white text-tinta', cor: '#ffffff', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
-  azul: { classe: 'bg-azul grao text-white', cor: 'var(--color-azul)', escuro: true, realce: 'var(--color-laranja)', tinta: TINTA_ESCURA },
-  marinho: { classe: 'bg-azul-escuro grao text-white', cor: 'var(--color-azul-escuro)', escuro: true, realce: 'var(--color-laranja)', tinta: TINTA_ESCURA },
-  laranja: { classe: 'bg-laranja text-azul-escuro', cor: 'var(--color-laranja)', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_LARANJA },
+  azul: { classe: 'bg-azul grao text-white', cor: 'var(--color-azul)', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
+  marinho: { classe: 'bg-azul-escuro grao text-white', cor: 'var(--color-azul-escuro)', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
+  laranja: { classe: 'bg-laranja text-azul-escuro', cor: 'var(--color-laranja)', escuro: false, realce: 'var(--color-azul-escuro)', tinta: TINTA_LARANJA },
 }
 
 export async function Capitulos({ corDepois = 'var(--color-papel)' }: { corDepois?: string }) {
@@ -210,7 +216,7 @@ function Marcos({ cap, escuro }: { cap: Cap; escuro: boolean }) {
     <ol data-revelar className="mt-10 grid gap-6 sm:grid-cols-3">
       {cap.marcos.map((m) => (
         <li key={m.id} className={`border-t-2 pt-4 ${escuro ? 'border-white/25' : 'border-azul/20'}`}>
-          <span className={`block font-[family-name:var(--font-titulo)] text-3xl leading-none font-bold ${escuro ? 'text-laranja' : 'text-azul'}`}>
+          <span className={`block font-[family-name:var(--font-titulo)] text-3xl leading-none font-bold ${escuro ? 'text-pessego' : 'text-azul'}`}>
             {m.ano}
           </span>
           <span className="mt-2 block text-base leading-snug text-(--texto-suave)">{m.texto}</span>
@@ -380,7 +386,8 @@ function Album({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
  *
  * O número é azul e a seta mora num disco laranja: laranja claro em
  * número sobre o cartão branco daria 2,5:1. Em forma, ele não precisa
- * de contraste de leitura — e põe o laranja em cada cartão.
+ * de contraste de leitura — e põe o laranja em cada cartão. Ele fica
+ * dentro do cartão branco, então não encosta no azul da seção.
  */
 function Indice({ cap, escuro }: { cap: Cap; escuro: boolean }) {
   return (
@@ -434,7 +441,7 @@ function Faixa({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
                 data-revelar
                 style={{ ['--atraso' as string]: `${i * 90}ms` }}
                 className={`font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.015em] md:text-[1.75rem] ${
-                  i === cap.lista.length - 1 ? (escuro ? 'text-laranja' : 'text-azul') : ''
+                  i === cap.lista.length - 1 ? (escuro ? 'text-pessego' : 'text-azul') : ''
                 }`}
               >
                 <Texto>{linha}</Texto>
@@ -461,8 +468,8 @@ function Faixa({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
  * Manifesto: a frase grande manda; o texto acompanha.
  *
  * No escuro as palavras da lista ("Aprender. Estudar. Dialogar.") são
- * pílulas laranja com letra marinho — é o fim da página antes das
- * propostas, e o lugar em que o laranja fecha a leitura dos capítulos.
+ * pílulas pêssego com letra marinho: destacam como o laranja destacaria,
+ * sem a vibração do laranja cheio sobre o marinho.
  */
 function Manifesto({ cap, escuro }: { cap: Cap; escuro: boolean }) {
   return (
@@ -475,7 +482,7 @@ function Manifesto({ cap, escuro }: { cap: Cap; escuro: boolean }) {
             <li
               key={i}
               className={`rounded-full px-5 py-2.5 font-[family-name:var(--font-titulo)] text-xl font-semibold md:text-2xl ${
-                escuro ? 'bg-laranja text-azul-escuro' : 'bg-white text-azul-escuro shadow-[0_10px_24px_-18px_rgba(10,20,82,0.5)]'
+                escuro ? 'bg-pessego text-azul-escuro' : 'bg-white text-azul-escuro shadow-[0_10px_24px_-18px_rgba(10,20,82,0.5)]'
               }`}
             >
               {palavra}

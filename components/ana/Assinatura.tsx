@@ -16,15 +16,19 @@ import { Onda } from './Organico'
  * ponto em que a página deixa de contar e passa a pedir, e o laranja do
  * partido é a cor do pedido.
  *
- * ⚠️ É O LARANJA CLARO DA LOGO, COM LETRA MARINHO. A primeira versão
+ * ⚠️ É O LARANJA CLARO DA LOGO, COM LETRA MARINHO FOSCO. A primeira versão
  *    usava um laranja queimado (#d4540e), escolhido para a letra branca
  *    passar em contraste — e a campanha pediu "um laranja mais claro,
  *    mais vivo, da cor da logo", sem "esse degradê horroso e escuro".
- *    No laranja claro o branco não passa (2,5:1); o marinho dá 5,5:1.
- *    Por isso tudo aqui é marinho, e o botão principal inverte para
- *    marinho com letra branca: botão laranja sobre fundo laranja some.
- *    O realce do título é o azul da marca (3,2:1), que só serve porque
- *    título é texto grande.
+ *    No laranja claro o branco não passa (2,5:1); o marinho fosco dá
+ *    5,9:1. Por isso tudo aqui é marinho, e o botão principal inverte
+ *    para marinho com letra branca: botão laranja sobre fundo laranja
+ *    some.
+ *
+ * ⚠️ O REALCE DO TÍTULO É O MESMO MARINHO, e já foi o azul da marca. Azul
+ *    saturado sobre laranja saturado vibrava ("o contraste tá meio feio,
+ *    desses azul com laranja"). A letra de pincel sozinha já separa o
+ *    trecho.
  *
  * ⚠️ O "Agenda" do documento não entrou: não há agenda publicada, e
  *    botão para lugar nenhum é pior que botão nenhum.
@@ -39,7 +43,7 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
   return (
     <section
       id="acompanhe"
-      style={{ ['--capa-realce' as string]: 'var(--color-azul)' }}
+      style={{ ['--capa-realce' as string]: 'var(--color-azul-escuro)' }}
       className="relative isolate overflow-hidden bg-laranja pt-20 pb-24 text-azul-escuro md:pt-28 md:pb-32"
     >
       <span id="votar" aria-hidden className="absolute -top-24" />

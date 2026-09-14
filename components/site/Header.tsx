@@ -179,16 +179,16 @@ export function Header({
                         <span className="w-6 text-sm font-semibold text-white/40 tabular-nums">
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <span className="flex-1 font-[family-name:var(--font-titulo)] text-[1.35rem] leading-tight font-semibold transition-colors group-hover:text-laranja">
+                        <span className="flex-1 font-[family-name:var(--font-titulo)] text-[1.35rem] leading-tight font-semibold transition-colors group-hover:text-pessego">
                           {ehNumero ? (
-                            <span className="inline-flex items-center rounded-full bg-laranja px-3 py-0.5 text-azul-escuro">
+                            <span className="inline-flex items-center rounded-full bg-pessego px-3 py-0.5 text-azul-escuro">
                               {item.rotulo}
                             </span>
                           ) : (
                             item.rotulo
                           )}
                         </span>
-                        <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-white/35 transition-all group-hover:translate-x-1 group-hover:text-laranja" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-white/35 transition-all group-hover:translate-x-1 group-hover:text-pessego" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                           <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>
                       </Link>
@@ -222,7 +222,7 @@ export function Header({
                     href={candidato.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center font-semibold text-white transition-colors hover:text-laranja"
+                    className="inline-flex min-h-11 items-center font-semibold text-white transition-colors hover:text-pessego"
                   >
                     {candidato.instagramHandle}
                   </a>

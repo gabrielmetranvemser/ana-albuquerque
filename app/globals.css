@@ -45,11 +45,22 @@
   --color-areia: #f2e7d2;
   /* ANA: o laranja CLARO da logo (o "Ana" e o topo do "7766" da arte
      laranja), e não o queimado do pé do degradê — que a campanha chamou
-     de "horroso e escuro". Superfície, botão e realce de título sobre
-     azul ou marinho. Nunca texto pequeno, e nunca letra branca por cima
-     (2,5:1): em cima dele a letra é marinho (5,5:1). O valor que vale
-     vem de `campanha.cores.acao`, no app/layout.tsx; este é o padrão. */
+     de "horroso e escuro". Superfície e botão. Nunca texto pequeno, e
+     nunca letra branca por cima (2,5:1): em cima dele a letra é o
+     marinho fosco (5,9:1). O valor que vale vem de
+     `campanha.cores.acao`, no app/layout.tsx; este é o padrão. */
   --color-laranja: #fd8440;
+  /* ANA: o PÊSSEGO é o laranja de quando o fundo é azul — no pincel do
+     título, no traço do rótulo, nos pontos, vistos e títulos do rodapé.
+     Laranja cheio em letra sobre o azul da marca foi reprovado: "o
+     contraste tá meio feio, desses azul com laranja". Duas cores no
+     máximo de saturação, uma em cima da outra, vibram na borda mesmo com
+     contraste de leitura sobrando. O pêssego é o mesmo matiz, mais claro
+     e menos saturado: continua lendo como laranja e não treme. 4,6:1
+     sobre o azul e 8,7:1 sobre o marinho, então serve até em texto
+     pequeno. Botão sobre azul continua laranja cheio — forma grande não
+     vibra como traço de letra, e é a ação da página. */
+  --color-pessego: #ffb98a;
   --color-verde-bandeira: #14a438; /* só a faixa do logotipo           */
   --color-tinta: #141a3d;         /* texto principal                  */
   --color-grafite: #4b4f68;       /* texto secundário                 */
@@ -240,19 +251,24 @@
    condensada e corpo — e a campanha resumiu: "muito ruim toda a
    hierarquia". Cartaz é a primeira dobra e as frases-manifesto; seção
    é todo o resto. Nenhuma em caixa alta. */
+/* ⚠️ E AS DUAS DESCERAM UM DEGRAU (quarta rodada). Com 72px, as três
+   frases da primeira dobra quebravam em seis linhas de título, e a
+   campanha: "a headline na hero tá muito grande". Cartaz foi para 56px
+   e seção para 42px — a distância entre as duas continua a mesma, então
+   nenhuma seção passa a gritar mais que a dobra. */
 @utility titulo-cartaz {
   font-family: var(--font-titulo);
   font-weight: 700;
-  font-size: clamp(2.5rem, 5.6vw, 4.5rem);
-  line-height: 1.02;
+  font-size: clamp(2.125rem, 4.2vw, 3.5rem);
+  line-height: 1.04;
   letter-spacing: -0.03em;
 }
 
 @utility titulo-secao {
   font-family: var(--font-titulo);
   font-weight: 700;
-  font-size: clamp(2rem, 3.8vw, 3.1rem);
-  line-height: 1.08;
+  font-size: clamp(1.875rem, 3.2vw, 2.625rem);
+  line-height: 1.1;
   letter-spacing: -0.025em;
 }
 

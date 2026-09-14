@@ -28,13 +28,19 @@ import { Mancha } from './Organico'
  *    normal e uma mancha de papel, que é o que resta de "orgânico" sem
  *    virar enfeite.
  *
- * ⚠️ O REALCE E O BOTÃO SÃO O LARANJA CLARO DA LOGO — como nos posts:
- *    fundo azul, palavra de pincel em laranja. Até a terceira versão o
- *    realce era amarelo, porque o laranja da paleta era o queimado e dava
- *    2,9:1 sobre este azul. A campanha pediu "um laranja mais claro, mais
- *    vivo, da cor da logo"; o claro dá 3,2:1, que passa para título
- *    (texto grande pede 3:1). Laranja em texto PEQUENO sobre este azul
- *    continua proibido. No botão a letra é marinho: 5,5:1.
+ * ⚠️ O BOTÃO É LARANJA CHEIO; O REALCE É PÊSSEGO. Nos posts, a palavra de
+ *    pincel vem em laranja sobre o azul. Aqui ela já foi amarelo (o
+ *    laranja da paleta era o queimado, 2,9:1) e depois o laranja claro da
+ *    logo — que a campanha achou feio: "desses azul com laranja". Traço
+ *    fino de letra em laranja saturado sobre azul saturado vibra na
+ *    borda. O pêssego é o mesmo matiz, mais claro e menos saturado
+ *    (4,6:1). O botão continua laranja cheio: forma grande não vibra como
+ *    traço, e é a ação da página. A letra dele é o marinho fosco (5,9:1).
+ *
+ * ⚠️ A COLUNA DO TEXTO É LARGA DE PROPÓSITO (1.3fr). Com a manchete menor
+ *    (ver `titulo-cartaz`), cada frase do documento cabe numa linha no
+ *    computador: três linhas e o pincel, em vez das seis que a campanha
+ *    achou "muito grande". A marca ocupa menos e continua inteira.
  */
 export async function Abertura({ silencio = false }: { silencio?: boolean }) {
   const [{ ctas, hero, exibir }, slots] = await Promise.all([lerConteudo(), lerSlots()])
@@ -46,13 +52,13 @@ export async function Abertura({ silencio = false }: { silencio?: boolean }) {
     <section
       id="inicio"
       // `--capa-realce` é a variável que o realce `tom="capa"` lê.
-      style={{ ['--capa-realce' as string]: 'var(--color-laranja)' }}
+      style={{ ['--capa-realce' as string]: 'var(--color-pessego)' }}
       className="relative isolate overflow-hidden bg-azul grao pt-32 pb-16 text-white md:pt-40 md:pb-24"
     >
-      <div className="container-lp relative grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+      <div className="container-lp relative grid items-center gap-12 lg:grid-cols-[1.3fr_0.7fr] lg:gap-16">
         <div>
           <p className="anima-hero rotulo-ana flex items-center gap-3 text-white/85">
-            <span aria-hidden className="h-0.5 w-8 rounded-full bg-laranja" />
+            <span aria-hidden className="h-0.5 w-8 rounded-full bg-pessego" />
             {hero.etiqueta}
           </p>
 
@@ -77,9 +83,14 @@ export async function Abertura({ silencio = false }: { silencio?: boolean }) {
               style={{ animationDelay: '520ms' }}
             >
               <CliqueGrupo origem="hero" href={paraOsGrupos} className="contents">
-                <span className="toque inline-flex min-h-14 items-center justify-center gap-2.5 rounded-full bg-laranja px-8 text-lg font-semibold text-azul-escuro shadow-[0_14px_30px_-16px_rgba(0,0,0,0.55)] transition-[filter,transform] duration-300 hover:-translate-y-0.5 hover:brightness-105 sm:whitespace-nowrap">
+                {/* px-6 e seta escondida abaixo de 400px: com px-8 e seta,
+                    "Entrar no grupo da minha cidade" quebrava em duas linhas
+                    num celular de 390px, com a seta sobrando à direita. Sem
+                    `nowrap` no celular: num aparelho de 360px o texto ainda
+                    precisa poder quebrar — e quebra centralizado. */}
+                <span className="toque inline-flex min-h-14 items-center justify-center gap-2.5 rounded-full bg-laranja px-6 text-center text-lg font-semibold text-azul-escuro shadow-[0_14px_30px_-16px_rgba(0,0,0,0.55)] transition-[filter,transform] duration-300 hover:-translate-y-0.5 hover:brightness-105 sm:px-8 sm:whitespace-nowrap">
                   {ctas.grupo}
-                  <svg viewBox="0 0 24 24" className="size-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <svg viewBox="0 0 24 24" className="size-5 shrink-0 max-[400px]:hidden" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
                 </span>
@@ -118,7 +129,7 @@ export async function Abertura({ silencio = false }: { silencio?: boolean }) {
               <MarcaNumero
                 url={lockup}
                 prioridade
-                className="relative z-10 h-auto w-[88%] drop-shadow-[0_26px_40px_rgba(10,20,82,0.45)]"
+                className="relative z-10 h-auto w-[92%] drop-shadow-[0_26px_40px_rgba(10,20,82,0.45)]"
               />
             </div>
           )}

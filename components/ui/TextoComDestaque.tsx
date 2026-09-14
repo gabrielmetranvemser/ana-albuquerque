@@ -26,7 +26,10 @@ import { interpretar, semMarcacao, type Marca } from '@/lib/texto/marcacao'
 type Tom = 'amarelo' | 'azul' | 'grifo' | 'verde' | 'branco' | 'capa'
 
 const CLASSES: Record<Tom, string> = {
-  amarelo: 'text-amarelo',
+  // ANA: o tom `amarelo` é "realce sobre fundo escuro", e para a Ana esse
+  // realce é o PÊSSEGO. A cor de ação virou o laranja cheio, que em letra
+  // sobre o azul vibrava — ver `--color-pessego` em globals.css.
+  amarelo: 'text-pessego',
   azul: 'text-azul',
   verde: 'text-verde-escuro',
   branco: 'text-white',

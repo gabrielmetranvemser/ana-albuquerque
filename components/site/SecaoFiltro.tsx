@@ -35,7 +35,10 @@ export async function SecaoFiltro() {
     // o botão e o realce do título. Amarelo ocupando a seção inteira
     // gritava e achatava tudo o que estava por cima dele.
     <Secao id="filtro" fundo="azul-profundo" espaco="solto">
-      {/* ANA: marinho, e não laranja — o realce amarelo do título some sobre o laranja. */}
+      {/* ANA: marinho, e não laranja — o realce amarelo do título some sobre o laranja.
+          Os números dos passos e o ícone de apoios são pêssego: laranja
+          cheio em forma pequena sobre o marinho vibrava. O botão, que é
+          a ação, continua laranja. */}
       <div className="grid items-center gap-14 lg:grid-cols-[1fr_0.85fr] lg:gap-20">
         <div>
           <CabecalhoSecao
@@ -53,7 +56,7 @@ export async function SecaoFiltro() {
                 style={{ ['--atraso' as string]: `${i * 70}ms` }}
                 className="flex gap-4"
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amarelo text-sm font-bold text-azul-escuro">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-pessego text-sm font-bold text-azul-escuro">
                   {p.numero}
                 </span>
                 <span className="min-w-0">
@@ -68,7 +71,7 @@ export async function SecaoFiltro() {
               pequeno aqui trabalha contra. Ver lib/apoios.ts. */}
           {apoios ? (
             <p data-revelar className="mt-8 flex items-center gap-2.5 text-base text-white">
-              <span className="inline-flex size-9 items-center justify-center rounded-full bg-amarelo text-azul-escuro" aria-hidden>
+              <span className="inline-flex size-9 items-center justify-center rounded-full bg-pessego text-azul-escuro" aria-hidden>
                 <svg viewBox="0 0 24 24" className="size-5" fill="currentColor">
                   <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm-8 0a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-2.7 0-8 1.3-8 4v3h9.5v-2.5c0-1.4.7-2.6 1.8-3.5A14 14 0 0 0 8 13Zm8 0c-.9 0-1.9.1-2.8.3 1.3.9 2.3 2.1 2.3 3.7V20H24v-3c0-2.7-5.3-4-8-4Z" />
                 </svg>

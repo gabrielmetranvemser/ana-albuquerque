@@ -15,9 +15,9 @@
 
   <defs>
     <linearGradient id="veu" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"   stop-color="#0a1452" stop-opacity="0"/>
-      <stop offset="42%"  stop-color="#0a1452" stop-opacity="0.82"/>
-      <stop offset="100%" stop-color="#0a1452" stop-opacity="0.97"/>
+      <stop offset="0%"   stop-color="#131a38" stop-opacity="0"/>
+      <stop offset="42%"  stop-color="#131a38" stop-opacity="0.82"/>
+      <stop offset="100%" stop-color="#131a38" stop-opacity="0.97"/>
     </linearGradient>
   </defs>
 
@@ -25,10 +25,10 @@
        de uma foto lê como tarja, e ninguém posta uma tarja. -->
   <rect x="0" y="1080" width="1080" height="840" fill="url(#veu)"/>
 
-  <text x="88" y="1476" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="10" fill="#ffcc00">EU APOIO</text>
+  <text x="88" y="1476" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="10" fill="#fd8440">EU APOIO</text>
   <text x="88" y="1580" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="76" font-weight="700" letter-spacing="-2" fill="#ffffff">ANA ALBUQUERQUE</text>
-  <text x="88" y="1740" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="150" font-weight="700" letter-spacing="-6" fill="#ffcc00">7766</text>
+  <text x="88" y="1740" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="150" font-weight="700" letter-spacing="-6" fill="#fd8440">7766</text>
   <text x="88" y="1852" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" fill="#ffffff" fill-opacity="0.55">CNPJ 68.519.559/0001-66</text>
 
-  <rect x="0" y="1900" width="1080" height="20" fill="#ffcc00"/>
+  <rect x="0" y="1900" width="1080" height="20" fill="#fd8440"/>
 </svg>

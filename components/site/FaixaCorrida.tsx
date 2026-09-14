@@ -12,7 +12,7 @@ import { Texto } from '@/components/ui/TextoComDestaque'
  *
  * ⚠️ DEPOIS FOI MARINHO, com um ponto laranja entre as frases. Legível,
  *    mas a campanha sentiu "falta bastante do laranja". Virou o laranja
- *    claro da logo, chapado, com letra marinho (5,5:1) — é a primeira
+ *    claro da logo, chapado, com letra marinho fosco (5,9:1) — é a primeira
  *    superfície laranja que se vê ao sair da dobra azul. Letra branca ali
  *    daria 2,5:1, e por isso não é branca.
  *

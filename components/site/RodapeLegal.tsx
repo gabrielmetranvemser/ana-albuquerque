@@ -12,6 +12,11 @@ import { Texto } from '@/components/ui/TextoComDestaque'
  *
  * ⚠️ CNPJ de candidato e de coligação são coisas diferentes.
  *    Confirmar com a campanha antes de publicar.
+ *
+ * ⚠️ ANA: os títulos e os realces do rodapé são PÊSSEGO, e não a cor de
+ *    ação. A ação virou o laranja cheio, e laranja cheio em letra sobre
+ *    fundo azul foi reprovado ("desses azul com laranja") — ver
+ *    `--color-pessego` em globals.css.
  */
 export async function RodapeLegal() {
   const [{ candidato, rodape }, slots] = await Promise.all([lerConteudo(), lerSlots()])
@@ -45,13 +50,13 @@ export async function RodapeLegal() {
           </div>
 
           <nav aria-label="Rodapé">
-            <h2 className="text-sm font-semibold tracking-[0.08em] text-amarelo uppercase">Navegar</h2>
+            <h2 className="text-sm font-semibold tracking-[0.08em] text-pessego uppercase">Navegar</h2>
             <ul className="mt-4 space-y-1">
               {rodape.links.map((l) => (
                 <li key={l.id}>
                   <Link
                     href={l.href}
-                    className="inline-flex min-h-11 items-center text-base text-white/80 transition-colors hover:text-amarelo"
+                    className="inline-flex min-h-11 items-center text-base text-white/80 transition-colors hover:text-pessego"
                   >
                     {l.rotulo}
                   </Link>
@@ -61,12 +66,12 @@ export async function RodapeLegal() {
           </nav>
 
           <div>
-            <h2 className="text-sm font-semibold tracking-[0.08em] text-amarelo uppercase">Acompanhe</h2>
+            <h2 className="text-sm font-semibold tracking-[0.08em] text-pessego uppercase">Acompanhe</h2>
             <a
               href={candidato.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex min-h-11 items-center gap-2.5 rounded-full border border-white/25 px-5 text-base font-medium transition-colors hover:border-amarelo hover:text-amarelo"
+              className="mt-4 inline-flex min-h-11 items-center gap-2.5 rounded-full border border-white/25 px-5 text-base font-medium transition-colors hover:border-pessego hover:text-pessego"
             >
               <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden>
                 <path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4a3.9 3.9 0 0 1-1.4-.9 3.9 3.9 0 0 1-.9-1.4c-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.3-.1 1.7-.1 4.8-.1Zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.3-.5.2-.9.4-1.2.8-.4.3-.6.7-.8 1.2-.1.4-.3 1-.3 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.3 2.1.2.5.4.9.8 1.2.3.4.7.6 1.2.8.4.1 1 .3 2.1.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.3.5-.2.9-.4 1.2-.8.4-.3.6-.7.8-1.2.1-.4.3-1 .3-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.3-2.1a3 3 0 0 0-.8-1.2 3 3 0 0 0-1.2-.8c-.4-.1-1-.3-2.1-.3-1.2-.1-1.6-.1-4.7-.1Zm0 3.1a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8Zm0 8a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Zm6.2-8.2a1.1 1.1 0 1 1-2.3 0 1.1 1.1 0 0 1 2.3 0Z" />
@@ -84,7 +89,7 @@ export async function RodapeLegal() {
             junto, separado por barras. A grade de rótulos que existia
             aqui era mais bonita e menos parecida com o que a lei pede. */}
         <div className="mt-14 rounded-2xl border border-white/12 bg-white/[0.06] p-7 md:p-8">
-          <h2 className="text-sm font-semibold tracking-[0.08em] text-amarelo uppercase">
+          <h2 className="text-sm font-semibold tracking-[0.08em] text-pessego uppercase">
             {rodape.legalRotulo}
           </h2>
 
@@ -104,14 +109,15 @@ export async function RodapeLegal() {
           </p>
 
           {faltando.length > 0 ? (
-            <p className="mt-6 rounded-lg bg-amarelo/12 px-4 py-3 text-sm text-amarelo ring-1 ring-amarelo/35">
+            <p className="mt-6 rounded-lg bg-pessego/12 px-4 py-3 text-sm text-pessego ring-1 ring-pessego/35">
               <strong className="font-semibold">Identificação incompleta.</strong> Falta{' '}
               {faltando.join(', ')}. Preencha no painel, em Rodapé, antes de publicar.
             </p>
           ) : null}
         </div>
 
-        <p className="mt-8 text-sm text-white/45">
+        {/* 60% e não 45%: a 45% o "©" dava 4,3:1, abaixo do mínimo de texto pequeno. */}
+        <p className="mt-8 text-sm text-white/60">
           © {anoAtual} {candidato.nome}. Todos os direitos reservados.
         </p>
       </div>

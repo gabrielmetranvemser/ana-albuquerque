@@ -95,7 +95,7 @@ export async function Propostas() {
               >
                 <span
                   className={`font-[family-name:var(--font-titulo)] text-4xl leading-none font-bold tabular-nums ${
-                    primeira ? 'text-laranja' : laranja ? 'text-azul-escuro' : 'text-azul'
+                    primeira ? 'text-pessego' : laranja ? 'text-azul-escuro' : 'text-azul'
                   }`}
                 >
                   {item.numero}

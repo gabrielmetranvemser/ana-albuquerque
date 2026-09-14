@@ -85,7 +85,7 @@ export function CabecalhoSecao({
             tom === 'escuro' ? 'text-white' : 'text-azul-escuro'
           }`}
         >
-          <span aria-hidden className={`h-0.5 w-6 shrink-0 rounded-full ${tom === 'escuro' ? 'bg-amarelo' : 'bg-laranja'}`} />
+          <span aria-hidden className={`h-0.5 w-6 shrink-0 rounded-full ${tom === 'escuro' ? 'bg-pessego' : 'bg-laranja'}`} />
           {etiqueta}
         </p>
       ) : null}

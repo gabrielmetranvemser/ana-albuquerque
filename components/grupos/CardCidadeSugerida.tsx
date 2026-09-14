@@ -25,7 +25,7 @@ export function CardCidadeSugerida({
 
   return (
     <div className="rounded-2xl fundo-azul-profundo p-6 text-white md:p-7">
-      <p className="flex items-center gap-2 text-sm font-medium text-amarelo">
+      <p className="flex items-center gap-2 text-sm font-medium text-pessego">
         <svg viewBox="0 0 24 24" className="size-4" fill="currentColor" aria-hidden>
           <path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
         </svg>
@@ -65,7 +65,7 @@ export function CardCidadeSugerida({
         <button
           type="button"
           onClick={onNaoEMinha}
-          className="min-h-12 text-left text-base text-white/75 underline decoration-1 underline-offset-[6px] transition-colors hover:text-amarelo"
+          className="min-h-12 text-left text-base text-white/75 underline decoration-1 underline-offset-[6px] transition-colors hover:text-pessego"
         >
           {copy.sugestaoNao}
         </button>
