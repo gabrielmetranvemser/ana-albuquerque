@@ -1,0 +1,44 @@
+node_modules
+.next
+out
+build
+.DS_Store
+*.pem
+npm-debug.log*
+.env
+.env*.local
+.vercel
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# lixo do Finder
+.DS_Store
+
+# O acervo bruto de fotos e a arte da campanha. Ficam fora do
+# repositório de propósito: são dezenas de MB de originais, e o caminho
+# deles para o site é o painel → Supabase Storage, não o git.
+# Versionar aqui engordaria todo clone para sempre sem servir a nada.
+FOTOS/
+MARCA/
+ACERVO/
+
+# ⚠️ ANA: NO MAC, AS DUAS PRIMEIRAS LINHAS ACIMA PEGAVAM `public/marca/`
+#    E `public/fotos/`. O git daqui não diferencia maiúscula
+#    (core.ignorecase), e `MARCA/` casa com qualquer pasta "marca" —
+#    inclusive a da arte que o site serve. Os dois primeiros commits da
+#    Ana saíram sem logotipo e sem fotos, e a Vercel publicaria a página
+#    com imagem quebrada. A marca volta ao repositório: é pública, está
+#    na página, e o site não fica de pé sem ela. As fotos de
+#    `public/fotos/` CONTINUAM FORA até a campanha decidir, porque o
+#    repositório é público — ver PENDENCIAS.md.
+!public/marca/
+
+# O mesmo acervo, com os nomes que a campanha da Ana usou ao entregar,
+# e os recortes já prontos para subir pelo painel. O repositório é
+# PÚBLICO: aqui há fotos de família e documentos escaneados.
+Fotos apoio site/
+Marca Ana/
+_imagens-painel/
+
+# Permissões locais do Claude Code — são da máquina, não do projeto.
+.claude/settings.local.json
