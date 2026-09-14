@@ -16,6 +16,16 @@ import { Onda } from './Organico'
  * ponto em que a página deixa de contar e passa a pedir, e o laranja do
  * partido é a cor do pedido.
  *
+ * ⚠️ É O LARANJA CLARO DA LOGO, COM LETRA MARINHO. A primeira versão
+ *    usava um laranja queimado (#d4540e), escolhido para a letra branca
+ *    passar em contraste — e a campanha pediu "um laranja mais claro,
+ *    mais vivo, da cor da logo", sem "esse degradê horroso e escuro".
+ *    No laranja claro o branco não passa (2,5:1); o marinho dá 5,5:1.
+ *    Por isso tudo aqui é marinho, e o botão principal inverte para
+ *    marinho com letra branca: botão laranja sobre fundo laranja some.
+ *    O realce do título é o azul da marca (3,2:1), que só serve porque
+ *    título é texto grande.
+ *
  * ⚠️ O "Agenda" do documento não entrou: não há agenda publicada, e
  *    botão para lugar nenhum é pior que botão nenhum.
  *
@@ -29,8 +39,8 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
   return (
     <section
       id="acompanhe"
-      style={{ ['--capa-realce' as string]: 'var(--color-azul-escuro)' }}
-      className="relative isolate overflow-hidden bg-verde grao pt-20 pb-24 text-white md:pt-28 md:pb-32"
+      style={{ ['--capa-realce' as string]: 'var(--color-azul)' }}
+      className="relative isolate overflow-hidden bg-laranja pt-20 pb-24 text-azul-escuro md:pt-28 md:pb-32"
     >
       <span id="votar" aria-hidden className="absolute -top-24" />
 
@@ -38,12 +48,12 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
         <div data-revelar className="mx-auto w-full max-w-xs sm:max-w-sm lg:max-w-none">
           <MarcaNumero
             url={slots['marca.lockup']?.url ?? null}
-            className="h-auto w-full drop-shadow-[0_24px_36px_rgba(10,20,82,0.35)]"
+            className="h-auto w-full drop-shadow-[0_24px_36px_rgba(10,20,82,0.3)]"
           />
         </div>
 
         <div>
-          <h2 data-revelar className="titulo-cartaz text-white">
+          <h2 data-revelar className="titulo-cartaz text-azul-escuro">
             {ctaFinal.titulo.map((linha, i) => (
               <span key={i} className="block">
                 <TextoComDestaque texto={linha} tom="capa" />
@@ -51,10 +61,8 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
             ))}
           </h2>
 
-          {/* Semibold e a partir de 20px: branco sobre este laranja só
-              passa em contraste como texto grande. */}
           {ctaFinal.texto ? (
-            <p data-revelar className="mt-6 max-w-[52ch] text-xl leading-relaxed font-semibold text-white">
+            <p data-revelar className="mt-6 max-w-[52ch] text-xl leading-relaxed font-medium text-azul-escuro">
               {ctaFinal.texto}
             </p>
           ) : null}
@@ -73,7 +81,7 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
           {!silencio ? (
             <div data-revelar className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <CliqueGrupo origem="cta_final" href={paraOsGrupos} className="contents">
-                <span className="toque inline-flex min-h-14 items-center justify-center rounded-full bg-amarelo px-8 text-lg font-semibold text-azul-escuro shadow-[0_14px_30px_-16px_rgba(10,20,82,0.6)] transition-[filter] hover:brightness-105">
+                <span className="toque inline-flex min-h-14 items-center justify-center rounded-full bg-azul-escuro px-8 text-lg font-semibold text-white shadow-[0_14px_30px_-16px_rgba(10,20,82,0.6)] transition-colors hover:bg-azul">
                   {ctaFinal.ctaPrimario}
                 </span>
               </CliqueGrupo>
@@ -90,14 +98,14 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
               {exibir.futuro ? (
                 <a
                   href="#propostas"
-                  className="toque inline-flex min-h-14 items-center justify-center rounded-full border-2 border-white/80 px-7 text-lg font-semibold text-white transition-colors hover:bg-white/10"
+                  className="toque inline-flex min-h-14 items-center justify-center rounded-full border-2 border-azul-escuro/70 px-7 text-lg font-semibold text-azul-escuro transition-colors hover:border-azul-escuro hover:bg-azul-escuro/10"
                 >
                   {futuro.etiqueta}
                 </a>
               ) : null}
             </div>
           ) : (
-            <p className="mt-10 rounded-2xl bg-azul-escuro/40 px-5 py-4">{ctas.silencio}</p>
+            <p className="mt-10 rounded-2xl bg-white/55 px-5 py-4 text-azul-escuro">{ctas.silencio}</p>
           )}
         </div>
       </div>

@@ -28,8 +28,13 @@ import { Mancha } from './Organico'
  *    normal e uma mancha de papel, que é o que resta de "orgânico" sem
  *    virar enfeite.
  *
- * O realce é amarelo, e não laranja como nos posts: laranja sobre este
- * azul dá 2,9:1; o amarelo dá 8:1.
+ * ⚠️ O REALCE E O BOTÃO SÃO O LARANJA CLARO DA LOGO — como nos posts:
+ *    fundo azul, palavra de pincel em laranja. Até a terceira versão o
+ *    realce era amarelo, porque o laranja da paleta era o queimado e dava
+ *    2,9:1 sobre este azul. A campanha pediu "um laranja mais claro, mais
+ *    vivo, da cor da logo"; o claro dá 3,2:1, que passa para título
+ *    (texto grande pede 3:1). Laranja em texto PEQUENO sobre este azul
+ *    continua proibido. No botão a letra é marinho: 5,5:1.
  */
 export async function Abertura({ silencio = false }: { silencio?: boolean }) {
   const [{ ctas, hero, exibir }, slots] = await Promise.all([lerConteudo(), lerSlots()])
@@ -41,13 +46,13 @@ export async function Abertura({ silencio = false }: { silencio?: boolean }) {
     <section
       id="inicio"
       // `--capa-realce` é a variável que o realce `tom="capa"` lê.
-      style={{ ['--capa-realce' as string]: 'var(--color-amarelo)' }}
+      style={{ ['--capa-realce' as string]: 'var(--color-laranja)' }}
       className="relative isolate overflow-hidden bg-azul grao pt-32 pb-16 text-white md:pt-40 md:pb-24"
     >
       <div className="container-lp relative grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <div>
           <p className="anima-hero rotulo-ana flex items-center gap-3 text-white/85">
-            <span aria-hidden className="h-0.5 w-8 rounded-full bg-amarelo" />
+            <span aria-hidden className="h-0.5 w-8 rounded-full bg-laranja" />
             {hero.etiqueta}
           </p>
 
@@ -72,7 +77,7 @@ export async function Abertura({ silencio = false }: { silencio?: boolean }) {
               style={{ animationDelay: '520ms' }}
             >
               <CliqueGrupo origem="hero" href={paraOsGrupos} className="contents">
-                <span className="toque inline-flex min-h-14 items-center justify-center gap-2.5 rounded-full bg-amarelo px-8 text-lg font-semibold text-azul-escuro shadow-[0_14px_30px_-16px_rgba(0,0,0,0.55)] transition-[filter,transform] duration-300 hover:-translate-y-0.5 hover:brightness-105 sm:whitespace-nowrap">
+                <span className="toque inline-flex min-h-14 items-center justify-center gap-2.5 rounded-full bg-laranja px-8 text-lg font-semibold text-azul-escuro shadow-[0_14px_30px_-16px_rgba(0,0,0,0.55)] transition-[filter,transform] duration-300 hover:-translate-y-0.5 hover:brightness-105 sm:whitespace-nowrap">
                   {ctas.grupo}
                   <svg viewBox="0 0 24 24" className="size-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M5 12h14M13 6l6 6-6 6" />

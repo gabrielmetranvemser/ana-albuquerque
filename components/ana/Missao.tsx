@@ -13,6 +13,9 @@ import { Mancha, Onda } from './Organico'
  *    Reprovadas junto com o resto: seis linhas gritando cansam. Agora
  *    são letra de título em caixa normal, com um ponto laranja — a
  *    força vem de estarem uma embaixo da outra, não do tamanho.
+ *
+ * O realce do título é o laranja claro da logo: 3,2:1 sobre este azul,
+ * que passa porque título é texto grande. Em texto pequeno, aqui, não.
  */
 export async function Missao() {
   const { missao } = await lerConteudo()
@@ -20,7 +23,7 @@ export async function Missao() {
   return (
     <section
       id="missao"
-      style={{ ['--capa-realce' as string]: 'var(--color-amarelo)' }}
+      style={{ ['--capa-realce' as string]: 'var(--color-laranja)' }}
       className="relative isolate overflow-hidden bg-azul grao py-20 text-white md:py-28"
     >
       <Mancha
@@ -31,7 +34,7 @@ export async function Missao() {
       <div className="container-lp relative grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
         <div>
           <p data-revelar className="rotulo-ana flex items-center gap-3 text-white/85">
-            <span aria-hidden className="h-0.5 w-8 rounded-full bg-amarelo" />
+            <span aria-hidden className="h-0.5 w-8 rounded-full bg-laranja" />
             {missao.etiqueta}
           </p>
           <h2 data-revelar className="mt-5 titulo-cartaz">
@@ -65,7 +68,7 @@ export async function Missao() {
         ) : null}
       </div>
 
-      <Onda cor="var(--color-verde)" variante={2} />
+      <Onda cor="var(--color-laranja)" variante={2} />
     </section>
   )
 }

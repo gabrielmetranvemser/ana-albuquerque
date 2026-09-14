@@ -110,7 +110,7 @@ export function Header({
             <Link
               href={paraOsGrupos}
               onClick={() => evento('clicou_cta', { origem: 'topo' })}
-              className="toque hidden min-h-11 items-center rounded-full bg-azul-escuro px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-azul sm:inline-flex"
+              className="toque hidden min-h-11 items-center rounded-full bg-laranja px-5 text-[0.9375rem] font-semibold text-azul-escuro transition-[filter] hover:brightness-105 sm:inline-flex"
             >
               {ctas.grupoCurto}
             </Link>
@@ -179,7 +179,7 @@ export function Header({
                         <span className="w-6 text-sm font-semibold text-white/40 tabular-nums">
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <span className="flex-1 font-[family-name:var(--font-titulo)] text-[1.35rem] leading-tight font-semibold transition-colors group-hover:text-amarelo">
+                        <span className="flex-1 font-[family-name:var(--font-titulo)] text-[1.35rem] leading-tight font-semibold transition-colors group-hover:text-laranja">
                           {ehNumero ? (
                             <span className="inline-flex items-center rounded-full bg-laranja px-3 py-0.5 text-azul-escuro">
                               {item.rotulo}
@@ -188,7 +188,7 @@ export function Header({
                             item.rotulo
                           )}
                         </span>
-                        <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-white/35 transition-all group-hover:translate-x-1 group-hover:text-amarelo" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        <svg viewBox="0 0 24 24" className="size-5 shrink-0 text-white/35 transition-all group-hover:translate-x-1 group-hover:text-laranja" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                           <path d="M5 12h14M13 6l6 6-6 6" />
                         </svg>
                       </Link>
@@ -206,7 +206,7 @@ export function Header({
                     setAberto(false)
                     evento('clicou_cta', { origem: 'topo' })
                   }}
-                  className="toque flex min-h-14 w-full items-center justify-center rounded-full bg-amarelo px-6 text-lg font-semibold text-azul-escuro transition-[filter] hover:brightness-105"
+                  className="toque flex min-h-14 w-full items-center justify-center rounded-full bg-laranja px-6 text-lg font-semibold text-azul-escuro transition-[filter] hover:brightness-105"
                 >
                   {ctas.grupo}
                 </Link>
@@ -222,7 +222,7 @@ export function Header({
                     href={candidato.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center font-semibold text-white transition-colors hover:text-amarelo"
+                    className="inline-flex min-h-11 items-center font-semibold text-white transition-colors hover:text-laranja"
                   >
                     {candidato.instagramHandle}
                   </a>

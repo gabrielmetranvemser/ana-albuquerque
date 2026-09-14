@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Bricolage_Grotesque, Figtree, Kaushan_Script } from 'next/font/google'
+import { Bricolage_Grotesque, Caveat_Brush, Figtree } from 'next/font/google'
 import { candidato } from '@/content/copy'
 import { campanha } from '@/content/campanha'
 import { config } from '@/lib/config'
@@ -59,20 +59,31 @@ const corpo = Figtree({
 })
 
 /**
- * DESTAQUE — Kaushan Script. (Ana)
+ * DESTAQUE — Caveat Brush. (Ana)
  *
  * A campanha pediu a "fonte rabiscada" dos posts: no Instagram da Ana
- * e do Solidariedade, a palavra que importa vem num pincel itálico por
- * cima do título pesado ("SEGURANÇA é compromisso"). A Kaushan é a
- * pincelada do Google Fonts mais próxima daquela, e tem os acentos do
- * português. Só entra no trecho [[realçado]] de ATÉ TRÊS PALAVRAS — a
- * campanha achou a frase inteira em pincel "muito ruim de ler", e a
- * regra agora é do código, não de quem escreve. Ver TextoComDestaque.
+ * e do Solidariedade, a palavra que importa vem num pincel por cima do
+ * título pesado ("SEGURANÇA é compromisso"). Só entra no trecho
+ * [[realçado]] de ATÉ TRÊS PALAVRAS — a campanha achou a frase inteira
+ * em pincel "muito ruim de ler", e a regra agora é do código, não de
+ * quem escreve. Ver TextoComDestaque.
+ *
+ * ⚠️ ANTES FOI A KAUSHAN SCRIPT, e a campanha: "acho a fonte cursiva
+ *    feia demais". A Kaushan é a pincelada caligráfica mais próxima
+ *    dos posts, mas tem letra de forma estranha (o "ss", o "p") e traço
+ *    que afina — em laranja sobre azul, o fino some. Quinze pincéis do
+ *    Google Fonts foram postos lado a lado com a mesma frase, na mesma
+ *    altura de x ("Compromisso com pessoas.", laranja sobre o azul da
+ *    dobra). Ficou a Caveat Brush: marcador de ponta grossa, traço
+ *    regular, letra de mão sem floreio. É a que continua lendo como
+ *    escrita à mão e a que tem traço grosso o bastante para o laranja
+ *    aparecer. Finalistas, se a campanha quiser trocar: Yellowtail
+ *    (pincel itálico, mais perto da Kaushan) e Caveat 700.
  *
  * Um peso só, e é o único que ela tem: o arquivo é pequeno, e o
  * `display: swap` segura o teto de 3 segundos como nas outras duas.
  */
-const rabisco = Kaushan_Script({
+const rabisco = Caveat_Brush({
   subsets: ['latin'],
   weight: '400',
   variable: '--fonte-rabisco',
@@ -224,6 +235,11 @@ export default async function LayoutRaiz({ children }: { children: React.ReactNo
             '--color-verde': campanha.cores.secundaria,
             '--color-amarelo': campanha.cores.acao,
             '--color-azul-noite': campanha.cores.noite,
+            /* ANA: o laranja da página É a cor de ação (ver
+               `campanha.cores`). Sem esta linha `bg-laranja` ficaria
+               preso ao padrão do globals.css e sairia do tom no dia em
+               que a ação mudasse. */
+            '--color-laranja': campanha.cores.acao,
             '--textura-forca': aparencia.texturaForca / 100,
           } as React.CSSProperties
         }

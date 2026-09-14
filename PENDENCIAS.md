@@ -38,15 +38,21 @@ preview (o `robots.ts` já bloqueia a indexação sozinho).
 
 Sem isto o site está no ar, mas não faz o que veio fazer.
 
-- [ ] **Instalar o banco** — Supabase ▸ SQL Editor ▸ colar e rodar
-      `sql/01-instalacao.sql`, depois `sql/02-seed-municipios.sql`
-      (Rondônia, 52 municípios). O fuso já está em
-      `America/Porto_Velho`, e a trava de seções já aceita `capitulos`
-      e `missao`. Para o Claude rodar sozinho: a conta logada na CLI do
-      Supabase precisa ser membro do projeto, ou um
-      `SUPABASE_ACCESS_TOKEN` da conta dona no `.env.local` — a chave
-      `service_role` não executa SQL
-- [ ] **Trocar a senha do banco** no Supabase depois da instalação
+- [x] **Instalar o banco** — rodados `sql/01-instalacao.sql` e
+      `sql/02-seed-municipios.sql` no projeto `nyqpdavhpsbivrgsjdgm`
+      em 14/09/2026, pela API do Supabase com o
+      `SUPABASE_ACCESS_TOKEN` do `.env.local`. O banco estava vazio.
+      Conferido depois: 17 tabelas e views, os baldes `midia` e
+      `molduras`, 52 municípios, 52 grupos "em breve", fuso
+      `America/Porto_Velho` e a trava de seções com `capitulos` e
+      `missao`
+- [ ] **Revogar o `SUPABASE_ACCESS_TOKEN`** — Supabase ▸ Account ▸
+      Access Tokens, e apagar a linha do `.env.local`. Ele não é chave
+      do projeto: é da CONTA, e enxerga todos os projetos dela (hoje,
+      além deste, o `ribeirosinpol`). O site não usa; foi só para a
+      instalação. Nunca vai para a Vercel
+- [ ] **Trocar a senha do banco** no Supabase — ela circulou em
+      conversa
 - [ ] **Subir as imagens** — prontas em `_imagens-painel/` (fora do
       git), um arquivo por espaço do painel. Ver o `LEIA-ME.md` de lá
 - [ ] **Links dos grupos de WhatsApp** — painel ▸ Grupos, um por
@@ -88,9 +94,15 @@ acrescentado. Precisam da revisão de quem responde pela campanha.
 - [ ] **Fotos dos capítulos** — as que estão no ar vieram de "Fotos
       apoio site" e moram em `public/fotos/`. Trocar pelo painel (espaços
       `capitulo.*`) ou substituindo o arquivo de mesmo nome
-- [ ] ⚠️ **As fotos de `public/fotos/` vão para o git, e o repositório é
-      público.** O site mostra essas fotos de qualquer jeito, mas no git
-      elas ficam no histórico para sempre: confirmar antes do push
+- [ ] ⛔ **As fotos de `public/fotos/` NÃO estão no git** — e sem elas o
+      site publicado mostra imagem quebrada nos capítulos. A linha
+      `FOTOS/` do `.gitignore` pega a pasta porque o git do Mac não
+      diferencia maiúscula (acontecia o mesmo com `public/marca/`, já
+      corrigido). Decidir um dos dois ANTES do push: (a) versionar a
+      pasta — o repositório é PÚBLICO, e as fotos ficam no histórico
+      para sempre; ou (b) subir cada foto no painel, nos espaços
+      `capitulo.*` (tabela em `_imagens-painel/LEIA-ME.md`), que agora
+      funciona porque o banco está instalado
 - [ ] **Fotos de apoiadores** para o filtro, em pares story + perfil,
       com autorização
 - [ ] **Vídeos** — links do YouTube ou Vimeo. Todo espaço nasce vazio e

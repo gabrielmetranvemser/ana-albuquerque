@@ -7,9 +7,14 @@ import { Texto } from '@/components/ui/TextoComDestaque'
  * ⚠️ ANA: JÁ FOI FITA ADESIVA AMARELA, TORTA, EM CAIXA ALTA ITÁLICA — e
  *    a campanha reprovou: "ficou feia, muito ruim de ler". Letra
  *    condensada itálica, andando e inclinada, é três obstáculos de
- *    leitura somados. Agora é reta, em marinho, na letra do corpo em
- *    caixa normal, e anda devagar: são frases para serem lidas, não
- *    textura. O separador é um ponto laranja, e só.
+ *    leitura somados. Agora é reta, na letra do corpo em caixa normal, e
+ *    anda devagar: são frases para serem lidas, não textura.
+ *
+ * ⚠️ DEPOIS FOI MARINHO, com um ponto laranja entre as frases. Legível,
+ *    mas a campanha sentiu "falta bastante do laranja". Virou o laranja
+ *    claro da logo, chapado, com letra marinho (5,5:1) — é a primeira
+ *    superfície laranja que se vê ao sair da dobra azul. Letra branca ali
+ *    daria 2,5:1, e por isso não é branca.
  *
  * A lista é repetida DUAS vezes no HTML, e não é engano. O laço anda
  * a trilha inteira até -50% e recomeça: como a segunda metade é igual
@@ -26,12 +31,12 @@ export async function FaixaCorrida() {
         <span className="text-lg font-semibold whitespace-nowrap md:text-xl">
           <Texto>{item.texto}</Texto>
         </span>
-        <span aria-hidden className="size-2 shrink-0 rounded-full bg-laranja" />
+        <span aria-hidden className="size-2 shrink-0 rounded-full bg-azul-escuro" />
       </li>
     ))
 
   return (
-    <div className="faixa relative isolate overflow-hidden bg-azul-escuro py-5 text-white">
+    <div className="faixa relative isolate overflow-hidden bg-laranja py-5 text-azul-escuro">
       {/* Mais lenta que a do modelo: frase inteira precisa de tempo na tela. */}
       <ul className="faixa-trilha" style={{ animationDuration: '140s' }}>
         {fila(false)}

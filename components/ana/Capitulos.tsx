@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { lerConteudo } from '@/lib/conteudo/ler'
 import { lerSlots, type ImagemDoSlot } from '@/lib/midia/ler'
 import { Imagem } from '@/components/ui/Imagem'
@@ -36,17 +37,52 @@ type Cap = Conteudo['capitulos']['itens'][number]
 type Slots = Record<string, ImagemDoSlot>
 
 /**
- * `realce` é a cor do trecho [[entre colchetes]] do título — o que o tom
- * `capa` do TextoComDestaque lê. Sobre o laranja é marinho: amarelo sobre
- * laranja some.
+ * A TINTA DE CADA FUNDO — três variáveis CSS que as peças leem, em vez de
+ * cada peça perguntar "estou no escuro?".
+ *
+ * ⚠️ EXISTE PORQUE O LARANJA VIROU FUNDO DE VERDADE. Com claro e escuro
+ *    bastava um booleano. O laranja claro da logo é um terceiro caso: a
+ *    letra é escura como no papel, mas o acento não pode ser laranja,
+ *    senão some. Um booleano a mais em cada peça espalharia a regra pelas
+ *    oito formas; a variável deixa a regra aqui, num lugar só.
+ *
+ *    · `--acento` ........ traço do rótulo, borda da citação, ponto, visto
+ *    · `--sobre-acento` .. o que vai desenhado em cima do acento
+ *    · `--texto-suave` ... parágrafo e legenda
  */
-const FUNDOS: Record<string, { classe: string; cor: string; escuro: boolean; realce: string }> = {
-  papel: { classe: 'papel text-tinta', cor: 'var(--color-papel)', escuro: false, realce: 'var(--color-azul)' },
-  areia: { classe: 'bg-areia text-tinta', cor: 'var(--color-areia)', escuro: false, realce: 'var(--color-azul)' },
-  branco: { classe: 'bg-white text-tinta', cor: '#ffffff', escuro: false, realce: 'var(--color-azul)' },
-  azul: { classe: 'bg-azul grao text-white', cor: 'var(--color-azul)', escuro: true, realce: 'var(--color-amarelo)' },
-  marinho: { classe: 'bg-azul-escuro grao text-white', cor: 'var(--color-azul-escuro)', escuro: true, realce: 'var(--color-amarelo)' },
-  laranja: { classe: 'bg-verde grao text-white', cor: 'var(--color-verde)', escuro: true, realce: 'var(--color-azul-escuro)' },
+type Tinta = { acento: string; sobreAcento: string; suave: string }
+
+const TINTA_CLARA: Tinta = { acento: 'var(--color-laranja)', sobreAcento: 'var(--color-azul-escuro)', suave: 'var(--color-grafite)' }
+const TINTA_ESCURA: Tinta = { acento: 'var(--color-laranja)', sobreAcento: 'var(--color-azul-escuro)', suave: 'rgb(255 255 255 / 0.88)' }
+// Grafite sobre o laranja claro dá 3,3:1 — parágrafo ali é marinho (5,5:1).
+const TINTA_LARANJA: Tinta = { acento: 'var(--color-azul-escuro)', sobreAcento: '#ffffff', suave: 'var(--color-azul-escuro)' }
+
+function tinta(t: Tinta): CSSProperties {
+  return {
+    ['--acento' as string]: t.acento,
+    ['--sobre-acento' as string]: t.sobreAcento,
+    ['--texto-suave' as string]: t.suave,
+  }
+}
+
+/**
+ * `realce` é a cor do trecho [[entre colchetes]] do título — o que o tom
+ * `capa` do TextoComDestaque lê. No azul e no marinho é o laranja claro
+ * (3,2:1 e 5,5:1: passa porque título é texto grande). Sobre o laranja é
+ * o azul da marca (3,2:1), porque laranja sobre laranja some.
+ *
+ * ⚠️ O FUNDO `laranja` JÁ FOI O LARANJA QUEIMADO DA PALETA, com letra
+ *    branca. A campanha pediu um laranja "mais claro, mais vivo, da cor
+ *    da logo" — e nele a letra branca não passa (2,5:1). Por isso
+ *    `escuro` é falso ali: a letra é marinho.
+ */
+const FUNDOS: Record<string, { classe: string; cor: string; escuro: boolean; realce: string; tinta: Tinta }> = {
+  papel: { classe: 'papel text-tinta', cor: 'var(--color-papel)', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
+  areia: { classe: 'bg-areia text-tinta', cor: 'var(--color-areia)', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
+  branco: { classe: 'bg-white text-tinta', cor: '#ffffff', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
+  azul: { classe: 'bg-azul grao text-white', cor: 'var(--color-azul)', escuro: true, realce: 'var(--color-laranja)', tinta: TINTA_ESCURA },
+  marinho: { classe: 'bg-azul-escuro grao text-white', cor: 'var(--color-azul-escuro)', escuro: true, realce: 'var(--color-laranja)', tinta: TINTA_ESCURA },
+  laranja: { classe: 'bg-laranja text-azul-escuro', cor: 'var(--color-laranja)', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_LARANJA },
 }
 
 export async function Capitulos({ corDepois = 'var(--color-papel)' }: { corDepois?: string }) {
@@ -72,7 +108,7 @@ function Capitulo({ cap, slots, indice, corSeguinte }: { cap: Cap; slots: Slots;
   return (
     <section
       id={cap.ancora || undefined}
-      style={{ ['--capa-realce' as string]: f.realce }}
+      style={{ ['--capa-realce' as string]: f.realce, ...tinta(f.tinta) }}
       className={`relative isolate overflow-hidden ${f.classe} py-20 md:py-28`}
     >
       <div className="container-lp relative">
@@ -97,7 +133,7 @@ function Cabeca({ cap, escuro, cartaz = false }: { cap: Cap; escuro: boolean; ca
     <>
       {cap.etiqueta ? (
         <p data-revelar className={`rotulo-ana flex items-center gap-3 ${escuro ? 'text-white/85' : 'text-azul-escuro'}`}>
-          <span aria-hidden className={`h-0.5 w-8 shrink-0 rounded-full ${escuro ? 'bg-amarelo' : 'bg-laranja'}`} />
+          <span aria-hidden className="h-0.5 w-8 shrink-0 rounded-full bg-(--acento)" />
           {cap.etiqueta}
         </p>
       ) : null}
@@ -114,12 +150,12 @@ function Cabeca({ cap, escuro, cartaz = false }: { cap: Cap; escuro: boolean; ca
   )
 }
 
-function Paragrafos({ itens, escuro, className = '' }: { itens: string[]; escuro: boolean; className?: string }) {
+function Paragrafos({ itens, className = '' }: { itens: string[]; className?: string }) {
   if (itens.length === 0) return null
   return (
     <div className={`max-w-[62ch] space-y-5 ${className}`}>
       {itens.map((p, i) => (
-        <p key={i} data-revelar className={`text-lg leading-relaxed md:text-[1.1875rem] ${escuro ? 'text-white/88' : 'text-grafite'}`}>
+        <p key={i} data-revelar className="text-lg leading-relaxed text-(--texto-suave) md:text-[1.1875rem]">
           <Texto>{p}</Texto>
         </p>
       ))}
@@ -130,7 +166,7 @@ function Paragrafos({ itens, escuro, className = '' }: { itens: string[]; escuro
 function Citacao({ texto, escuro }: { texto: string; escuro: boolean }) {
   if (!texto) return null
   return (
-    <blockquote data-revelar className={`my-10 max-w-[40ch] border-l-4 pl-6 ${escuro ? 'border-amarelo' : 'border-laranja'}`}>
+    <blockquote data-revelar className="my-10 max-w-[40ch] border-l-4 border-(--acento) pl-6">
       <p className={`font-[family-name:var(--font-titulo)] text-[1.6rem] leading-snug font-semibold md:text-[2rem] ${escuro ? 'text-white' : 'text-azul-escuro'}`}>
         “{texto}”
       </p>
@@ -147,18 +183,23 @@ function Corpo({ cap, escuro, colado = false }: { cap: Cap; escuro: boolean; col
   const [primeiro, ...resto] = cap.paragrafos
   return (
     <>
-      {primeiro ? <Paragrafos itens={[primeiro]} escuro={escuro} className={colado ? '' : 'mt-7'} /> : null}
+      {primeiro ? <Paragrafos itens={[primeiro]} className={colado ? '' : 'mt-7'} /> : null}
       <Citacao texto={cap.citacao} escuro={escuro} />
-      {resto.length > 0 ? <Paragrafos itens={resto} escuro={escuro} className={cap.citacao ? '' : 'mt-5'} /> : null}
+      {resto.length > 0 ? <Paragrafos itens={resto} className={cap.citacao ? '' : 'mt-5'} /> : null}
     </>
   )
 }
 
-function Visto({ escuro }: { escuro: boolean }) {
+/**
+ * O visto das listas: disco cheio no acento, risco por cima. Era um anel
+ * a 16% de opacidade, que no laranja claro virava quase nada — cheio,
+ * ele é também o laranja que a campanha sentiu falta, repetido em ritmo.
+ */
+function Visto() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden className={`mt-0.5 size-6 shrink-0 ${escuro ? 'text-amarelo' : 'text-verde'}`}>
-      <circle cx="12" cy="12" r="11" fill="currentColor" opacity="0.16" />
-      <path d="m7.5 12.4 3 3 6-6.4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 24 24" aria-hidden className="mt-0.5 size-6 shrink-0 text-(--acento)">
+      <circle cx="12" cy="12" r="11" fill="currentColor" />
+      <path d="m7.5 12.4 3 3 6-6.4" fill="none" stroke="var(--sobre-acento)" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -169,10 +210,10 @@ function Marcos({ cap, escuro }: { cap: Cap; escuro: boolean }) {
     <ol data-revelar className="mt-10 grid gap-6 sm:grid-cols-3">
       {cap.marcos.map((m) => (
         <li key={m.id} className={`border-t-2 pt-4 ${escuro ? 'border-white/25' : 'border-azul/20'}`}>
-          <span className={`block font-[family-name:var(--font-titulo)] text-3xl leading-none font-bold ${escuro ? 'text-amarelo' : 'text-azul'}`}>
+          <span className={`block font-[family-name:var(--font-titulo)] text-3xl leading-none font-bold ${escuro ? 'text-laranja' : 'text-azul'}`}>
             {m.ano}
           </span>
-          <span className={`mt-2 block text-base leading-snug ${escuro ? 'text-white/85' : 'text-grafite'}`}>{m.texto}</span>
+          <span className="mt-2 block text-base leading-snug text-(--texto-suave)">{m.texto}</span>
         </li>
       ))}
     </ol>
@@ -185,7 +226,7 @@ function Lista({ itens, escuro, colunas = false }: { itens: string[]; escuro: bo
     <ul className={`mt-8 grid gap-x-8 gap-y-3.5 ${colunas ? 'md:grid-cols-2' : ''}`}>
       {itens.map((item, i) => (
         <li key={i} data-revelar style={{ ['--atraso' as string]: `${i * 40}ms` }} className="flex items-start gap-3">
-          <Visto escuro={escuro} />
+          <Visto />
           <span className={`text-lg leading-snug ${escuro ? 'text-white' : 'text-tinta'}`}>
             <Texto>{item}</Texto>
           </span>
@@ -226,13 +267,15 @@ function Foto({ slot, slots, sizes, className = '' }: { slot: Slot; slots: Slots
 /**
  * Carta: a abertura em primeira pessoa, numa folha colada com fita,
  * assinada — e com a foto ao lado ("precisa ter espaço do lado pra foto").
+ * A folha é sempre clara, então leva a tinta clara qualquer que seja o
+ * fundo do capítulo.
  */
 function Carta({ cap, fotos, slots }: { cap: Cap; fotos: Slot[]; slots: Slots }) {
   return (
     <div className={`grid items-center gap-12 lg:gap-16 ${fotos.length > 0 ? 'lg:grid-cols-[1.2fr_0.8fr]' : ''}`}>
       <div className={`relative ${fotos.length > 0 ? '' : 'mx-auto max-w-3xl'}`}>
         <span aria-hidden className="fita-crepe -top-3 left-1/2 z-10 -translate-x-1/2 -rotate-2" />
-        <article data-revelar className="cartao-ana relative px-6 py-11 md:px-12 md:py-14">
+        <article data-revelar style={tinta(TINTA_CLARA)} className="cartao-ana relative px-6 py-11 md:px-12 md:py-14">
           <Cabeca cap={cap} escuro={false} />
           <Corpo cap={cap} escuro={false} />
           {cap.fecho ? (
@@ -304,7 +347,7 @@ function Album({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
                   escuro ? 'text-white' : 'text-azul-escuro'
                 }`}
               >
-                <span aria-hidden className="size-2.5 shrink-0 rounded-full bg-laranja" />
+                <span aria-hidden className="size-2.5 shrink-0 rounded-full bg-(--acento)" />
                 <Texto>{linha}</Texto>
               </li>
             ))}
@@ -332,7 +375,13 @@ function Album({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
   )
 }
 
-/** Índice: os atalhos como cartões. É a porta de "Minhas causas". */
+/**
+ * Índice: os atalhos como cartões. É a porta de "Minhas causas".
+ *
+ * O número é azul e a seta mora num disco laranja: laranja claro em
+ * número sobre o cartão branco daria 2,5:1. Em forma, ele não precisa
+ * de contraste de leitura — e põe o laranja em cada cartão.
+ */
 function Indice({ cap, escuro }: { cap: Cap; escuro: boolean }) {
   return (
     <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
@@ -348,13 +397,13 @@ function Indice({ cap, escuro }: { cap: Cap; escuro: boolean }) {
                 href={a.href}
                 className="group cartao-ana flex min-h-20 items-center gap-5 px-6 py-5 text-azul-escuro transition-transform duration-300 ease-(--ease-suave) hover:-translate-y-1 md:px-8 md:py-6"
               >
-                <span className="font-[family-name:var(--font-titulo)] text-2xl font-bold text-verde tabular-nums">
+                <span className="font-[family-name:var(--font-titulo)] text-2xl font-bold text-azul tabular-nums">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span className="flex-1 font-[family-name:var(--font-titulo)] text-2xl leading-tight font-semibold tracking-[-0.02em] md:text-[1.75rem]">
                   {a.rotulo}
                 </span>
-                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-azul/10 transition-colors group-hover:bg-amarelo">
+                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-laranja text-azul-escuro transition-colors group-hover:bg-azul-escuro group-hover:text-white">
                   <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
@@ -385,7 +434,7 @@ function Faixa({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
                 data-revelar
                 style={{ ['--atraso' as string]: `${i * 90}ms` }}
                 className={`font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.015em] md:text-[1.75rem] ${
-                  i === cap.lista.length - 1 ? (escuro ? 'text-amarelo' : 'text-azul') : ''
+                  i === cap.lista.length - 1 ? (escuro ? 'text-laranja' : 'text-azul') : ''
                 }`}
               >
                 <Texto>{linha}</Texto>
@@ -408,7 +457,13 @@ function Faixa({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
   )
 }
 
-/** Manifesto: a frase grande manda; o texto acompanha em duas colunas. */
+/**
+ * Manifesto: a frase grande manda; o texto acompanha.
+ *
+ * No escuro as palavras da lista ("Aprender. Estudar. Dialogar.") são
+ * pílulas laranja com letra marinho — é o fim da página antes das
+ * propostas, e o lugar em que o laranja fecha a leitura dos capítulos.
+ */
 function Manifesto({ cap, escuro }: { cap: Cap; escuro: boolean }) {
   return (
     <div className="max-w-5xl">
@@ -420,7 +475,7 @@ function Manifesto({ cap, escuro }: { cap: Cap; escuro: boolean }) {
             <li
               key={i}
               className={`rounded-full px-5 py-2.5 font-[family-name:var(--font-titulo)] text-xl font-semibold md:text-2xl ${
-                escuro ? 'bg-white/10 text-white ring-1 ring-white/20' : 'bg-white text-azul-escuro shadow-[0_10px_24px_-18px_rgba(10,20,82,0.5)]'
+                escuro ? 'bg-laranja text-azul-escuro' : 'bg-white text-azul-escuro shadow-[0_10px_24px_-18px_rgba(10,20,82,0.5)]'
               }`}
             >
               {palavra}
@@ -436,9 +491,10 @@ function Manifesto({ cap, escuro }: { cap: Cap; escuro: boolean }) {
 /**
  * Destaque: o título de um lado e o texto num cartão claro do outro.
  *
- * ⚠️ O CARTÃO É SEMPRE CLARO, e é por leitura: corpo de texto branco
- *    sobre o laranja fica abaixo de 4,5:1. O laranja fica para o título
- *    e para a frase de fecho, que são grandes.
+ * ⚠️ O CARTÃO É SEMPRE CLARO, e é por leitura: parágrafo comprido direto
+ *    sobre cor chapada cansa, e no laranja claro só o marinho passa em
+ *    contraste. O fundo colorido fica para o título, a lista e a frase de
+ *    fecho. O cartão leva a tinta clara, qualquer que seja o fundo.
  */
 function Destaque({ cap, escuro }: { cap: Cap; escuro: boolean }) {
   return (
@@ -448,7 +504,7 @@ function Destaque({ cap, escuro }: { cap: Cap; escuro: boolean }) {
           <Cabeca cap={cap} escuro={escuro} cartaz />
         </div>
         {cap.paragrafos.length > 0 || cap.citacao ? (
-          <div data-revelar className={`cartao-ana px-7 py-8 md:px-10 md:py-10 ${escuro ? '' : '!bg-papel'}`}>
+          <div data-revelar style={tinta(TINTA_CLARA)} className={`cartao-ana px-7 py-8 md:px-10 md:py-10 ${escuro ? '' : '!bg-papel'}`}>
             <Corpo cap={cap} escuro={false} colado />
           </div>
         ) : null}
@@ -480,7 +536,7 @@ function ListaMarcada({ cap, escuro }: { cap: Cap; escuro: boolean }) {
                   escuro ? 'bg-white/10 ring-1 ring-white/15' : 'cartao-ana'
                 }`}
               >
-                <Visto escuro={escuro} />
+                <Visto />
                 <span className={`text-[1.0625rem] leading-snug font-medium ${escuro ? 'text-white' : 'text-tinta'}`}>
                   <Texto>{item}</Texto>
                 </span>

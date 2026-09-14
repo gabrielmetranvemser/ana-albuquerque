@@ -18,6 +18,14 @@ import { Onda } from './Organico'
  *    documento e a que mais a define. Com ela larga, as sete fecham a
  *    grade de três colunas se a última também alargar — é a conta do
  *    `ultimaLarga`.
+ *
+ * ⚠️ A ÚLTIMA É LARANJA. A campanha sentiu "falta bastante do laranja";
+ *    com a primeira azul e a última laranja, a grade abre e fecha nas
+ *    duas cores do partido. Letra marinho, a única que passa sobre o
+ *    laranja claro.
+ *
+ * ⚠️ O NÚMERO DOS CARTÕES BRANCOS É AZUL, e não laranja: laranja claro
+ *    sobre branco dá 2,5:1, abaixo até do mínimo de texto grande.
  */
 export async function Propostas() {
   const { futuro } = await lerConteudo()
@@ -72,18 +80,22 @@ export async function Propostas() {
           {futuro.itens.map((item, i) => {
             const primeira = i === 0
             const ultima = i === futuro.itens.length - 1
+            const laranja = ultima && !primeira
+            const fundo = primeira
+              ? 'rounded-[1.5rem] bg-azul text-white md:col-span-2'
+              : laranja
+                ? 'rounded-[1.5rem] bg-laranja text-azul-escuro'
+                : 'cartao-ana text-tinta'
             return (
               <li
                 key={item.id}
                 data-revelar
                 style={{ ['--atraso' as string]: `${i * 50}ms` }}
-                className={`flex flex-col p-7 md:p-8 ${
-                  primeira ? 'rounded-[1.5rem] bg-azul text-white md:col-span-2' : 'cartao-ana text-tinta'
-                } ${ultima && ultimaLarga ? 'lg:col-span-2' : ''}`}
+                className={`flex flex-col p-7 md:p-8 ${fundo} ${ultima && ultimaLarga ? 'lg:col-span-2' : ''}`}
               >
                 <span
                   className={`font-[family-name:var(--font-titulo)] text-4xl leading-none font-bold tabular-nums ${
-                    primeira ? 'text-amarelo' : 'text-verde'
+                    primeira ? 'text-laranja' : laranja ? 'text-azul-escuro' : 'text-azul'
                   }`}
                 >
                   {item.numero}
@@ -91,7 +103,11 @@ export async function Propostas() {
                 <h3 className="mt-5 font-[family-name:var(--font-titulo)] text-[1.5rem] leading-tight font-semibold tracking-[-0.02em] md:text-[1.65rem]">
                   <Texto>{item.titulo}</Texto>
                 </h3>
-                <p className={`mt-3 text-[1.0625rem] leading-relaxed ${primeira ? 'text-white/88' : 'text-grafite'}`}>
+                <p
+                  className={`mt-3 text-[1.0625rem] leading-relaxed ${
+                    primeira ? 'text-white/88' : laranja ? 'text-azul-escuro' : 'text-grafite'
+                  }`}
+                >
                   <Texto>{item.texto}</Texto>
                 </p>
               </li>

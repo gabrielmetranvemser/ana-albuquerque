@@ -22,6 +22,17 @@ FOTOS/
 MARCA/
 ACERVO/
 
+# ⚠️ ANA: NO MAC, AS DUAS PRIMEIRAS LINHAS ACIMA PEGAVAM `public/marca/`
+#    E `public/fotos/`. O git daqui não diferencia maiúscula
+#    (core.ignorecase), e `MARCA/` casa com qualquer pasta "marca" —
+#    inclusive a da arte que o site serve. Os dois primeiros commits da
+#    Ana saíram sem logotipo e sem fotos, e a Vercel publicaria a página
+#    com imagem quebrada. A marca volta ao repositório: é pública, está
+#    na página, e o site não fica de pé sem ela. As fotos de
+#    `public/fotos/` CONTINUAM FORA até a campanha decidir, porque o
+#    repositório é público — ver PENDENCIAS.md.
+!public/marca/
+
 # O mesmo acervo, com os nomes que a campanha da Ana usou ao entregar,
 # e os recortes já prontos para subir pelo painel. O repositório é
 # PÚBLICO: aqui há fotos de família e documentos escaneados.

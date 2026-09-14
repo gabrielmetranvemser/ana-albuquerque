@@ -201,23 +201,37 @@ export const campanha = {
   //    do Solidariedade — e o amarelo é o da bandeira dentro do escudo.
   //    A campanha pediu azul, laranja e as cores do Brasil.
   //
-  // ⚠️ O LARANJA ESTÁ NA SECUNDÁRIA, E NÃO NA AÇÃO, por contraste. Ação
-  //    é botão, e botão precisa de texto legível em cima: marinho sobre
-  //    amarelo dá 8,9:1, sobre laranja dá 4,4:1. Como secundária, o
-  //    laranja vira SUPERFÍCIE (bandeiras, filtro) com título branco por
-  //    cima, que é o que os posts dela já fazem. Ele é um tom abaixo do
-  //    laranja vivo da arte para o branco em cima passar de 4:1.
+  // ⚠️ O LARANJA VIROU A COR DE AÇÃO (14/09/2026, quarta rodada). Na
+  //    primeira paleta a ação era o amarelo da bandeira, e o laranja
+  //    ficava na secundária num tom QUEIMADO (#d4540e), escolhido para
+  //    aguentar letra branca. A campanha: "sinto falta bastante do
+  //    laranja — não esse degradê horroso e escuro, um laranja mais
+  //    claro, mais vivo, da cor da logo". O claro foi medido na arte
+  //    laranja (#fb7f3d a #ff8a46 no "Ana"); `acao` é o meio dos dois.
+  //
+  //    O que isso obriga, e por quê:
+  //    · em cima dele a letra é MARINHO (5,5:1). Branco dá 2,5:1;
+  //    · sobre o azul da marca ele só serve em TÍTULO (3,2:1 — texto
+  //      grande pede 3:1). Sobre o marinho, em qualquer tamanho;
+  //    · a SECUNDÁRIA continua laranja, mas escura o bastante para texto
+  //      PEQUENO sobre a areia de /filtro (4,7:1), o branco (5,8:1) e
+  //      para letra branca em cima (5,8:1): é o laranja dos avisos e selos
+  //      de /grupos e /filtro. Com #c4500f o aviso "Sua foto nunca sai do
+  //      seu aparelho" dava 3,8:1 na areia. Superfície grande em laranja
+  //      é `bg-laranja`, que lê a ação — nunca a secundária;
+  //    · o amarelo saiu da página: ficou no escudo do logotipo, que é
+  //      imagem, e na fita da carta (`fita-crepe`, globals.css).
   cores: {
     /** Superfície escura: primeira dobra, chamada final, rodapé. */
     primariaEscura: '#102084',
     /** A cor de marca. */
     primaria: '#1f45c4',
     /** Superfície escura alternativa. */
-    secundariaEscura: '#a33f07',
-    /** Ênfase: seções de valores e compromissos. */
-    secundaria: '#d4540e',
-    /** AÇÃO: botões e detalhes. Nunca superfície grande. */
-    acao: '#ffcc00',
+    secundariaEscura: '#8a3608',
+    /** Laranja de TEXTO e de selo com letra branca. Superfície é `acao`. */
+    secundaria: '#ad450b',
+    /** AÇÃO: botões, realce de título, a faixa e a chamada final. */
+    acao: '#fd8440',
     /** Texto que fica em cima da cor de ação. */
     acaoTexto: '#102084',
     /** O fim do gradiente da primeira dobra. Mais escuro que a primária. */

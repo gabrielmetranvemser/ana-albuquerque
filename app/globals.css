@@ -43,7 +43,13 @@
      material de campanha feito à mão. */
   --color-papel: #fbf5e9;
   --color-areia: #f2e7d2;
-  --color-laranja: #f47a20;       /* só forma e adesivo — nunca texto */
+  /* ANA: o laranja CLARO da logo (o "Ana" e o topo do "7766" da arte
+     laranja), e não o queimado do pé do degradê — que a campanha chamou
+     de "horroso e escuro". Superfície, botão e realce de título sobre
+     azul ou marinho. Nunca texto pequeno, e nunca letra branca por cima
+     (2,5:1): em cima dele a letra é marinho (5,5:1). O valor que vale
+     vem de `campanha.cores.acao`, no app/layout.tsx; este é o padrão. */
+  --color-laranja: #fd8440;
   --color-verde-bandeira: #14a438; /* só a faixa do logotipo           */
   --color-tinta: #141a3d;         /* texto principal                  */
   --color-grafite: #4b4f68;       /* texto secundário                 */
@@ -276,15 +282,19 @@
    ⚠️ SÓ EM ATÉ TRÊS PALAVRAS — quem decide é o TextoComDestaque. Frase
    inteira em pincel foi reprovada por ser difícil de ler.
 
-   ⚠️ 1.15em E NÃO 1em: letra de pincel tem olho pequeno, e no mesmo
-   corpo ela parece um número menor que a letra de título ao lado.
+   ⚠️ 1.2em E NÃO 1em: letra de pincel tem olho pequeno, e no mesmo
+   corpo ela parece um número menor que a letra de título ao lado. A
+   conta, medida no Chrome a 100px: altura de x da Bricolage 52,5; da
+   Caveat Brush 41,3. Com 1.2em as duas quase se igualam, e a frase
+   ainda sai mais ESTREITA que na letra de título, então não quebra
+   linha a mais. (Era 1.15em para a Kaushan, de altura de x 47,5.)
    ⚠️ `text-transform: none`: pincel em maiúsculas vira garrancho, e há
    títulos que herdam caixa alta. */
 @utility rabisco {
   font-family: var(--fonte-rabisco), var(--font-titulo);
   font-weight: 400;
   font-style: normal;
-  font-size: 1.15em;
+  font-size: 1.2em;
   letter-spacing: 0;
   text-transform: none;
 }
@@ -333,7 +343,10 @@
   position: absolute;
   width: 5.5rem;
   height: 1.55rem;
-  background-color: color-mix(in srgb, var(--color-amarelo) 72%, transparent);
+  /* ANA: amarelo FIXO, e não a cor de ação. A ação virou o laranja, e a
+     carta foi aprovada com a fita amarela — é também o último amarelo da
+     bandeira fora do escudo. */
+  background-color: color-mix(in srgb, #ffcc00 72%, transparent);
   clip-path: polygon(3% 8%, 97% 0, 100% 46%, 96% 100%, 2% 92%, 0 50%);
 }
 
