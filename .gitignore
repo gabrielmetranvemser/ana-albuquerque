@@ -1,0 +1,33 @@
+node_modules
+.next
+out
+build
+.DS_Store
+*.pem
+npm-debug.log*
+.env
+.env*.local
+.vercel
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# lixo do Finder
+.DS_Store
+
+# O acervo bruto de fotos e a arte da campanha. Ficam fora do
+# repositório de propósito: são dezenas de MB de originais, e o caminho
+# deles para o site é o painel → Supabase Storage, não o git.
+# Versionar aqui engordaria todo clone para sempre sem servir a nada.
+FOTOS/
+MARCA/
+ACERVO/
+
+# O mesmo acervo, com os nomes que a campanha da Ana usou ao entregar,
+# e os recortes já prontos para subir pelo painel. O repositório é
+# PÚBLICO: aqui há fotos de família e documentos escaneados.
+Fotos apoio site/
+Marca Ana/
+_imagens-painel/
+
+# Permissões locais do Claude Code — são da máquina, não do projeto.
+.claude/settings.local.json
