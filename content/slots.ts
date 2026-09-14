@@ -151,11 +151,17 @@ export const SLOTS: Slot[] = [
     larguraMin: 1200,
     alturaMin: 1500,
     alpha: true,
-    // ⚠️ SEM FOTO PADRÃO, E DE PROPÓSITO. A primeira versão vinha com um
-    //    recorte automático de foto de celular, e a campanha reprovou:
-    //    "deixa que eu escolho". Vazio, a primeira dobra mostra a marca
-    //    com o número no lugar da foto — ver components/ana/Abertura.tsx.
-    nota: 'O retrato da primeira dobra: PNG recortado, sem fundo. Sem imagem aqui, a primeira dobra mostra a marca com o número no lugar da foto.',
+    // ⚠️ A FOTO PADRÃO FOI A CAMPANHA QUE ESCOLHEU. A primeira versão vinha
+    //    com um recorte automático de foto de celular, e a campanha
+    //    reprovou: "deixa que eu escolho". Em 14/09/2026 ela mandou
+    //    `public/ana.png` ("ideal pra colocar na capa"). Fica FORA de
+    //    `public/fotos/` de propósito: aquela pasta não vai para o git, e
+    //    a foto da capa precisa ir. Sem arquivo e sem painel, a dobra
+    //    mostra a marca com o número — ver components/ana/Abertura.tsx.
+    padrao: '/ana.png',
+    padraoTamanho: [1302, 2128],
+    padraoAlt: 'Ana Albuquerque, de camisa branca e óculos, com os braços cruzados',
+    nota: 'O retrato da primeira dobra: PNG recortado, sem fundo, cortado na cintura. Sem imagem aqui, vale a foto que a campanha escolheu.',
   },
   {
     chave: 'hero.apoio',

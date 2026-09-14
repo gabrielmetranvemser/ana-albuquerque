@@ -80,7 +80,9 @@ export function Header({
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 bg-white transition-shadow duration-300 ${
+      // Branco translúcido com desfoque: o papel quadriculado passa por
+      // baixo da barra ao rolar, em vez de ser cortado por uma faixa chapada.
+      className={`fixed inset-x-0 top-0 z-50 bg-white/85 backdrop-blur-md transition-shadow duration-300 ${
         rolou ? 'shadow-[0_10px_30px_-20px_rgba(10,20,82,0.45)]' : ''
       }`}
     >

@@ -15,9 +15,10 @@ interface Props {
 }
 
 const FUNDOS = {
-  branco: 'bg-white text-tinta',
-  // ANA: areia é papel com grão.
-  areia: 'papel text-tinta',
+  // ANA: branco e areia são TRANSPARENTES — o papel quadriculado mora no
+  // <body> (globals.css), e seção pintada por cima esconderia a grade.
+  branco: 'text-tinta',
+  areia: 'text-tinta',
   // superfícies cheias: um matiz só, do claro ao escuro
   'azul-profundo': 'fundo-azul-profundo text-white',
   verde: 'fundo-verde text-white',
@@ -25,6 +26,12 @@ const FUNDOS = {
   amarelo: 'bg-amarelo text-azul-escuro',
 } as const
 
+/**
+ * ⚠️ ANA: FUNDO DE COR É DE PONTA A PONTA. Na quinta rodada ele virou
+ *    painel de canto arredondado dentro da largura do conteúdo, e a
+ *    campanha reprovou na hora: "achei feio todos os blocos, era melhor
+ *    quando era largura total".
+ */
 export function Secao({
   id,
   children,

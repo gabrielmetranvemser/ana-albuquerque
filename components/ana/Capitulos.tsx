@@ -5,14 +5,13 @@ import { Imagem } from '@/components/ui/Imagem'
 import { TextoComDestaque, Texto } from '@/components/ui/TextoComDestaque'
 import { SLOTS, type Slot } from '@/content/slots'
 import type { Conteudo } from '@/lib/conteudo/tipos'
-import { Onda } from './Organico'
 
 /**
  * OS CAPÍTULOS DA PÁGINA DA ANA — a história e as causas, na ordem do
  * documento da campanha. O conteúdo e o porquê da lista estão em
  * CAPÍTULOS, content/copy.ts.
  *
- * ⚠️ ESTE É O SEGUNDO DESENHO DOS CAPÍTULOS. O primeiro tinha fita
+ * ⚠️ ESTE É O TERCEIRO DESENHO DOS CAPÍTULOS. O primeiro tinha fita
  *    crepe, adesivos tortos, títulos em caixa alta itálica, citação e
  *    lista em letra de pincel e fotos recortadas em bolha — que cortavam
  *    cabeça. A campanha: "muito ruim toda a hierarquia, a diagramação".
@@ -29,16 +28,23 @@ import { Onda } from './Organico'
  * ⚠️ O `layout` ESCOLHE A FORMA, E A FORMA SEGUE O TEXTO. Um capítulo que
  *    é uma frase-manifesto não cabe no desenho de um capítulo de lista.
  *
- * ⚠️ AS SEÇÕES SE EMENDAM POR ONDA, pintada com a cor do capítulo
- *    SEGUINTE. Quando os dois têm a mesma cor, não há onda.
+ * ⚠️ O FUNDO: CLARO É TRANSPARENTE, COLORIDO É DE PONTA A PONTA.
+ *    As seções já se emendaram por onda, pintada com a cor do capítulo
+ *    seguinte. Com o papel quadriculado do post do Solidariedade (quinta
+ *    rodada), o capítulo claro passou a ser transparente, deixando a
+ *    grade do <body> correr. O colorido chegou a virar painel de canto
+ *    arredondado e foi reprovado na hora: "achei feio todos os blocos,
+ *    era melhor quando era largura total". Voltou de ponta a ponta, com
+ *    borda reta: a onda, pintada na cor do papel, cobriria a grade com
+ *    uma tira lisa.
  */
 
 type Cap = Conteudo['capitulos']['itens'][number]
 type Slots = Record<string, ImagemDoSlot>
 
 /**
- * A TINTA DE CADA FUNDO — três variáveis CSS que as peças leem, em vez de
- * cada peça perguntar "estou no escuro?".
+ * A TINTA DE CADA FUNDO — variáveis CSS que as peças leem, em vez de cada
+ * peça perguntar "estou no escuro?".
  *
  * ⚠️ EXISTE PORQUE O LARANJA VIROU FUNDO DE VERDADE. Com claro e escuro
  *    bastava um booleano. O laranja claro da logo é um terceiro caso: a
@@ -49,64 +55,67 @@ type Slots = Record<string, ImagemDoSlot>
  *    · `--acento` ........ traço do rótulo, borda da citação, ponto, visto
  *    · `--sobre-acento` .. o que vai desenhado em cima do acento
  *    · `--texto-suave` ... parágrafo e legenda
+ *    · `--risco` ......... o risco à mão sob a manuscrita (globals.css)
  *
  * ⚠️ NO ESCURO O ACENTO É PÊSSEGO, E NÃO LARANJA. Laranja cheio sobre o
  *    azul foi reprovado ("o contraste tá meio feio, desses azul com
  *    laranja"): duas cores saturadas encostadas vibram. O pêssego é o
  *    mesmo matiz, mais claro e menos saturado. No claro o acento continua
- *    laranja cheio — sobre papel e branco não há o que vibrar.
+ *    laranja cheio — sobre o papel não há o que vibrar.
  */
-type Tinta = { acento: string; sobreAcento: string; suave: string }
+type Tinta = { acento: string; sobreAcento: string; suave: string; risco: string }
 
-const TINTA_CLARA: Tinta = { acento: 'var(--color-laranja)', sobreAcento: 'var(--color-azul-escuro)', suave: 'var(--color-grafite)' }
-const TINTA_ESCURA: Tinta = { acento: 'var(--color-pessego)', sobreAcento: 'var(--color-azul-escuro)', suave: 'rgb(255 255 255 / 0.88)' }
+const TINTA_CLARA: Tinta = { acento: 'var(--color-laranja)', sobreAcento: 'var(--color-azul-escuro)', suave: 'var(--color-grafite)', risco: 'var(--risco-laranja)' }
+const TINTA_ESCURA: Tinta = { acento: 'var(--color-pessego)', sobreAcento: 'var(--color-azul-escuro)', suave: 'rgb(255 255 255 / 0.88)', risco: 'var(--risco-pessego)' }
 // Grafite sobre o laranja claro dá 3,3:1 — parágrafo ali é o marinho fosco (5,9:1).
-const TINTA_LARANJA: Tinta = { acento: 'var(--color-azul-escuro)', sobreAcento: '#ffffff', suave: 'var(--color-azul-escuro)' }
+const TINTA_LARANJA: Tinta = { acento: 'var(--color-azul-escuro)', sobreAcento: '#ffffff', suave: 'var(--color-azul-escuro)', risco: 'var(--risco-branco)' }
 
 function tinta(t: Tinta): CSSProperties {
   return {
     ['--acento' as string]: t.acento,
     ['--sobre-acento' as string]: t.sobreAcento,
     ['--texto-suave' as string]: t.suave,
+    ['--risco' as string]: t.risco,
   }
 }
 
 /**
  * `realce` é a cor do trecho [[entre colchetes]] do título — o que o tom
- * `capa` do TextoComDestaque lê. No azul e no marinho é o pêssego (4,6:1 e
- * 8,7:1). Sobre o laranja é o próprio marinho fosco: a letra de pincel já
- * separa o trecho, e o azul da marca ali vibrava.
+ * `capa` do TextoComDestaque lê. No claro é o azul da marca (com o risco
+ * laranja por baixo, como no post). No azul e no marinho é o pêssego
+ * (4,6:1 e 8,7:1). Sobre o laranja é o próprio marinho fosco: a
+ * manuscrita já separa o trecho, e o azul da marca ali vibrava.
  *
  * ⚠️ O FUNDO `laranja` JÁ FOI O LARANJA QUEIMADO DA PALETA, com letra
  *    branca. A campanha pediu um laranja "mais claro, mais vivo, da cor
  *    da logo" — e nele a letra branca não passa (2,5:1). Por isso
  *    `escuro` é falso ali: a letra é marinho.
  */
-const FUNDOS: Record<string, { classe: string; cor: string; escuro: boolean; realce: string; tinta: Tinta }> = {
-  papel: { classe: 'papel text-tinta', cor: 'var(--color-papel)', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
-  areia: { classe: 'bg-areia text-tinta', cor: 'var(--color-areia)', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
-  branco: { classe: 'bg-white text-tinta', cor: '#ffffff', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
-  azul: { classe: 'bg-azul grao text-white', cor: 'var(--color-azul)', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
-  marinho: { classe: 'bg-azul-escuro grao text-white', cor: 'var(--color-azul-escuro)', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
-  laranja: { classe: 'bg-laranja text-azul-escuro', cor: 'var(--color-laranja)', escuro: false, realce: 'var(--color-azul-escuro)', tinta: TINTA_LARANJA },
+const FUNDOS: Record<string, { classe: string; escuro: boolean; realce: string; tinta: Tinta }> = {
+  papel: { classe: 'text-tinta', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
+  areia: { classe: 'text-tinta', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
+  branco: { classe: 'text-tinta', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
+  azul: { classe: 'bg-azul grao text-white', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
+  marinho: { classe: 'bg-azul-escuro grao text-white', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
+  laranja: { classe: 'bg-laranja text-azul-escuro', escuro: false, realce: 'var(--color-azul-escuro)', tinta: TINTA_LARANJA },
 }
 
-export async function Capitulos({ corDepois = 'var(--color-papel)' }: { corDepois?: string }) {
+// `corDepois` era a cor da onda que emendava o último capítulo na seção
+// seguinte. Sem onda, não há o que pintar; a prop fica aceita para a
+// página não precisar mudar.
+export async function Capitulos(_props: { corDepois?: string } = {}) {
   const [{ capitulos }, slots] = await Promise.all([lerConteudo(), lerSlots()])
-  const itens = capitulos.itens
 
   return (
     <>
-      {itens.map((cap, i) => {
-        const seguinte = itens[i + 1]
-        const cor = seguinte ? (FUNDOS[seguinte.fundo] ?? FUNDOS.papel).cor : corDepois
-        return <Capitulo key={cap.id} cap={cap} slots={slots} indice={i} corSeguinte={cor} />
-      })}
+      {capitulos.itens.map((cap) => (
+        <Capitulo key={cap.id} cap={cap} slots={slots} />
+      ))}
     </>
   )
 }
 
-function Capitulo({ cap, slots, indice, corSeguinte }: { cap: Cap; slots: Slots; indice: number; corSeguinte: string }) {
+function Capitulo({ cap, slots }: { cap: Cap; slots: Slots }) {
   const f = FUNDOS[cap.fundo] ?? FUNDOS.papel
   const fotos = SLOTS.filter((s) => s.chave.startsWith(`capitulo.${cap.id}.`))
   const escuro = f.escuro
@@ -115,7 +124,7 @@ function Capitulo({ cap, slots, indice, corSeguinte }: { cap: Cap; slots: Slots;
     <section
       id={cap.ancora || undefined}
       style={{ ['--capa-realce' as string]: f.realce, ...tinta(f.tinta) }}
-      className={`relative isolate overflow-hidden ${f.classe} py-20 md:py-28`}
+      className={`relative isolate overflow-hidden py-20 md:py-28 ${f.classe}`}
     >
       <div className="container-lp relative">
         {cap.layout === 'carta' ? <Carta cap={cap} fotos={fotos} slots={slots} /> : null}
@@ -127,7 +136,6 @@ function Capitulo({ cap, slots, indice, corSeguinte }: { cap: Cap; slots: Slots;
         {cap.layout === 'destaque' ? <Destaque cap={cap} escuro={escuro} /> : null}
         {cap.layout === 'lista' ? <ListaMarcada cap={cap} escuro={escuro} /> : null}
       </div>
-      {corSeguinte !== f.cor ? <Onda cor={corSeguinte} variante={indice} /> : null}
     </section>
   )
 }
@@ -173,7 +181,7 @@ function Citacao({ texto, escuro }: { texto: string; escuro: boolean }) {
   if (!texto) return null
   return (
     <blockquote data-revelar className="my-10 max-w-[40ch] border-l-4 border-(--acento) pl-6">
-      <p className={`font-[family-name:var(--font-titulo)] text-[1.6rem] leading-snug font-semibold md:text-[2rem] ${escuro ? 'text-white' : 'text-azul-escuro'}`}>
+      <p className={`font-[family-name:var(--font-titulo)] text-[1.6rem] leading-snug font-medium tracking-[-0.02em] md:text-[2rem] ${escuro ? 'text-white' : 'text-azul-escuro'}`}>
         “{texto}”
       </p>
     </blockquote>
@@ -216,7 +224,7 @@ function Marcos({ cap, escuro }: { cap: Cap; escuro: boolean }) {
     <ol data-revelar className="mt-10 grid gap-6 sm:grid-cols-3">
       {cap.marcos.map((m) => (
         <li key={m.id} className={`border-t-2 pt-4 ${escuro ? 'border-white/25' : 'border-azul/20'}`}>
-          <span className={`block font-[family-name:var(--font-titulo)] text-3xl leading-none font-bold ${escuro ? 'text-pessego' : 'text-azul'}`}>
+          <span className={`block font-[family-name:var(--font-titulo)] text-3xl leading-none font-bold tracking-[-0.03em] ${escuro ? 'text-pessego' : 'text-laranja-forte'}`}>
             {m.ano}
           </span>
           <span className="mt-2 block text-base leading-snug text-(--texto-suave)">{m.texto}</span>
@@ -247,7 +255,7 @@ function Fecho({ texto, escuro, className = '' }: { texto: string; escuro: boole
   return (
     <p
       data-revelar
-      className={`mt-14 max-w-3xl font-[family-name:var(--font-titulo)] text-[1.75rem] leading-[1.18] font-semibold tracking-[-0.02em] md:text-[2.4rem] ${
+      className={`mt-14 max-w-3xl font-[family-name:var(--font-titulo)] text-[1.75rem] leading-[1.18] font-semibold tracking-[-0.025em] md:text-[2.4rem] ${
         escuro ? 'text-white' : 'text-azul-escuro'
       } ${className}`}
     >
@@ -349,7 +357,7 @@ function Album({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
                 key={i}
                 data-revelar
                 style={{ ['--atraso' as string]: `${i * 70}ms` }}
-                className={`flex items-center gap-4 font-[family-name:var(--font-titulo)] text-xl font-semibold tracking-[-0.01em] md:text-2xl ${
+                className={`flex items-center gap-4 font-[family-name:var(--font-titulo)] text-xl font-semibold tracking-[-0.015em] md:text-2xl ${
                   escuro ? 'text-white' : 'text-azul-escuro'
                 }`}
               >
@@ -407,7 +415,7 @@ function Indice({ cap, escuro }: { cap: Cap; escuro: boolean }) {
                 <span className="font-[family-name:var(--font-titulo)] text-2xl font-bold text-azul tabular-nums">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <span className="flex-1 font-[family-name:var(--font-titulo)] text-2xl leading-tight font-semibold tracking-[-0.02em] md:text-[1.75rem]">
+                <span className="flex-1 font-[family-name:var(--font-titulo)] text-2xl leading-tight font-semibold tracking-[-0.025em] md:text-[1.75rem]">
                   {a.rotulo}
                 </span>
                 <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-laranja text-azul-escuro transition-colors group-hover:bg-azul-escuro group-hover:text-white">
@@ -440,7 +448,7 @@ function Faixa({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
                 key={i}
                 data-revelar
                 style={{ ['--atraso' as string]: `${i * 90}ms` }}
-                className={`font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.015em] md:text-[1.75rem] ${
+                className={`font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.02em] md:text-[1.75rem] ${
                   i === cap.lista.length - 1 ? (escuro ? 'text-pessego' : 'text-azul') : ''
                 }`}
               >
@@ -511,7 +519,7 @@ function Destaque({ cap, escuro }: { cap: Cap; escuro: boolean }) {
           <Cabeca cap={cap} escuro={escuro} cartaz />
         </div>
         {cap.paragrafos.length > 0 || cap.citacao ? (
-          <div data-revelar style={tinta(TINTA_CLARA)} className={`cartao-ana px-7 py-8 md:px-10 md:py-10 ${escuro ? '' : '!bg-papel'}`}>
+          <div data-revelar style={tinta(TINTA_CLARA)} className="cartao-ana px-7 py-8 md:px-10 md:py-10">
             <Corpo cap={cap} escuro={false} colado />
           </div>
         ) : null}

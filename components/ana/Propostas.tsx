@@ -1,6 +1,5 @@
 import { lerConteudo } from '@/lib/conteudo/ler'
 import { TextoComDestaque, Texto } from '@/components/ui/TextoComDestaque'
-import { Onda } from './Organico'
 
 /**
  * "O QUE ANA LEVA PARA BRASÍLIA" — as palavras e as sete propostas.
@@ -24,8 +23,12 @@ import { Onda } from './Organico'
  *    duas cores do partido. Letra marinho, a única que passa sobre o
  *    laranja claro.
  *
- * ⚠️ O NÚMERO DOS CARTÕES BRANCOS É AZUL, e não laranja: laranja claro
- *    sobre branco dá 2,5:1, abaixo até do mínimo de texto grande.
+ * ⚠️ O NÚMERO DOS CARTÕES BRANCOS É LARANJA FORTE, e não o laranja claro:
+ *    o claro sobre branco dá 2,5:1, abaixo até do mínimo de texto grande;
+ *    o forte, o segundo tom do "77" do partido, dá 3,3:1.
+ *
+ * A seção não tem fundo próprio: fica sobre o papel quadriculado do
+ * <body>, e os cartões brancos flutuam na grade.
  */
 export async function Propostas() {
   const { futuro } = await lerConteudo()
@@ -35,7 +38,7 @@ export async function Propostas() {
     <section
       id="propostas"
       style={{ ['--capa-realce' as string]: 'var(--color-azul)' }}
-      className="papel relative isolate overflow-hidden py-20 text-tinta md:py-28"
+      className="relative py-20 text-tinta md:py-28"
     >
       <div className="container-lp relative">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-end lg:gap-20">
@@ -60,7 +63,7 @@ export async function Propostas() {
                 {futuro.bagagem.map((palavra, i) => (
                   <li
                     key={i}
-                    className="inline-flex items-center gap-2.5 rounded-full bg-white px-5 py-2.5 text-lg font-semibold text-azul-escuro shadow-[0_10px_24px_-18px_rgba(10,20,82,0.5)]"
+                    className="inline-flex items-center gap-2.5 rounded-full bg-white px-5 py-2.5 text-lg font-semibold text-azul-escuro shadow-[0_10px_24px_-18px_rgba(10,20,82,0.5)] ring-1 ring-azul/8"
                   >
                     <span aria-hidden className="size-2 rounded-full bg-laranja" />
                     {palavra}
@@ -68,7 +71,7 @@ export async function Propostas() {
                 ))}
               </ul>
               {futuro.fecho ? (
-                <p className="mt-6 max-w-[40ch] font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.015em] text-azul-escuro">
+                <p className="mt-6 max-w-[40ch] font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.02em] text-azul-escuro">
                   <Texto>{futuro.fecho}</Texto>
                 </p>
               ) : null}
@@ -82,9 +85,9 @@ export async function Propostas() {
             const ultima = i === futuro.itens.length - 1
             const laranja = ultima && !primeira
             const fundo = primeira
-              ? 'rounded-[1.5rem] bg-azul text-white md:col-span-2'
+              ? 'rounded-[1.75rem] bg-azul text-white md:col-span-2'
               : laranja
-                ? 'rounded-[1.5rem] bg-laranja text-azul-escuro'
+                ? 'rounded-[1.75rem] bg-laranja text-azul-escuro'
                 : 'cartao-ana text-tinta'
             return (
               <li
@@ -94,13 +97,13 @@ export async function Propostas() {
                 className={`flex flex-col p-7 md:p-8 ${fundo} ${ultima && ultimaLarga ? 'lg:col-span-2' : ''}`}
               >
                 <span
-                  className={`font-[family-name:var(--font-titulo)] text-4xl leading-none font-bold tabular-nums ${
-                    primeira ? 'text-pessego' : laranja ? 'text-azul-escuro' : 'text-azul'
+                  className={`font-[family-name:var(--font-titulo)] text-4xl leading-none font-bold tracking-[-0.03em] tabular-nums ${
+                    primeira ? 'text-pessego' : laranja ? 'text-azul-escuro' : 'text-laranja-forte'
                   }`}
                 >
                   {item.numero}
                 </span>
-                <h3 className="mt-5 font-[family-name:var(--font-titulo)] text-[1.5rem] leading-tight font-semibold tracking-[-0.02em] md:text-[1.65rem]">
+                <h3 className="mt-5 font-[family-name:var(--font-titulo)] text-[1.5rem] leading-tight font-semibold tracking-[-0.025em] md:text-[1.65rem]">
                   <Texto>{item.titulo}</Texto>
                 </h3>
                 <p
@@ -115,8 +118,6 @@ export async function Propostas() {
           })}
         </ol>
       </div>
-
-      <Onda cor="var(--color-azul)" variante={1} />
     </section>
   )
 }

@@ -1,6 +1,6 @@
 import { lerConteudo } from '@/lib/conteudo/ler'
 import { TextoComDestaque, Texto } from '@/components/ui/TextoComDestaque'
-import { Mancha, Onda } from './Organico'
+import { Mancha } from './Organico'
 
 /**
  * "UMA NOVA MISSÃO" — da farda para Brasília.
@@ -14,8 +14,10 @@ import { Mancha, Onda } from './Organico'
  *    são letra de título em caixa normal, com um ponto — a força vem de
  *    estarem uma embaixo da outra, não do tamanho.
  *
- * Sobre este azul, o laranja é o pêssego: no realce, no traço e nos
- * pontos. Laranja cheio aqui vibrava — ver `--color-pessego`.
+ * Sobre este azul, o laranja é o pêssego: no realce, no traço, nos pontos
+ * e no risco sob a manuscrita. Laranja cheio aqui vibrava — ver
+ * `--color-pessego`. De ponta a ponta, e com borda reta — ver
+ * Capitulos.tsx.
  */
 export async function Missao() {
   const { missao } = await lerConteudo()
@@ -23,12 +25,12 @@ export async function Missao() {
   return (
     <section
       id="missao"
-      style={{ ['--capa-realce' as string]: 'var(--color-pessego)' }}
+      style={{ ['--capa-realce' as string]: 'var(--color-pessego)', ['--risco' as string]: 'var(--risco-pessego)' }}
       className="relative isolate overflow-hidden bg-azul grao py-20 text-white md:py-28"
     >
       <Mancha
         variante={2}
-        className="pointer-events-none absolute top-16 -left-48 w-[32rem] text-azul-escuro/40 md:w-[44rem]"
+        className="pointer-events-none absolute top-16 -left-48 w-[32rem] text-azul-escuro/30 md:w-[44rem]"
       />
 
       <div className="container-lp relative grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
@@ -58,7 +60,7 @@ export async function Missao() {
                 key={i}
                 data-revelar
                 style={{ ['--atraso' as string]: `${i * 80}ms` }}
-                className="relative font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.015em] md:text-[1.85rem]"
+                className="relative font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.02em] md:text-[1.85rem]"
               >
                 <span aria-hidden className="absolute top-[0.6em] -left-[2.1rem] size-3 rounded-full bg-pessego ring-4 ring-azul" />
                 <Texto>{linha}</Texto>
@@ -67,8 +69,6 @@ export async function Missao() {
           </ul>
         ) : null}
       </div>
-
-      <Onda cor="var(--color-laranja)" variante={2} />
     </section>
   )
 }

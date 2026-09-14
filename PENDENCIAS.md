@@ -88,9 +88,12 @@ acrescentado. Precisam da revisão de quem responde pela campanha.
 
 ## 🖼 Material
 
-- [ ] **Foto da primeira dobra** — a campanha vai escolher. Até lá a
-      dobra mostra a marca com o 7766 no lugar da foto, que é um estado
-      pronto e não um buraco. PNG recortado, sem fundo, mínimo 1200×1500
+- [x] **Foto da primeira dobra** — `public/ana.png`, escolhida pela
+      campanha em 15/09/2026 (1302×2128, recortada, 4,4MB). Vai para o
+      git e para a Vercel: está fora de `public/fotos/`, que é ignorada.
+      O `next/image` entrega no tamanho da tela, então os 4MB não chegam
+      ao celular — mas ficam no repositório. Trocar pelo painel
+      (`hero.retrato`) também funciona, e a do painel vence
 - [ ] **Fotos dos capítulos** — as que estão no ar vieram de "Fotos
       apoio site" e moram em `public/fotos/`. Trocar pelo painel (espaços
       `capitulo.*`) ou substituindo o arquivo de mesmo nome

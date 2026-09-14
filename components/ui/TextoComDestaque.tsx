@@ -80,15 +80,35 @@ export function TextoComDestaque({
  * leitor de tela, que muda a ênfase da voz.
  */
 function vestir(texto: string, marcas: Marca[], tom: Tom): ReactNode {
-  let no: ReactNode = texto
+  const pincel = marcas.some((m) => m !== 'italico' && m !== 'negrito') && levaPincel(texto, tom)
+  let no: ReactNode = pincel ? comRisco(texto) : texto
   // De dentro para fora, para o destaque (que carrega a cor) terminar
   // por último e valer sobre o conjunto.
   for (const marca of [...marcas].reverse()) {
     if (marca === 'italico') no = <em>{no}</em>
     else if (marca === 'negrito') no = <strong>{no}</strong>
-    else no = <span className={`${CLASSES[tom]}${levaPincel(texto, tom) ? ' rabisco' : ''}`}>{no}</span>
+    else no = <span className={`${CLASSES[tom]}${pincel ? ' rabisco' : ''}`}>{no}</span>
   }
   return no
+}
+
+/**
+ * ANA: o risco à mão vai só sob a ÚLTIMA palavra da manuscrita, como o
+ * "gente!" do post do partido. Riscada inteira, a frase que quebrava de
+ * linha ganhava um risco atravessando as letras da linha de baixo — ver
+ * `risco` em globals.css. O espaço antes e depois fica fora do risco.
+ */
+function comRisco(texto: string): ReactNode {
+  const partes = texto.match(/^([\s\S]*?)(\S+)(\s*)$/)
+  if (!partes) return texto
+  const [, antes, ultima, depois] = partes
+  return (
+    <>
+      {antes}
+      <span className="risco">{ultima}</span>
+      {depois}
+    </>
+  )
 }
 
 /** Tira a marcação. Para <title>, alt, aria-label e OG. */

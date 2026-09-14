@@ -61,6 +61,11 @@
      pequeno. Botão sobre azul continua laranja cheio — forma grande não
      vibra como traço de letra, e é a ação da página. */
   --color-pessego: #ffb98a;
+  /* ANA: o LARANJA FORTE é o segundo tom do "77" do post do partido, e
+     é o laranja que pode ser LETRA sobre o papel claro: 3,3:1, que passa
+     em título (texto grande pede 3:1). O laranja claro, ali, dá 2,5:1 e
+     fica para forma — o número grande, o risco da manuscrita, o botão. */
+  --color-laranja-forte: #f25a12;
   --color-verde-bandeira: #14a438; /* só a faixa do logotipo           */
   --color-tinta: #141a3d;         /* texto principal                  */
   --color-grafite: #4b4f68;       /* texto secundário                 */
@@ -116,8 +121,20 @@
     scroll-padding-top: 6rem;
   }
 
+  /* ANA: O PAPEL QUADRICULADO. Tirado do post do Solidariedade que a
+     campanha mandou de referência ("gosto do fundo branco com um
+     quadriculado sutil bem clarinho"). Mora no <body>, e não em cada
+     seção, de propósito: pintado por seção, a grade recomeçaria em cada
+     emenda e as linhas não bateriam. As seções claras são transparentes
+     e deixam esta aparecer; as coloridas são painéis por cima dela.
+     Linha a 7% do azul da marca: some quando se lê e aparece quando se
+     olha. */
   body {
-    background-color: var(--color-branco);
+    background-color: #fcfcfe;
+    background-image:
+      linear-gradient(to right, rgb(31 69 196 / 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(31 69 196 / 0.07) 1px, transparent 1px);
+    background-size: 56px 56px;
     color: var(--color-tinta);
     font-family: var(--font-corpo);
     font-size: var(--text-lg);
@@ -256,20 +273,25 @@
    campanha: "a headline na hero tá muito grande". Cartaz foi para 56px
    e seção para 42px — a distância entre as duas continua a mesma, então
    nenhuma seção passa a gritar mais que a dobra. */
+/* ⚠️ NA QUINTA RODADA A LETRA VIROU A OUTFIT, e o peso desceu de 700 para
+   600. A Outfit é mais larga e mais redonda que a Bricolage: em 700 o
+   título vira bloco. O post do partido usa o médio no texto e reserva o
+   negrito para a palavra que muda de cor — é o que a primeira dobra faz,
+   linha a linha (Abertura.tsx). */
 @utility titulo-cartaz {
   font-family: var(--font-titulo);
-  font-weight: 700;
+  font-weight: 600;
   font-size: clamp(2.125rem, 4.2vw, 3.5rem);
-  line-height: 1.04;
-  letter-spacing: -0.03em;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
 }
 
 @utility titulo-secao {
   font-family: var(--font-titulo);
-  font-weight: 700;
+  font-weight: 600;
   font-size: clamp(1.875rem, 3.2vw, 2.625rem);
-  line-height: 1.1;
-  letter-spacing: -0.025em;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
 }
 
 @utility etiqueta {
@@ -298,21 +320,56 @@
    ⚠️ SÓ EM ATÉ TRÊS PALAVRAS — quem decide é o TextoComDestaque. Frase
    inteira em pincel foi reprovada por ser difícil de ler.
 
-   ⚠️ 1.2em E NÃO 1em: letra de pincel tem olho pequeno, e no mesmo
-   corpo ela parece um número menor que a letra de título ao lado. A
-   conta, medida no Chrome a 100px: altura de x da Bricolage 52,5; da
-   Caveat Brush 41,3. Com 1.2em as duas quase se igualam, e a frase
-   ainda sai mais ESTREITA que na letra de título, então não quebra
-   linha a mais. (Era 1.15em para a Kaushan, de altura de x 47,5.)
+   ⚠️ 1.08em: a Sriracha e a Outfit têm quase a mesma altura de x (49 e
+   48, medidas no Chrome a 100px), e o post do partido põe a manuscrita
+   um tico maior que a letra de título. (Foi 1.2em para a Caveat Brush,
+   de x 41,3, e 1.15em para a Kaushan.)
+   ⚠️ ENGROSSADA POR CONTORNO. A Sriracha tem um peso só, mais leve que
+   o pincel do post. `-webkit-text-stroke` na cor do próprio texto,
+   pintado por baixo do preenchimento (`paint-order`), engrossa o traço
+   sem mexer no desenho da letra.
+   ⚠️ O RISCO À MÃO POR BAIXO é o do post ("a gente!" sublinhado em
+   laranja), e mora em `risco`, logo abaixo. A cor vem de `--risco`, que
+   cada fundo troca — laranja no papel, pêssego no azul, branco no
+   laranja.
    ⚠️ `text-transform: none`: pincel em maiúsculas vira garrancho, e há
    títulos que herdam caixa alta. */
+:root {
+  --risco-laranja: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M3 14C48 6 128 2 197 9' fill='none' stroke='%23fd8440' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E");
+  --risco-pessego: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M3 14C48 6 128 2 197 9' fill='none' stroke='%23ffb98a' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E");
+  --risco-branco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M3 14C48 6 128 2 197 9' fill='none' stroke='%23ffffff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E");
+  --risco: var(--risco-laranja);
+}
+
 @utility rabisco {
   font-family: var(--fonte-rabisco), var(--font-titulo);
   font-weight: 400;
   font-style: normal;
-  font-size: 1.2em;
+  font-size: 1.08em;
   letter-spacing: 0;
   text-transform: none;
+  -webkit-text-stroke: 0.03em currentColor;
+  paint-order: stroke fill;
+}
+
+/* ⚠️ O RISCO SÓ VAI NA ÚLTIMA PALAVRA — como no post, onde ele sublinha
+   "gente!" e não "a gente!". A primeira montagem riscava a manuscrita
+   inteira, um risco por linha, e quando ela quebrava ("conheço / de
+   perto.") o risco da linha de cima atravessava as letras da de baixo:
+   título tem entrelinha 1.02 e não sobra vão. Palavra não quebra, então o
+   risco é um só. Quem embrulha a última palavra é o TextoComDestaque.
+   O traço é fundo em SVG e estica com a palavra: num risco quase
+   horizontal, esticar só alonga, e a espessura segue a altura da letra.
+   A margem negativa devolve o respiro do padding, para a linha não
+   crescer. */
+@utility risco {
+  display: inline-block;
+  background-image: var(--risco);
+  background-repeat: no-repeat;
+  background-size: 100% 0.3em;
+  background-position: 0 100%;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -325,9 +382,12 @@
    do grão. As formas SVG moram em components/ana/Organico.tsx.
    ═══════════════════════════════════════════════════════════════ */
 
+/* ⚠️ E NA QUINTA RODADA O PAPEL VIROU TRANSPARENTE. O papel de verdade — o
+   quadriculado do post do Solidariedade — mora no <body>; seção pintada
+   de creme por cima esconderia a grade. O nome ficou porque vários
+   componentes o usam. */
 @utility papel {
-  background-color: var(--color-papel);
-  background-image: var(--grao-escuro);
+  background-color: transparent;
 }
 
 /* Grão claro por cima de uma cor chapada: `bg-azul grao`. */

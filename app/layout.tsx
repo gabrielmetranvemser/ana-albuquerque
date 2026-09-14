@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Bricolage_Grotesque, Caveat_Brush, Figtree } from 'next/font/google'
+import { Figtree, Outfit, Sriracha } from 'next/font/google'
 import { candidato } from '@/content/copy'
 import { campanha } from '@/content/campanha'
 import { config } from '@/lib/config'
@@ -32,21 +32,25 @@ import './globals.css'
  *    modelo, e a campanha reclamou com razão que a página estava "100%
  *    igual ao template". A tipografia é o que mais denuncia isso.
  *
- *    TÍTULO — Bricolage Grotesque. Uma grotesca moderna com traço de
- *    mão nas curvas: "modernidade com humanidade", nas palavras da
- *    campanha. Variável, então é um arquivo só para todos os pesos.
+ *    TÍTULO — Outfit (quinta rodada). Geométrica, de "o" redondo e peso
+ *    médio: é a letra do post do Solidariedade que a campanha mandou de
+ *    referência ("Pode contar com a gente!"), junto com "não gosto da
+ *    fonte atual do site". Dez geométricas foram postas lado a lado com
+ *    o post; a Outfit é a que tem o mesmo desenho. Variável: um arquivo
+ *    só para todos os pesos, e a página usa três (500, 600 e 700).
  *
- *    ⚠️ ANTES DELA FOI A BARLOW CONDENSED, EM CAIXA ALTA ITÁLICA — a
- *       letra dos posts — e foi reprovada: no site, título inteiro em
- *       condensada itálica, somado a adesivo e fita, leu como cartum.
- *       O que funciona num post de 1080px, olhado por dois segundos,
- *       cansa numa página que se lê por dois minutos.
+ *    ⚠️ ANTES DELA FORAM A BRICOLAGE GROTESQUE — grotesca com traço de
+ *       mão, pesada e apertada nos títulos grandes, reprovada na quinta
+ *       rodada — E A BARLOW CONDENSED EM CAIXA ALTA ITÁLICA, a letra dos
+ *       posts da Ana, reprovada como cartum na segunda. O que funciona
+ *       num post de 1080px, olhado por dois segundos, cansa numa página
+ *       que se lê por dois minutos.
  *
- *    CORPO — Figtree. Legível a 18px para quem tem 60 anos, e com a
- *    curva arredondada do "deputada federal" do logotipo — o Inter é
- *    neutro demais para uma página que precisa parecer gente.
+ *    CORPO — Figtree. Legível a 18px para quem tem 60 anos, e da mesma
+ *    família de desenho da Outfit — geométrica e arredondada —, então
+ *    título e corpo falam a mesma língua, como no post.
  */
-const titulo = Bricolage_Grotesque({
+const titulo = Outfit({
   subsets: ['latin'],
   variable: '--fonte-titulo',
   display: 'swap',
@@ -59,31 +63,27 @@ const corpo = Figtree({
 })
 
 /**
- * DESTAQUE — Caveat Brush. (Ana)
+ * DESTAQUE — Sriracha, engrossada no CSS. (Ana)
  *
- * A campanha pediu a "fonte rabiscada" dos posts: no Instagram da Ana
- * e do Solidariedade, a palavra que importa vem num pincel por cima do
- * título pesado ("SEGURANÇA é compromisso"). Só entra no trecho
+ * A campanha pediu a "fonte rabiscada" dos posts. Só entra no trecho
  * [[realçado]] de ATÉ TRÊS PALAVRAS — a campanha achou a frase inteira
- * em pincel "muito ruim de ler", e a regra agora é do código, não de
- * quem escreve. Ver TextoComDestaque.
+ * em pincel "muito ruim de ler", e a regra é do código, não de quem
+ * escreve. Ver TextoComDestaque.
  *
- * ⚠️ ANTES FOI A KAUSHAN SCRIPT, e a campanha: "acho a fonte cursiva
- *    feia demais". A Kaushan é a pincelada caligráfica mais próxima
- *    dos posts, mas tem letra de forma estranha (o "ss", o "p") e traço
- *    que afina — em laranja sobre azul, o fino some. Quinze pincéis do
- *    Google Fonts foram postos lado a lado com a mesma frase, na mesma
- *    altura de x ("Compromisso com pessoas.", laranja sobre o azul da
- *    dobra). Ficou a Caveat Brush: marcador de ponta grossa, traço
- *    regular, letra de mão sem floreio. É a que continua lendo como
- *    escrita à mão e a que tem traço grosso o bastante para o laranja
- *    aparecer. Finalistas, se a campanha quiser trocar: Yellowtail
- *    (pincel itálico, mais perto da Kaushan) e Caveat 700.
+ * ⚠️ É A TERCEIRA MANUSCRITA. A Kaushan Script foi "feia demais" (letra
+ *    de forma estranha, traço que afina e some). A Caveat Brush saiu de
+ *    uma comparação de quinze pincéis e ficou até a campanha mandar o
+ *    post do partido: "gosto da fonte usada ali manuscrita". A do post é
+ *    um pincel pesado, levemente inclinado, com o "g" de laço. Doze
+ *    pincéis de traço grosso foram comparados com ele; a Sriracha tem o
+ *    mesmo desenho e, engrossada por contorno (`rabisco`, globals.css),
+ *    chega ao mesmo peso. Finalistas, se a campanha quiser trocar:
+ *    Merienda 800 e Knewave.
  *
  * Um peso só, e é o único que ela tem: o arquivo é pequeno, e o
  * `display: swap` segura o teto de 3 segundos como nas outras duas.
  */
-const rabisco = Caveat_Brush({
+const rabisco = Sriracha({
   subsets: ['latin'],
   weight: '400',
   variable: '--fonte-rabisco',

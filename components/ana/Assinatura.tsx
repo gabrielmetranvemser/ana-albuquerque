@@ -4,7 +4,6 @@ import { TextoComDestaque } from '@/components/ui/TextoComDestaque'
 import { MarcaNumero } from '@/components/ui/Marca'
 import { CliqueGrupo } from '@/components/site/CliqueGrupo'
 import { destinoGrupo } from '@/lib/conteudo/secoes'
-import { Onda } from './Organico'
 
 /**
  * A ASSINATURA — o último bloco do documento: "ANA ALBUQUERQUE /
@@ -27,8 +26,11 @@ import { Onda } from './Organico'
  *
  * ⚠️ O REALCE DO TÍTULO É O MESMO MARINHO, e já foi o azul da marca. Azul
  *    saturado sobre laranja saturado vibrava ("o contraste tá meio feio,
- *    desses azul com laranja"). A letra de pincel sozinha já separa o
- *    trecho.
+ *    desses azul com laranja"). A manuscrita separa o trecho, e o risco
+ *    por baixo dela é branco.
+ *
+ * ⚠️ DE PONTA A PONTA. Foi painel arredondado por uma rodada, reprovado:
+ *    "era melhor quando era largura total" — ver Capitulos.tsx.
  *
  * ⚠️ O "Agenda" do documento não entrou: não há agenda publicada, e
  *    botão para lugar nenhum é pior que botão nenhum.
@@ -43,8 +45,8 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
   return (
     <section
       id="acompanhe"
-      style={{ ['--capa-realce' as string]: 'var(--color-azul-escuro)' }}
-      className="relative isolate overflow-hidden bg-laranja pt-20 pb-24 text-azul-escuro md:pt-28 md:pb-32"
+      style={{ ['--capa-realce' as string]: 'var(--color-azul-escuro)', ['--risco' as string]: 'var(--risco-branco)' }}
+      className="relative isolate overflow-hidden bg-laranja py-20 text-azul-escuro md:py-28"
     >
       <span id="votar" aria-hidden className="absolute -top-24" />
 
@@ -76,7 +78,7 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
               <span className="rounded-full bg-azul-escuro px-5 py-2 text-lg font-semibold text-white">{ctaFinal.cargo}</span>
             ) : null}
             {ctaFinal.chamada ? (
-              <span className="font-[family-name:var(--font-titulo)] text-2xl font-semibold tracking-[-0.015em] text-azul-escuro md:text-[1.75rem]">
+              <span className="font-[family-name:var(--font-titulo)] text-2xl font-semibold tracking-[-0.02em] text-azul-escuro md:text-[1.75rem]">
                 {ctaFinal.chamada}
               </span>
             ) : null}
@@ -113,8 +115,6 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
           )}
         </div>
       </div>
-
-      <Onda cor="#ffffff" variante={0} />
     </section>
   )
 }
