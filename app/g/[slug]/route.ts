@@ -5,10 +5,10 @@ import {
   municipioPorSlug,
   registrarCliqueNoGrupo,
 } from '@/lib/dados'
-import { criarClienteAdmin } from '@/lib/supabase/admin'
+import { GRUPO_UNICO } from '@/content/campanha'
 import { config, emSilencioEleitoral } from '@/lib/config'
+import { gravarEvento, origemDoPedido } from '@/lib/redirecionador'
 import { enviarEvento, identidadeDoPedido } from '@/lib/trafego/meta'
-import type { OrigemClique } from '@/lib/tipos'
 
 /**
  * O REDIRECIONADOR.
@@ -24,15 +24,19 @@ import type { OrigemClique } from '@/lib/tipos'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const ORIGENS_VALIDAS = new Set<OrigemClique>([
-  'hero', 'topo', 'flutuante', 'lista', 'busca', 'geo', 'mapa',
-  'cta_final', 'rodape', 'grupos_pagina', 'qr', 'direto',
-])
-
 export async function GET(
   req: NextRequest,
   ctx: { params: Promise<{ slug: string }> },
 ) {
+  // No grupo único, todo /g/<qualquer-coisa> é o grupo geral — inclusive
+  // um /g/ji-parana que tenha ido para panfleto antes de a campanha
+  // decidir ter um grupo só. Origem, sessão e UTMs vão junto.
+  if (GRUPO_UNICO) {
+    const geral = new URL('/g/geral', req.url)
+    geral.search = req.nextUrl.search
+    return NextResponse.redirect(geral, 307)
+  }
+
   const { slug } = await ctx.params
   // Distrito com grupo próprio (/g/iata) entra por aqui igual a
   // município. O que muda é a métrica: o evento é gravado no município
@@ -58,10 +62,7 @@ export async function GET(
     return NextResponse.redirect(destino, 307)
   }
 
-  const deParam = req.nextUrl.searchParams.get('de')
-  const origem: OrigemClique = ORIGENS_VALIDAS.has(deParam as OrigemClique)
-    ? (deParam as OrigemClique)
-    : 'direto'
+  const origem = origemDoPedido(req)
 
   const grupo = await grupoDeDestino(slug)
   const podeEntrar =
@@ -132,47 +133,5 @@ export async function GET(
   return resposta
 }
 
-async function gravarEvento({
-  tipo,
-  municipio_slug,
-  grupo_id,
-  origem,
-  req,
-}: {
-  tipo: string
-  municipio_slug: string
-  grupo_id: string | null
-  origem: OrigemClique
-  req: NextRequest
-}) {
-  // Id de sessão que o navegador passou em `?s=`. É o mesmo aleatório
-  // dos outros eventos, sem nome, sem telefone, sem IP — serve só para
-  // o painel conseguir dizer PESSOAS, e não só cliques. Clique de QR
-  // impresso não tem sessão, e aí fica null mesmo: é a verdade.
-  const s = req.nextUrl.searchParams.get('s')
-  const sessao = s && /^[0-9a-f-]{16,40}$/i.test(s) ? s : null
-
-  if (!config.supabaseAtivo) return
-  const sb = criarClienteAdmin()
-  if (!sb) return
-
-  const ua = req.headers.get('user-agent') ?? ''
-  const utm = ['utm_source', 'utm_medium', 'utm_campaign']
-    .map((k) => req.nextUrl.searchParams.get(k))
-    .filter(Boolean)
-    .join('|')
-
-  try {
-    await sb.from('eventos').insert({
-      tipo,
-      municipio_slug,
-      grupo_id,
-      origem,
-      utm: utm || null,
-      sessao,
-      dispositivo: /Mobile|Android|iPhone/i.test(ua) ? 'celular' : 'desktop',
-    })
-  } catch {
-    // Métrica nunca pode impedir a pessoa de entrar no grupo.
-  }
-}
+// `gravarEvento` e a lista de origens moram em lib/redirecionador.ts,
+// divididos com /g/geral.

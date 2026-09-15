@@ -724,8 +724,19 @@ export const ESQUEMA: Record<string, SecaoEsquema> = {
   grupos: {
     rotulo: 'Grupos de WhatsApp',
     grupo: 'Página',
-    nota: 'Os links dos grupos ficam na aba Grupos. Aqui são só os textos da seção.',
+    nota:
+      'Campanha com um grupo só: o link é o primeiro campo, e o resto não aparece na página. ' +
+      'Com um grupo por município, os links ficam na aba Grupos e aqui são só os textos da seção.',
     campos: {
+      // ANA: o grupo único — ver `modoGrupos` em content/campanha.ts.
+      linkGeral: {
+        tipo: 'url',
+        rotulo: 'Link do grupo geral',
+        prefixo: 'https://chat.whatsapp.com/',
+        ajuda:
+          'O convite do grupo de WhatsApp da campanha. Preenchido, todos os botões "Entrar no grupo" levam a ele; ' +
+          'vazio, os botões somem. Trocar o link aqui muda o destino na hora, sem republicar o site.',
+      },
       etiqueta: { tipo: 'texto', rotulo: 'Etiqueta', max: 40 },
       titulo: { tipo: 'texto', rotulo: 'Título', max: 70, destaque: true },
       intro: { tipo: 'longo', rotulo: 'Introdução', max: 300, linhas: 3 },

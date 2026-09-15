@@ -1,6 +1,6 @@
 import { lerConteudo } from '@/lib/conteudo/ler'
 import { TextoComDestaque, Texto } from '@/components/ui/TextoComDestaque'
-import { FaixaBrasil, Mancha } from './Organico'
+import { FaixaBrasil } from './Organico'
 
 /**
  * "UMA NOVA MISSÃO" — da farda para Brasília.
@@ -26,12 +26,10 @@ export async function Missao() {
     <section
       id="missao"
       style={{ ['--capa-realce' as string]: 'var(--color-pessego)', ['--risco' as string]: 'var(--risco-pessego)' }}
-      className="relative isolate overflow-hidden bg-azul grao py-20 text-white md:py-28"
+      // A mancha marinho que ficava no canto saiu com o grão: sobre o
+      // degradê ela virava uma nódoa acinzentada.
+      className="relative isolate overflow-hidden superficie-azul py-20 text-white md:py-28"
     >
-      <Mancha
-        variante={2}
-        className="pointer-events-none absolute top-16 -left-48 w-[32rem] text-azul-escuro/30 md:w-[44rem]"
-      />
 
       <div className="container-lp relative grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
         <div>
@@ -62,7 +60,7 @@ export async function Missao() {
                 style={{ ['--atraso' as string]: `${i * 80}ms` }}
                 className="relative font-[family-name:var(--font-titulo)] text-2xl leading-snug font-semibold tracking-[-0.02em] md:text-[1.85rem]"
               >
-                <span aria-hidden className="absolute top-[0.6em] -left-[2.1rem] size-3 rounded-full bg-pessego ring-4 ring-azul" />
+                <span aria-hidden className="absolute top-[0.6em] -left-[2.1rem] size-3 rounded-full bg-pessego" />
                 <Texto>{linha}</Texto>
               </li>
             ))}

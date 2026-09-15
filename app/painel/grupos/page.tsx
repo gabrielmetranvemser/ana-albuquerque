@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation'
+import { GRUPO_UNICO } from '@/content/campanha'
 import { listarGrupos, MUNICIPIOS } from '@/lib/dados'
 import { config } from '@/lib/config'
 import { LinhaGrupo } from './LinhaGrupo'
@@ -8,6 +10,11 @@ export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Grupos', robots: { index: false } }
 
 export default async function PainelGrupos() {
+  // No grupo único esta tela (um grupo por município) não tem uso, e o
+  // item some do menu. Quem chega por link salvo cai onde o link geral
+  // se edita.
+  if (GRUPO_UNICO) redirect('/painel/secoes/grupos')
+
   const grupos = await listarGrupos()
 
   const porMunicipio = MUNICIPIOS.map((m) => ({

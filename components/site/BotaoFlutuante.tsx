@@ -1,14 +1,16 @@
 'use client'
 
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useConteudo } from '@/lib/conteudo/contexto'
-import { evento } from '@/lib/eventos'
+import { CliqueGrupo } from './CliqueGrupo'
 
 /**
  * O botão que segue a pessoa. Aparece depois do hero e some quando
  * a seção de grupos entra em tela — se o alvo já está visível,
  * o flutuante vira estorvo.
+ *
+ * No grupo único não existe seção de grupos: quem faz esse papel é a
+ * assinatura (`#acompanhe`), que tem o mesmo botão.
  *
  * A origem 'flutuante' no evento é o que responde, em duas semanas,
  * se ele trabalha ou é enfeite.
@@ -18,7 +20,7 @@ export function BotaoFlutuante({
   destino = '/#grupos',
 }: {
   silencio?: boolean
-  /** Muda para /grupos quando a seção de grupos está desligada. */
+  /** Calculado por `destinoDoGrupo`. Quem não tem destino não renderiza o botão. */
   destino?: string
 }) {
   const { ctas } = useConteudo()
@@ -27,27 +29,44 @@ export function BotaoFlutuante({
   useEffect(() => {
     if (silencio) return
 
-    const alvo = document.getElementById('grupos')
+    const alvo = document.getElementById('grupos') ?? document.getElementById('acompanhe')
+    // ANA: com a capa na página, o flutuante espera ELA sair da tela, e não
+    // 560px. No celular os botões da capa ficam presos no pé da tela
+    // enquanto ela aparece (components/ana/BarraDaCapa.tsx); os dois olhando
+    // a mesma capa trocam de lugar no mesmo instante, sem nunca empilhar.
+    const capa = document.getElementById('inicio')
     let gruposNaTela = false
+    let capaNaTela = Boolean(capa)
+
+    const atualizar = () =>
+      setVisivel((capa ? !capaNaTela : window.scrollY > 560) && !gruposNaTela)
 
     const observador = alvo
       ? new IntersectionObserver(
           ([e]) => {
             gruposNaTela = e.isIntersecting
-            setVisivel(window.scrollY > 560 && !gruposNaTela)
+            atualizar()
           },
           { threshold: 0.12 },
         )
       : null
     if (alvo && observador) observador.observe(alvo)
 
-    const aoRolar = () => setVisivel(window.scrollY > 560 && !gruposNaTela)
-    window.addEventListener('scroll', aoRolar, { passive: true })
-    aoRolar()
+    const observadorDaCapa = capa
+      ? new IntersectionObserver(([e]) => {
+          capaNaTela = e.isIntersecting
+          atualizar()
+        })
+      : null
+    if (capa && observadorDaCapa) observadorDaCapa.observe(capa)
+
+    window.addEventListener('scroll', atualizar, { passive: true })
+    atualizar()
 
     return () => {
-      window.removeEventListener('scroll', aoRolar)
+      window.removeEventListener('scroll', atualizar)
       observador?.disconnect()
+      observadorDaCapa?.disconnect()
     }
   }, [silencio])
 
@@ -62,9 +81,9 @@ export function BotaoFlutuante({
         visivel ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-8 opacity-0'
       }`}
     >
-      <Link
+      <CliqueGrupo
+        origem="flutuante"
         href={destino}
-        onClick={() => evento('clicou_cta', { origem: 'flutuante' })}
         // ANA: contorno marinho porque a ação virou o laranja claro, e a
         // página tem seções laranja (a faixa, "Lei que existe precisa
         // funcionar", a assinatura): ali o botão laranja sumia no fundo.
@@ -76,7 +95,7 @@ export function BotaoFlutuante({
           <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23Z" />
         </svg>
         <span>{ctas.grupoCurto}</span>
-      </Link>
+      </CliqueGrupo>
     </div>
   )
 }

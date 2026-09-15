@@ -70,6 +70,11 @@ function validarCampo(
       const t = limpo(valor)
       if (t && !/^https?:\/\/.+\..+/.test(t)) {
         erros[caminho] = 'Precisa ser um endereço completo, começando com https://'
+      } else if (t && campo.prefixo && !t.startsWith(campo.prefixo)) {
+        // O prefixo era só a dica do campo, e nada o conferia. Com o link
+        // do grupo geral isso deixou de ser detalhe: um perfil ou um wa.me
+        // colado ali passaria, e "Entrar no grupo" abriria outra coisa.
+        erros[caminho] = `Precisa começar com ${campo.prefixo}`
       }
       return t
     }

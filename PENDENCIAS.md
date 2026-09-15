@@ -55,8 +55,19 @@ Sem isto o site está no ar, mas não faz o que veio fazer.
       conversa
 - [ ] **Subir as imagens** — prontas em `_imagens-painel/` (fora do
       git), um arquivo por espaço do painel. Ver o `LEIA-ME.md` de lá
-- [ ] **Links dos grupos de WhatsApp** — painel ▸ Grupos, um por
-      município. Enquanto vazios, todos aparecem como "em breve"
+- [ ] **Subir a foto de "Policial também é ser humano"** antes do
+      próximo deploy — painel ▸ Seções ▸ Capítulos ▸ espaço
+      `capitulo.ser-humano.1`, arquivo
+      `_imagens-painel/capitulo.ser-humano.1.webp`. As outras 14 fotos de
+      capítulo já estão no banco; esta é nova, e como `public/fotos/`
+      não vai para o git, na Vercel ela sai quebrada até ser subida
+- [ ] **Link do grupo geral de WhatsApp** — a Ana tem UM grupo, não um
+      por município (`modoGrupos: 'unico'` em `content/campanha.ts`,
+      14/09/2026). Painel ▸ Seções ▸ Grupos de WhatsApp ▸ "Link do grupo
+      geral", começando com `https://chat.whatsapp.com/`. **Enquanto
+      vazio, todos os botões "Entrar no grupo" ficam escondidos** — o
+      site fica de pé, mas sem a ação principal. Os 52 grupos "em breve"
+      do banco deixaram de ser usados e podem ficar como estão
 - [ ] **WhatsApp da campanha** — `campanha.whatsapp` está vazio, e o
       botão fica escondido
 

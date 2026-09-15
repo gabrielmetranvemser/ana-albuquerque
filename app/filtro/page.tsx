@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { lerConteudo } from '@/lib/conteudo/ler'
+import { destinoDoGrupo } from '@/lib/conteudo/secoes'
 import { lerSlots } from '@/lib/midia/ler'
 import { lerApoios, formatarApoios } from '@/lib/apoios'
 import { resolverMolduras } from '@/lib/molduras'
@@ -27,11 +28,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function PaginaFiltro() {
   const simboloDaMarca = (await lerSlots())['marca.simbolo']?.url ?? null
-  const [{ filtro: copy }, slots, apoios] = await Promise.all([
+  const [conteudo, slots, apoios] = await Promise.all([
     lerConteudo(),
     lerSlots(),
     lerApoios(),
   ])
+  const { filtro: copy } = conteudo
 
   const silencio = emSilencioEleitoral()
 
@@ -42,7 +44,7 @@ export default async function PaginaFiltro() {
 
   return (
     <>
-      <Header silencio={silencio} simbolo={simboloDaMarca} />
+      <Header silencio={silencio} simbolo={simboloDaMarca} destino={destinoDoGrupo(conteudo)} />
 
       <main id="conteudo" className="pt-[4.5rem]">
         {/* A faixa do webview do Instagram fica no TOPO da página,

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { GRUPO_UNICO } from '@/content/campanha'
 import { PADRAO } from '@/content/copy'
 import { SECOES_DO_PAINEL } from '@/content/mapa'
 import { config } from '@/lib/config'
@@ -51,7 +52,13 @@ export default async function PainelInicio() {
       onde: '/painel/secoes/rodape',
     })
   }
-  if (semLink > 0)
+  // No grupo único a tabela dos municípios não é usada: a pendência é o
+  // link geral. Contar os 52 "sem link" cobraria, para sempre, algo que a
+  // campanha não vai preencher.
+  if (GRUPO_UNICO) {
+    if (!conteudo.grupos.linkGeral.trim())
+      pendencias.push({ texto: 'Link do grupo geral de WhatsApp não preenchido', onde: '/painel/secoes/grupos' })
+  } else if (semLink > 0)
     pendencias.push({ texto: `${semLink} município${semLink === 1 ? '' : 's'} sem link de grupo`, onde: '/painel/grupos' })
   // ⚠️ ANA: A PENDÊNCIA DE VÍDEOS SAIU. Ela contava os espaços de vídeo
   //    das seções do modelo (origem, rua, problema, provas, prova
