@@ -403,6 +403,52 @@
   background-image: var(--grao-claro);
 }
 
+/* ANA: AS DUAS SUPERFÍCIES AZUIS (sexta rodada). Eram `bg-azul grao` e
+   `bg-azul-escuro grao`: o azul da marca chapado e o marinho fosco, os
+   dois com o grão claro por cima. A campanha: "horrível essas duas cores
+   de azul, meio morto". Duas causas somadas: o grão branco a 8% acinzenta
+   a cor inteira, e o marinho fosco — escolhido para não vibrar como LETRA
+   sobre o laranja — em superfície grande lia cinza.
+
+   Agora são um par da mesma família, saturados, com luz num canto no
+   lugar do grão: o azul é o da marca puxado para o vivo; o marinho é o
+   do logotipo (#102084), aprofundado. `azul-escuro` NÃO MUDOU: continua
+   sendo a letra sobre o laranja. Só a superfície deixou de usá-lo.
+
+   Pêssego sobre elas: acima de 3:1 no canto iluminado do azul (título e
+   forma; texto pequeno ali é branco) e acima de 8:1 no marinho. */
+@utility superficie-azul {
+  background-color: #1b3dc9;
+  background-image:
+    radial-gradient(70% 90% at 0% 0%, rgb(86 128 255 / 0.28), transparent 70%),
+    linear-gradient(160deg, #2147d8 0%, #1a38bd 55%, #15309f 100%);
+}
+
+/* ANA: O ESCUDO DA MARCA, CHAPADO, como forma de fundo — o que fica atrás
+   da Ana na primeira dobra. Com a foto sobre o papel quadriculado, a
+   capa ficou "tudo branco", e a campanha pediu "algo laranja, bem grande,
+   de baixo até o topo; pode ser o formato da logo, mesmo cortando".
+
+   É MÁSCARA, E NÃO IMAGEM LARANJA: a cor vem da paleta (`laranja`, a
+   ação), então trocar a cor da campanha troca o escudo junto. A máscara
+   é `public/marca/escudo-silhueta.webp`, tirada do logotipo grande
+   (MARCAANACOR@600x) — o `escudo.webp` de 256px, ampliado a mil pixels,
+   deixava a borda borrada. `contain` impede qualquer deformação: se a
+   caixa não tiver a proporção do escudo, sobra vazio, e nunca escudo
+   esticado. Os vãos brancos do desenho continuam vãos. */
+@utility escudo-chapado {
+  background-color: var(--color-laranja);
+  -webkit-mask: url('/marca/escudo-silhueta.webp') center / contain no-repeat;
+  mask: url('/marca/escudo-silhueta.webp') center / contain no-repeat;
+}
+
+@utility superficie-marinho {
+  background-color: #0d1a5a;
+  background-image:
+    radial-gradient(60% 80% at 100% 0%, rgb(44 86 230 / 0.42), transparent 70%),
+    linear-gradient(170deg, #11226e 0%, #0c1852 100%);
+}
+
 /* Recorte de papel: três contornos tortos, para duas fotos vizinhas
    nunca terem a mesma forma. */
 @utility bolha-1 { border-radius: 62% 38% 54% 46% / 48% 58% 42% 52%; }
@@ -923,9 +969,15 @@
 }
 
 /* ANA: chapados, com grão. Eram degradês — ver "O estilo orgânico". */
+/* ANA: era o marinho fosco com grão — o mesmo "azul morto" que saiu das
+   superfícies dos capítulos (ver "AS DUAS SUPERFÍCIES AZUIS") e tinha
+   ficado na seção do filtro. Agora é o marinho vivo delas, com os mesmos
+   valores de `superficie-marinho`. */
 @utility fundo-azul-profundo {
-  background-color: var(--color-azul-escuro);
-  background-image: var(--grao-claro);
+  background-color: #0d1a5a;
+  background-image:
+    radial-gradient(60% 80% at 100% 0%, rgb(44 86 230 / 0.42), transparent 70%),
+    linear-gradient(170deg, #11226e 0%, #0c1852 100%);
 }
 
 @utility fundo-verde {
@@ -1529,6 +1581,68 @@
 
       .hero-foto  { animation-name: hero-cresce; }
       .hero-fundo { animation-name: hero-cresce-atras; }
+    }
+  }
+}
+
+/* ANA: A CAPA DELA — o escudo laranja, a foto e a placa com o 7766
+   (components/ana/Abertura.tsx). Mesma mecânica do hero do modelo, logo
+   acima: presa à rolagem da página nos primeiros 80vh, zero JavaScript, e
+   parada onde não há `animation-timeline` ou quem pediu menos movimento.
+
+   AS TRÊS CAMADAS ANDAM EM VELOCIDADES DIFERENTES, e é isso que dá
+   profundidade: o escudo, que está mais longe, sobe devagar e gira um
+   pouco; a foto cresce plantada no chão; a placa, que está mais perto,
+   sobe mais rápido que a página. Se as três andassem juntas, seria só a
+   capa rolando.
+
+   `transform`, e não `translate`/`scale`: as classes de posição do
+   Tailwind (`-translate-x-1/2`) usam a propriedade `translate`, que se
+   soma a `transform` em vez de ser apagada por ela.
+
+   A SOMBRA DA FOTO É QUENTE (marrom do laranja, não cinza) e deslocada
+   para a esquerda, na direção do escudo: é a "sombra saindo da foto" que
+   a campanha pediu. Sombra cinza sobre laranja vira mancha suja. Está na
+   moldura, e segue o contorno da foto já cortada (o corte é `clip-path`
+   na própria foto — ver Abertura.tsx sobre o `overflow-hidden` que fazia
+   a foto não pintar). */
+@keyframes capa-escudo-sobe { to { transform: translate3d(0, -12%, 0) rotate(-4deg) scale(1.06); } }
+/* No celular o escudo NÃO sobe: a foto só aparece inteira depois de a
+   pessoa rolar um pouco, e a essa altura a subida já tinha posto o topo do
+   escudo acima da boca da Ana — que é justamente onde pediram que ele não
+   passasse. Lá ele só gira e cresce. */
+@keyframes capa-escudo-gira { to { transform: rotate(-4deg) scale(1.06); } }
+@keyframes capa-foto-cresce { to { transform: scale(1.05); } }
+@keyframes capa-placa-sobe { to { transform: translate3d(0, -3.5rem, 0); } }
+
+@layer components {
+  .capa-escudo { transform-origin: 30% 70%; }
+
+  .capa-foto {
+    transform-origin: 50% 100%;
+    filter: drop-shadow(-26px 22px 30px rgb(110 38 0 / 0.34));
+  }
+
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .capa-escudo,
+      .capa-foto,
+      .capa-placa {
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 80vh;
+        /* Sem `will-change`: o navegador já promove sozinho o que está
+           animando, e ele foi o primeiro suspeito de a foto da capa não
+           pintar — não era (ver Abertura.tsx, "O CORTE É clip-path"). */
+      }
+
+      .capa-escudo { animation-name: capa-escudo-gira; }
+      @media (min-width: 64rem) {
+        .capa-escudo { animation-name: capa-escudo-sobe; }
+      }
+      .capa-foto   { animation-name: capa-foto-cresce; }
+      .capa-placa  { animation-name: capa-placa-sobe; }
     }
   }
 }

@@ -3,7 +3,7 @@ import { lerSlots } from '@/lib/midia/ler'
 import { TextoComDestaque } from '@/components/ui/TextoComDestaque'
 import { MarcaNumero } from '@/components/ui/Marca'
 import { CliqueGrupo } from '@/components/site/CliqueGrupo'
-import { destinoGrupo } from '@/lib/conteudo/secoes'
+import { destinoDoGrupo } from '@/lib/conteudo/secoes'
 
 /**
  * A ASSINATURA — o último bloco do documento: "ANA ALBUQUERQUE /
@@ -39,8 +39,10 @@ import { destinoGrupo } from '@/lib/conteudo/secoes'
  *    chamada final, e link já compartilhado não pode morrer.
  */
 export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
-  const [{ ctaFinal, ctas, exibir, candidato, futuro }, slots] = await Promise.all([lerConteudo(), lerSlots()])
-  const paraOsGrupos = destinoGrupo(exibir)
+  const [conteudo, slots] = await Promise.all([lerConteudo(), lerSlots()])
+  const { ctaFinal, ctas, exibir, candidato, futuro } = conteudo
+  // É o [WhatsApp] do documento. Nulo enquanto o grupo único não tem link.
+  const paraOsGrupos = destinoDoGrupo(conteudo)
 
   return (
     <section
@@ -86,11 +88,13 @@ export async function Assinatura({ silencio = false }: { silencio?: boolean }) {
 
           {!silencio ? (
             <div data-revelar className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              {paraOsGrupos ? (
               <CliqueGrupo origem="cta_final" href={paraOsGrupos} className="contents">
                 <span className="toque inline-flex min-h-14 items-center justify-center rounded-full bg-azul-escuro px-8 text-lg font-semibold text-white shadow-[0_14px_30px_-16px_rgba(10,20,82,0.6)] transition-colors hover:bg-azul">
                   {ctaFinal.ctaPrimario}
                 </span>
               </CliqueGrupo>
+              ) : null}
               {candidato.instagram ? (
                 <a
                   href={candidato.instagram}

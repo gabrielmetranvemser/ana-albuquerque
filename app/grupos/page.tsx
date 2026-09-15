@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { lerSlots } from '@/lib/midia/ler'
 import Link from 'next/link'
 import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { lerConteudo } from '@/lib/conteudo/ler'
 import { listarMunicipiosComStatus, municipioPorSlug } from '@/lib/dados'
 import { casarCidadePorHeader } from '@/lib/geo'
@@ -11,7 +12,7 @@ import { RodapeLegal } from '@/components/site/RodapeLegal'
 import { RegistroDePagina } from '@/components/site/RegistroDePagina'
 import { BuscadorDeGrupo } from '@/components/grupos/BuscadorDeGrupo'
 import { MapaEstado } from '@/components/grupos/MapaEstado'
-import { TEM_MAPA } from '@/content/campanha'
+import { GRUPO_UNICO, TEM_MAPA } from '@/content/campanha'
 import { Aviso } from '@/components/ui/Aviso'
 import { TextoComDestaque } from '@/components/ui/TextoComDestaque'
 
@@ -41,6 +42,11 @@ export default async function PaginaGrupos({
     silencio?: string
   }>
 }) {
+  // No grupo único não há lista para mostrar. /grupos ainda pode estar em
+  // link já compartilhado ou num rodapé salvo no painel: volta para a
+  // página, onde está o botão do grupo.
+  if (GRUPO_UNICO) redirect('/')
+
   const simboloDaMarca = (await lerSlots())['marca.simbolo']?.url ?? null
   const [municipios, cabecalhos, params, conteudo] = await Promise.all([
     listarMunicipiosComStatus(),

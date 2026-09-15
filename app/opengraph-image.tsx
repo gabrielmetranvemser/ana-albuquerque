@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 import sharp from 'sharp'
 import { candidato as CANDIDATO } from '@/content/copy'
-import { REGIAO, campanha } from '@/content/campanha'
+import { GRUPO_UNICO, REGIAO, campanha } from '@/content/campanha'
 import { MUNICIPIOS } from '@/lib/dados'
 import { lerConteudo } from '@/lib/conteudo/ler'
 import { lerSlots } from '@/lib/midia/ler'
@@ -166,9 +166,12 @@ export default async function Imagem() {
         {/* A linha de baixo conta quantos destinos existem, e o número
             é CONTADO, não escrito: uma campanha que troca de estado
             (ou que passa de estadual para municipal) não pode depender
-            de alguém lembrar de corrigir "52" aqui. */}
+            de alguém lembrar de corrigir "52" aqui. No grupo único não
+            há destinos a contar: a linha diz só que o grupo existe. */}
         <div style={{ display: 'flex', fontSize: 24, color: 'rgba(255,255,255,0.6)' }}>
-          {`${MUNICIPIOS.length} ${REGIAO.plural} de ${candidato.estado} · um grupo de WhatsApp para cada`}
+          {GRUPO_UNICO
+            ? `Grupo de WhatsApp da campanha · ${candidato.estado}`
+            : `${MUNICIPIOS.length} ${REGIAO.plural} de ${candidato.estado} · um grupo de WhatsApp para cada`}
         </div>
       </div>
     ),

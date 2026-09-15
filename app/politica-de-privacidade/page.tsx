@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { lerSlots } from '@/lib/midia/ler'
 import Link from 'next/link'
 import { lerConteudo } from '@/lib/conteudo/ler'
+import { destinoDoGrupo } from '@/lib/conteudo/secoes'
 import { resolverTokens } from '@/lib/conteudo/tokens'
 import { config, emSilencioEleitoral } from '@/lib/config'
 import { Header } from '@/components/site/Header'
@@ -30,7 +31,7 @@ export default async function PaginaPrivacidade() {
 
   return (
     <>
-      <Header silencio={emSilencioEleitoral()} simbolo={simboloDaMarca} />
+      <Header silencio={emSilencioEleitoral()} simbolo={simboloDaMarca} destino={destinoDoGrupo(conteudo)} />
 
       <main id="conteudo" className="pt-24 md:pt-28">
         <section className="relative isolate overflow-hidden pb-12 pt-8">

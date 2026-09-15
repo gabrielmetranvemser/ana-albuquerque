@@ -32,7 +32,7 @@ anote em `PENDENCIAS.md` — o site funciona incompleto de propósito.
 | 9 | Foto recortada em PNG | painel ▸ Imagens | desenha uma silhueta |
 | 10 | **CNPJ da campanha** | painel ▸ Identidade | ⛔ **não publica** |
 | 11 | Nome na urna, coligação, comitê | painel ▸ Identidade | ⛔ **não publica** |
-| 12 | Links dos grupos de WhatsApp | painel ▸ Grupos | grupos ficam "em breve" |
+| 12 | Um grupo só ou um por município? E os links | `modoGrupos` em `content/campanha.ts`; links no painel | grupos ficam "em breve" (por município) ou os botões somem (único) |
 | 13 | Data e hora do silêncio eleitoral | `.env.local` | CTA não sai do ar sozinho |
 
 Os itens 10 e 11 são exigência da lei eleitoral. Os demais são
@@ -309,6 +309,13 @@ sozinho.
 Os links dos grupos entram em **Grupos**, um por município. Eles nunca
 ficam em arquivo: o link é o segredo do projeto, e arquivo se
 versiona.
+
+Campanha com **um grupo só** (`modoGrupos: 'unico'` em
+`content/campanha.ts`): a aba Grupos some, e o link entra em **Seções ▸
+Grupos de WhatsApp ▸ Link do grupo geral**. A seção de busca por
+município e a página `/grupos` saem do ar, e todo botão de grupo passa
+por `/g/geral`, que conta o clique e respeita o silêncio eleitoral.
+Pergunte isto antes de montar: é a diferença entre 52 links e um.
 
 ---
 

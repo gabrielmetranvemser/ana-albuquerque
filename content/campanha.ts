@@ -38,6 +38,13 @@ export type Genero = 'f' | 'm'
  */
 export type Escopo = 'estadual' | 'municipal'
 
+/**
+ * UNICO = a campanha tem UM grupo de WhatsApp, e todo botão de grupo leva
+ * a ele. POR-REGIAO = um grupo por município (ou bairro), com a busca, o
+ * mapa e a página /grupos.
+ */
+export type ModoGrupos = 'unico' | 'por-regiao'
+
 export const campanha = {
   // ═══════════════════════════════════════════════════════════════
   // 1 · QUEM É
@@ -94,6 +101,19 @@ export const campanha = {
    * município por bairro e esconde o mapa.
    */
   escopo: 'estadual' as Escopo,
+
+  /**
+   * Um grupo de WhatsApp só, ou um por município/bairro.
+   *
+   * ⚠️ ANA: ÚNICO. O modelo só conhecia o grupo por município, e a página
+   *    dela nasceu com 52 grupos "em breve" e o botão "Entrar no grupo da
+   *    minha cidade". A campanha: "a Ana é só um grupo geral, um único
+   *    grupo, não 52". No modo único a seção dos municípios e a página
+   *    /grupos saem do ar, e o link mora no painel ▸ Grupos de WhatsApp.
+   *    Vazio, os botões de grupo somem — nunca levam a lugar nenhum. Ver
+   *    `destinoDoGrupo` em lib/conteudo/secoes.ts e app/g/geral/route.ts.
+   */
+  modoGrupos: 'unico' as ModoGrupos,
 
   /**
    * Sigla da UF.
@@ -244,8 +264,13 @@ export const campanha = {
     acao: '#fd8440',
     /** Texto que fica em cima da cor de ação. */
     acaoTexto: '#1c2650',
-    /** O fundo do rodapé. Mais escuro que o marinho, e fosco também. */
-    noite: '#131a38',
+    /**
+     * O fundo do rodapé. Foi fosco como o marinho, e na sexta rodada saiu
+     * junto com os outros azuis "mortos": agora é o marinho vivo das
+     * superfícies (globals.css ▸ "AS DUAS SUPERFÍCIES AZUIS"), mais escuro.
+     * O marinho fosco continua só como letra sobre o laranja.
+     */
+    noite: '#0a1447',
   },
 
   // ═══════════════════════════════════════════════════════════════
@@ -298,6 +323,9 @@ export const REGIAO = campanha.regiao
 
 /** O mapa só existe em campanha estadual: não há malha de bairro. */
 export const TEM_MAPA = campanha.escopo === 'estadual'
+
+/** Um grupo de WhatsApp só: sem busca, sem mapa, sem /grupos. */
+export const GRUPO_UNICO = campanha.modoGrupos === 'unico'
 
 /**
  * O nome do cookie de sessão do painel.

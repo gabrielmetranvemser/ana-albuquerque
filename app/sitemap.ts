@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { GRUPO_UNICO } from '@/content/campanha'
 import { config } from '@/lib/config'
 import { MUNICIPIOS } from '@/lib/dados'
 
@@ -12,7 +13,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const paginas: MetadataRoute.Sitemap = [
     { url: config.siteUrl, lastModified: agora, changeFrequency: 'daily', priority: 1 },
-    { url: `${config.siteUrl}/grupos`, lastModified: agora, changeFrequency: 'daily', priority: 0.9 },
+    // No grupo único /grupos só redireciona para a página: fica de fora.
+    ...(GRUPO_UNICO
+      ? []
+      : [{ url: `${config.siteUrl}/grupos`, lastModified: agora, changeFrequency: 'daily' as const, priority: 0.9 }]),
     { url: `${config.siteUrl}/filtro`, lastModified: agora, changeFrequency: 'weekly', priority: 0.8 },
     {
       url: `${config.siteUrl}/politica-de-privacidade`,

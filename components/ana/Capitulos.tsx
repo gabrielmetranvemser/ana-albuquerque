@@ -101,8 +101,10 @@ const FUNDOS: Record<string, { classe: string; escuro: boolean; realce: string; 
   papel: { classe: 'text-tinta', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
   areia: { classe: 'text-tinta', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
   branco: { classe: 'text-tinta', escuro: false, realce: 'var(--color-azul)', tinta: TINTA_CLARA },
-  azul: { classe: 'bg-azul grao text-white', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
-  marinho: { classe: 'bg-azul-escuro grao text-white', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
+  // As superfícies azuis não são mais `bg-azul grao` — ver "AS DUAS
+  // SUPERFÍCIES AZUIS" em globals.css.
+  azul: { classe: 'superficie-azul text-white', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
+  marinho: { classe: 'superficie-marinho text-white', escuro: true, realce: 'var(--color-pessego)', tinta: TINTA_ESCURA },
   laranja: { classe: 'bg-laranja text-azul-escuro', escuro: false, realce: 'var(--color-azul-escuro)', tinta: TINTA_LARANJA },
 }
 
@@ -127,7 +129,7 @@ function Capitulo({ cap, slots }: { cap: Cap; slots: Slots }) {
   if (cap.layout === 'bandeira') return <Bandeira cap={cap} />
 
   const f = FUNDOS[cap.fundo] ?? FUNDOS.papel
-  const fotos = SLOTS.filter((s) => s.chave.startsWith(`capitulo.${cap.id}.`))
+  const fotos = SLOTS.filter((s) => s.chave.startsWith(`capitulo.${cap.id}.`) && comImagem(s, slots))
   const escuro = f.escuro
 
   return (
@@ -142,12 +144,30 @@ function Capitulo({ cap, slots }: { cap: Cap; slots: Slots }) {
         {cap.layout === 'album' ? <Album cap={cap} fotos={fotos} slots={slots} escuro={escuro} /> : null}
         {cap.layout === 'indice' ? <Indice cap={cap} escuro={escuro} /> : null}
         {cap.layout === 'fotos' ? <Faixa cap={cap} fotos={fotos} slots={slots} escuro={escuro} /> : null}
-        {cap.layout === 'manifesto' ? <Manifesto cap={cap} escuro={escuro} /> : null}
+        {cap.layout === 'manifesto' ? <Manifesto cap={cap} fotos={fotos} slots={slots} escuro={escuro} /> : null}
         {cap.layout === 'destaque' ? <Destaque cap={cap} escuro={escuro} /> : null}
         {cap.layout === 'lista' ? <ListaMarcada cap={cap} escuro={escuro} /> : null}
       </div>
     </section>
   )
+}
+
+/**
+ * O espaço de foto entra na página?
+ *
+ * ⚠️ FOTO QUE SÓ EXISTE NO COMPUTADOR NÃO VAI PARA O AR COMO IMAGEM
+ *    QUEBRADA. As fotos padrão dos capítulos moram em `public/fotos/`, fora
+ *    do git (o repositório é público). No `npm run dev` elas aparecem; na
+ *    Vercel o arquivo não existe, e só vale o que foi subido no painel. O
+ *    espaço de "Policial também é ser humano" nasceu depois das outras
+ *    catorze fotos já estarem no banco, e iria ao ar quebrado. Agora espaço
+ *    com padrão local e sem imagem no painel simplesmente sai — o capítulo
+ *    volta à forma sem foto, que é um estado pronto. Espaço sem padrão
+ *    nenhum continua como sempre (o quadro reservado).
+ */
+function comImagem(s: Slot, slots: Slots): boolean {
+  if (slots[s.chave] || !s.padraoLocal) return true
+  return process.env.NODE_ENV === 'development'
 }
 
 // ── Peças comuns ──────────────────────────────────────────────────
@@ -287,14 +307,14 @@ function Fecho({ texto, escuro, className = '' }: { texto: string; escuro: boole
  *    aprender, conviver, participar e desenvolver seu potencial." em 2.4rem
  *    ocupava quatro linhas e virava a manchete do capítulo.
  */
-function FechoMarcado({ texto, escuro }: { texto: string; escuro: boolean }) {
+function FechoMarcado({ texto, escuro, compacto = false }: { texto: string; escuro: boolean; compacto?: boolean }) {
   if (!texto) return null
   return (
     <p
       data-revelar
-      className={`mt-16 max-w-4xl border-l-4 border-(--acento) pl-6 font-[family-name:var(--font-titulo)] text-[1.5rem] leading-snug font-semibold tracking-[-0.02em] md:text-[1.875rem] ${
-        escuro ? 'text-white' : 'text-azul-escuro'
-      }`}
+      className={`max-w-4xl border-l-4 border-(--acento) pl-6 font-[family-name:var(--font-titulo)] leading-snug font-semibold tracking-[-0.02em] ${
+        compacto ? 'text-[1.375rem] md:text-[1.625rem]' : 'mt-16 text-[1.5rem] md:text-[1.875rem]'
+      } ${escuro ? 'text-white' : 'text-azul-escuro'}`}
     >
       <TextoComDestaque texto={texto} tom="capa" />
     </p>
@@ -517,10 +537,55 @@ function Faixa({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: 
  * No escuro as palavras da lista ("Aprender. Estudar. Dialogar.") são
  * pílulas pêssego com letra marinho: destacam como o laranja destacaria,
  * sem a vibração do laranja cheio sobre o marinho.
+ *
+ * ⚠️ COM FOTO, O TEXTO DIVIDE A LARGURA COM ELA. Sem foto o manifesto era
+ *    uma coluna de 5xl, e a metade direita da tela ficava vazia — "poderia
+ *    ter foto nessa seção com espaço em branco muito visível". Espaço sem
+ *    foto continua sendo a coluna única, que é um estado pronto.
+ *
+ * ⚠️ FOTO SEM PROPORÇÃO É RECORTE, e recorte não vai em retângulo: ele
+ *    encosta no pé da seção, como na primeira dobra. A margem negativa
+ *    desfaz o `py` do capítulo — mudar um sem o outro solta a foto do chão.
  */
-function Manifesto({ cap, escuro }: { cap: Cap; escuro: boolean }) {
+function Manifesto({ cap, fotos, slots, escuro }: { cap: Cap; fotos: Slot[]; slots: Slots; escuro: boolean }) {
+  const [foto] = fotos
+  if (!foto) {
+    return (
+      <div className="max-w-5xl">
+        <TextoDoManifesto cap={cap} escuro={escuro} />
+      </div>
+    )
+  }
+
+  const recorte = foto.proporcao === null
+  const esquerda = cap.lado === 'esquerda'
   return (
-    <div className="max-w-5xl">
+    <div className={`grid gap-14 lg:grid-cols-12 lg:gap-16 ${recorte ? '' : 'lg:items-center'}`}>
+      <div className={`lg:col-span-7 ${esquerda ? 'lg:order-2' : ''}`}>
+        <TextoDoManifesto cap={cap} escuro={escuro} />
+      </div>
+      {recorte ? (
+        <div data-revelar className={`relative -mb-20 flex justify-center self-end md:-mb-28 lg:col-span-5 ${esquerda ? 'lg:order-1' : ''}`}>
+          <span aria-hidden className="absolute bottom-0 left-1/2 aspect-square w-[90%] -translate-x-1/2 translate-y-[20%] rounded-full bg-(--acento) opacity-20 blur-3xl" />
+          <Imagem
+            slot={foto.chave}
+            slots={slots}
+            sizes="(max-width: 1024px) 80vw, 36vw"
+            className="relative h-auto w-[78%] max-w-sm drop-shadow-[0_30px_40px_rgba(0,0,0,0.25)] lg:w-full lg:max-w-none"
+          />
+        </div>
+      ) : (
+        <div data-revelar className={`mx-auto w-full max-w-md lg:col-span-5 lg:max-w-none ${esquerda ? 'lg:order-1' : ''}`}>
+          <Foto slot={foto} slots={slots} sizes="(max-width: 1024px) 90vw, 36vw" />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function TextoDoManifesto({ cap, escuro }: { cap: Cap; escuro: boolean }) {
+  return (
+    <>
       <Cabeca cap={cap} escuro={escuro} cartaz />
       <Corpo cap={cap} escuro={escuro} />
       {cap.lista.length > 0 ? (
@@ -538,7 +603,7 @@ function Manifesto({ cap, escuro }: { cap: Cap; escuro: boolean }) {
         </ul>
       ) : null}
       <Fecho texto={cap.fecho} escuro={escuro} />
-    </div>
+    </>
   )
 }
 
@@ -594,17 +659,25 @@ function Destaque({ cap, escuro }: { cap: Cap; escuro: boolean }) {
  *    lista é uma coluna só — lê como lista de verificação e começa na
  *    altura do título —, e o fecho desce um tamanho (`FechoMarcado`).
  */
+// ⚠️ E O FECHO JÁ FOI UMA FAIXA SOLTA EMBAIXO DE TUDO. A coluna da esquerda
+//    (título e três linhas de texto) acabava na metade da altura da lista,
+//    sobrava um vão, e o fecho vinha depois dele, sem par. A campanha: "muito
+//    estranho a diagramação, pode melhorar". Agora ele desce para o pé da
+//    coluna da esquerda e termina na mesma linha da lista: as duas colunas
+//    começam e acabam juntas. No HTML ele continua DEPOIS da lista — é a
+//    ordem de leitura do documento ("Isso significa:" → itens → fecho) e a
+//    ordem do celular. Quem o põe no lugar é a grade.
 function ListaMarcada({ cap, escuro }: { cap: Cap; escuro: boolean }) {
   const fio = escuro ? 'border-white/20' : 'border-azul/15'
   return (
     <>
-      <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-        <div className="lg:col-span-5">
+      <div className="grid gap-y-12 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-16">
+        <div className="lg:col-span-5 lg:row-start-1">
           <Cabeca cap={cap} escuro={escuro} />
           <Corpo cap={cap} escuro={escuro} />
         </div>
         {cap.lista.length > 0 ? (
-          <ul className={`self-start border-t lg:col-span-7 lg:mt-10 ${fio}`}>
+          <ul className={`self-start border-t lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:mt-10 ${fio}`}>
             {cap.lista.map((item, i) => (
               <li
                 key={i}
@@ -620,8 +693,12 @@ function ListaMarcada({ cap, escuro }: { cap: Cap; escuro: boolean }) {
             ))}
           </ul>
         ) : null}
+        {cap.fecho ? (
+          <div className="lg:col-span-5 lg:row-start-2 lg:self-end">
+            <FechoMarcado texto={cap.fecho} escuro={escuro} compacto />
+          </div>
+        ) : null}
       </div>
-      <FechoMarcado texto={cap.fecho} escuro={escuro} />
     </>
   )
 }

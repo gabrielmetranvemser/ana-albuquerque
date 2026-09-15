@@ -89,7 +89,9 @@ export const meta = {
   descricao:
     `${campanha.nome} ${campanha.numero}: policial militar, psicóloga e mãe, ${g.candidato} a ` +
     `${campanha.cargo} por ${campanha.estado} pelo ${campanha.partidoExtenso}. ` +
-    `Entre no grupo de WhatsApp da sua ${REGIAO.rotuloBusca}.`,
+    (campanha.modoGrupos === 'unico'
+      ? 'Entre no grupo de WhatsApp da campanha.'
+      : `Entre no grupo de WhatsApp da sua ${REGIAO.rotuloBusca}.`),
   palavrasChave: [
     campanha.nome,
     nomeComNumero,
@@ -177,7 +179,11 @@ export const navegacao = {
 } as const
 
 export const ctas = {
-  grupo: `Entrar no grupo da minha ${REGIAO.rotuloBusca}`,
+  // No grupo único não existe "o da minha cidade": é o grupo da pessoa.
+  grupo:
+    campanha.modoGrupos === 'unico'
+      ? `Entrar no grupo ${g.do} ${campanha.primeiroNome}`
+      : `Entrar no grupo da minha ${REGIAO.rotuloBusca}`,
   grupoCurto: 'Entrar no grupo',
   filtro: `Colocar o ${campanha.numero} na minha foto`,
   filtroCurto: `Colocar o ${campanha.numero}`,
@@ -974,6 +980,16 @@ export const missao = {
 // precisa ser reescrito. Os que precisam estão marcados.
 // ─────────────────────────────────────────────────────────────
 export const grupos = {
+  /**
+   * O convite do grupo único (`modoGrupos: 'unico'`, content/campanha.ts).
+   *
+   * ⚠️ VAZIO ATÉ A CAMPANHA MANDAR. Link de grupo não se inventa, e com o
+   *    campo em branco os botões "Entrar no grupo" somem da página — em
+   *    vez de levar a lugar nenhum. Preenche-se no painel, e nunca aqui: o
+   *    repositório é público, e link de grupo em arquivo é link raspado.
+   *    Ele também não desce para o navegador (lib/conteudo/subconjunto.ts).
+   */
+  linkGeral: '',
   etiqueta: 'Acompanhe a Ana',
   // ✍️ ESCREVER
   titulo: `Tem um grupo ${g.do} ${campanha.primeiroNome} [[na sua ${REGIAO.rotuloBusca}.]]`,
@@ -1086,8 +1102,11 @@ export const compartilhar = {
   // sentido lido sozinho, sem a página junto.
   textoWhatsapp:
     `Conheça ${g.o} ${nomeComNumero}: policial militar, psicóloga e mãe, ${g.candidato} a ` +
-    `${campanha.cargo} por ${campanha.estado}. Tem grupo de WhatsApp da nossa ` +
-    `${REGIAO.rotuloBusca} e dá pra colocar o ${campanha.numero} na sua foto:`,
+    `${campanha.cargo} por ${campanha.estado}. ` +
+    (campanha.modoGrupos === 'unico'
+      ? 'Tem grupo de WhatsApp da campanha '
+      : `Tem grupo de WhatsApp da nossa ${REGIAO.rotuloBusca} `) +
+    `e dá pra colocar o ${campanha.numero} na sua foto:`,
   botaoWhatsapp: 'Enviar no WhatsApp',
   botaoCopiar: 'Copiar o link',
   copiado: 'Link copiado.',
@@ -1134,7 +1153,9 @@ export const faixa = {
 export const rodape = {
   assinatura: `Feito em ${campanha.estado}.`,
   links: [
-    { id: 'link-01', rotulo: 'Grupos de WhatsApp', href: '/grupos' },
+    // No grupo único /grupos não existe (redireciona para a página), e o
+    // link do rodapé seria um atalho para o topo com nome de outra coisa.
+    ...(campanha.modoGrupos === 'unico' ? [] : [{ id: 'link-01', rotulo: 'Grupos de WhatsApp', href: '/grupos' }]),
     { id: 'link-02', rotulo: `Coloque o ${campanha.numero} na sua foto`, href: '/filtro' },
     { id: 'link-03', rotulo: 'Política de privacidade', href: '/politica-de-privacidade' },
   ],

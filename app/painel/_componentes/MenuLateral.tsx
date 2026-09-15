@@ -39,7 +39,11 @@ export const ITENS: ItemMenu[] = [
   { href: '/painel/secoes', rotulo: 'Seções', icone: 'M4 4h16v4H4V4Zm0 6h16v4H4v-4Zm0 6h16v4H4v-4Z' },
   { href: '/painel/videos', rotulo: 'Vídeos', icone: 'M4 5h11a2 2 0 0 1 2 2v2.4l4-2.6v10.4l-4-2.6V17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 2v10h11V7H4Z' },
   { href: '/painel/identidade', rotulo: 'Identidade', icone: 'M12 2 3 6v6c0 5 3.8 9.4 9 10 5.2-.6 9-5 9-10V6l-9-4Zm0 2.2 7 3.1V12c0 4-2.9 7.6-7 8.2-4.1-.6-7-4.2-7-8.2V7.3l7-3.1ZM12 7a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm0 6.2c1.9 0 4.5.9 4.5 2.1V17h-9v-1.7c0-1.2 2.6-2.1 4.5-2.1Z' },
-  { href: '/painel/grupos', rotulo: 'Grupos', icone: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 0 1 6.3 12.9l-2.1-2.1a5 5 0 1 0-8.4 0l-2.1 2.1A8 8 0 0 1 12 4Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z' },
+  // No grupo único a aba dos municípios some: o link geral fica em Seções ▸
+  // Grupos de WhatsApp (content/campanha.ts ▸ modoGrupos).
+  ...(campanha.modoGrupos === 'unico'
+    ? []
+    : [{ href: '/painel/grupos', rotulo: 'Grupos', icone: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 0 1 6.3 12.9l-2.1-2.1a5 5 0 1 0-8.4 0l-2.1 2.1A8 8 0 0 1 12 4Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z' }]),
   { href: '/painel/metricas', rotulo: 'Métricas', icone: 'M4 20V10h4v10H4Zm6 0V4h4v16h-4Zm6 0v-7h4v7h-4Z' },
   // Tráfego é vizinho de Métricas de propósito: as duas respondem à
   // mesma pergunta em escalas diferentes — Métricas conta o que

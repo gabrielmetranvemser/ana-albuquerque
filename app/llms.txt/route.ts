@@ -1,4 +1,4 @@
-import { g } from '@/content/campanha'
+import { g, GRUPO_UNICO } from '@/content/campanha'
 import { config, siteIndexavel } from '@/lib/config'
 import { lerConteudo } from '@/lib/conteudo/ler'
 
@@ -61,14 +61,17 @@ export async function GET() {
     '',
     `- [Início](${u}): a apresentação de quem é ${g.candidato}, os compromissos de mandato e os dois caminhos ` +
       `de ação — entrar num grupo e colocar o número na foto.`,
-    `- [${paginas.grupos.tituloAba}](${u}/grupos): ${paginas.grupos.descricao}`,
+    // No grupo único /grupos não existe: redireciona para a página.
+    ...(GRUPO_UNICO ? [] : [`- [${paginas.grupos.tituloAba}](${u}/grupos): ${paginas.grupos.descricao}`]),
     `- [${paginas.filtro.tituloAba}](${u}/filtro): ${paginas.filtro.descricao}`,
     `- [${paginas.privacidade.tituloAba}](${u}/politica-de-privacidade): ${paginas.privacidade.descricao}`,
     '',
     '## O que o site faz',
     '',
-    `- Encontra o grupo de WhatsApp da campanha por município de ${candidato.estado}, com busca ` +
-      `por nome de cidade ou pela localização do aparelho.`,
+    GRUPO_UNICO
+      ? '- Leva ao grupo de WhatsApp da campanha.'
+      : `- Encontra o grupo de WhatsApp da campanha por município de ${candidato.estado}, com busca ` +
+        `por nome de cidade ou pela localização do aparelho.`,
     `- Gera foto de perfil e story com a moldura da campanha. A imagem é montada no próprio ` +
       `aparelho de quem usa: a foto não é enviada para servidor nenhum.`,
     '- Não vende nada, não cobra nada e não pede cadastro.',

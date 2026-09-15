@@ -3,8 +3,8 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useConteudo } from '@/lib/conteudo/contexto'
-import { evento } from '@/lib/eventos'
 import { LogoCor, LogoHorizontal } from '@/components/ui/Marca'
+import { CliqueGrupo } from './CliqueGrupo'
 
 /**
  * O MENU DA ANA.
@@ -34,16 +34,24 @@ import { LogoCor, LogoHorizontal } from '@/components/ui/Marca'
 export function Header({
   silencio = false,
   ocultas = [],
+  destino,
 }: {
   silencio?: boolean
   simbolo?: string | null
   /** Ids de seção desligadas no painel. Somem do menu. */
   ocultas?: string[]
+  /**
+   * Para onde vai o botão de grupo, calculado no servidor por
+   * `destinoDoGrupo`. `null` esconde o botão; ausente, vale a regra da
+   * âncora. Vem de fora porque, no grupo único, só o servidor sabe se o
+   * link existe — ele não desce para o navegador.
+   */
+  destino?: string | null
 }) {
   const { candidato, ctas, navegacao } = useConteudo()
   // Com a seção de grupos desligada, a âncora não existe e o botão
   // viraria clique morto — que não dá erro nenhum, só não funciona.
-  const paraOsGrupos = ocultas.includes('grupos') ? '/grupos' : '/#grupos'
+  const paraOsGrupos = destino !== undefined ? destino : ocultas.includes('grupos') ? '/grupos' : '/#grupos'
 
   const itens = navegacao.itens.filter((item) => {
     const ancora = item.href.match(/#([\w-]+)/)
@@ -108,14 +116,14 @@ export function Header({
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {!silencio ? (
-            <Link
+          {!silencio && paraOsGrupos ? (
+            <CliqueGrupo
+              origem="topo"
               href={paraOsGrupos}
-              onClick={() => evento('clicou_cta', { origem: 'topo' })}
               className="toque hidden min-h-11 items-center rounded-full bg-laranja px-5 text-[0.9375rem] font-semibold text-azul-escuro transition-[filter] hover:brightness-105 sm:inline-flex"
             >
               {ctas.grupoCurto}
-            </Link>
+            </CliqueGrupo>
           ) : null}
 
           <button
@@ -151,7 +159,7 @@ export function Header({
             className="anima-surge absolute inset-0 bg-azul-noite/55 backdrop-blur-[2px]"
           />
 
-          <div className="anima-etapa absolute inset-y-0 right-0 flex w-full max-w-md flex-col overflow-y-auto bg-azul-escuro text-white shadow-[-30px_0_60px_-30px_rgba(0,0,0,0.5)]">
+          <div className="anima-etapa absolute inset-y-0 right-0 flex w-full max-w-md flex-col overflow-y-auto superficie-marinho text-white shadow-[-30px_0_60px_-30px_rgba(0,0,0,0.5)]">
             <div className="flex h-[4.5rem] shrink-0 items-center justify-between px-6 md:h-20 md:px-8">
               <LogoHorizontal className="h-9 w-auto md:h-10" />
               <button
@@ -201,20 +209,18 @@ export function Header({
             </nav>
 
             <div className="shrink-0 space-y-4 px-6 pb-8 md:px-8">
-              {!silencio ? (
-                <Link
+              {silencio ? (
+                <p className="text-white/80">{ctas.silencio}</p>
+              ) : paraOsGrupos ? (
+                <CliqueGrupo
+                  origem="topo"
                   href={paraOsGrupos}
-                  onClick={() => {
-                    setAberto(false)
-                    evento('clicou_cta', { origem: 'topo' })
-                  }}
+                  aoClicar={() => setAberto(false)}
                   className="toque flex min-h-14 w-full items-center justify-center rounded-full bg-laranja px-6 text-lg font-semibold text-azul-escuro transition-[filter] hover:brightness-105"
                 >
                   {ctas.grupo}
-                </Link>
-              ) : (
-                <p className="text-white/80">{ctas.silencio}</p>
-              )}
+                </CliqueGrupo>
+              ) : null}
               <div className="flex items-center justify-between gap-4 text-sm text-white/65">
                 <span>
                   {candidato.cargo} · {candidato.numero}

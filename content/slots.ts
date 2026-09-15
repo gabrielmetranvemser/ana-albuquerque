@@ -45,6 +45,13 @@ export interface Slot {
   padraoTamanho?: [number, number]
   /** Texto alternativo da foto padrão. */
   padraoAlt?: string
+  /**
+   * O `padrao` mora numa pasta que NÃO vai para o git (`public/fotos/`):
+   * existe no computador de quem tem o acervo, e não na Vercel. Fora do
+   * `npm run dev`, espaço assim sem imagem no painel não aparece — ver
+   * `comImagem` em components/ana/Capitulos.tsx.
+   */
+  padraoLocal?: boolean
 }
 
 /** Um espaço de foto de capítulo, já com a foto que a campanha mandou. */
@@ -68,6 +75,7 @@ function foto(
     padrao: `/fotos/${arquivo}`,
     padraoTamanho: [largura, altura],
     padraoAlt: alt,
+    padraoLocal: true,
     nota,
   }
 }
@@ -197,6 +205,11 @@ export const SLOTS: Slot[] = [
     'Ana em campo, ao lado do helicóptero do Ibama'),
   foto('seguranca', 3, 'Uma policial que conhece a realidade', '4/3', [900, 675], 'seguranca-treinamento.webp',
     'Treinamento de reanimação', '⚠️ Aparece um colega de farda: autorização de uso de imagem.'),
+  // O manifesto ganhou foto ao lado: "poderia ter foto nessa seção com
+  // espaço em branco muito visível". Ela de farda e colete, de rosto à
+  // mostra: é "a pessoa dentro da farda".
+  foto('ser-humano', 1, 'Policial também é ser humano', '4/5', [640, 800], 'ser-humano.webp',
+    'Ana de farda e colete, dentro da viatura', 'Vertical. De farda, com o rosto à mostra.'),
   foto('linha-de-frente', 1, 'Valorizar quem está na linha de frente', '4/5', [800, 1000], 'linha-de-frente.webp',
     'Ana de farda, dentro da viatura'),
   foto('animal', 1, 'Defesa da causa animal', '1/1', [800, 800], 'animal-1.webp',
@@ -205,6 +218,25 @@ export const SLOTS: Slot[] = [
     'Ana de farda camuflada, com um cachorro'),
   foto('animal', 3, 'Defesa da causa animal', '4/5', [800, 1000], 'animal-3.webp',
     'Ana com um cachorro no colo'),
+  // "Por que a política?" é o capítulo em que a policial vira candidata, e
+  // pediu foto como o anterior. É RECORTE (proporção livre, com fundo
+  // transparente): o manifesto o encosta no pé da seção. O padrão é a
+  // foto da capa, que está no git — `public/fotos/` não está, e um padrão
+  // de lá quebraria na Vercel. Quando a campanha mandar outro retrato
+  // recortado, troca no painel.
+  {
+    chave: 'capitulo.por-que.1',
+    rotulo: 'Foto 1',
+    onde: 'Por que a política?',
+    proporcao: null,
+    larguraMin: 1200,
+    alturaMin: 1500,
+    alpha: true,
+    padrao: '/ana.png',
+    padraoTamanho: [1302, 2128],
+    padraoAlt: 'Ana Albuquerque, de camisa branca e óculos, com os braços cruzados',
+    nota: 'PNG recortado, sem fundo, cortado na cintura — encosta no pé da seção. Sem imagem aqui, vale a foto da capa.',
+  },
 
   // ── Gerador de filtro ──────────────────────────────────────────
   {

@@ -1,10 +1,10 @@
-import { g } from '@/content/campanha'
+import { g, GRUPO_UNICO } from '@/content/campanha'
 import { headers } from 'next/headers'
 import { listarMunicipiosComStatus } from '@/lib/dados'
 import { casarCidadePorHeader } from '@/lib/geo'
 import { config, emSilencioEleitoral } from '@/lib/config'
 import { lerConteudo } from '@/lib/conteudo/ler'
-import { destinoGrupo, secoesOcultas } from '@/lib/conteudo/secoes'
+import { destinoDoGrupo, secoesOcultas } from '@/lib/conteudo/secoes'
 
 import { Header } from '@/components/site/Header'
 import { BotaoFlutuante } from '@/components/site/BotaoFlutuante'
@@ -52,8 +52,18 @@ export default async function Home() {
   // ANA: `candidato` e `meta` saem do painel, e não de content/copy.ts —
   // eram lidos direto do arquivo só para os dados estruturados abaixo, e
   // trocar o nome ou a descrição no painel não chegava ao que o Google lê.
-  const { exibir, candidato, meta } = await lerConteudo()
-  const [municipios, cabecalhos] = await Promise.all([listarMunicipiosComStatus(), headers()])
+  const conteudo = await lerConteudo()
+  const { exibir, candidato, meta } = conteudo
+
+  // ANA: GRUPO ÚNICO (content/campanha.ts ▸ modoGrupos). A seção dos 52
+  // municípios não vai ao ar, e a lista nem sai do banco. Os botões de
+  // grupo levam a /g/geral — ou somem, enquanto o link não foi preenchido.
+  const mostrarGrupos = exibir.grupos && !GRUPO_UNICO
+  const destino = destinoDoGrupo(conteudo)
+  const [municipios, cabecalhos] = await Promise.all([
+    mostrarGrupos ? listarMunicipiosComStatus() : Promise.resolve([]),
+    headers(),
+  ])
 
   // Sugestão silenciosa por IP: o header vem da Vercel, de graça,
   // sem pedir permissão nenhuma para a pessoa.
@@ -68,7 +78,7 @@ export default async function Home() {
   return (
     <>
       <RegistroDePagina />
-      <Header silencio={silencio} ocultas={secoesOcultas(exibir)} />
+      <Header silencio={silencio} ocultas={secoesOcultas(exibir)} destino={destino} />
 
       <main id="conteudo">
         <Abertura silencio={silencio} />
@@ -77,13 +87,13 @@ export default async function Home() {
         {exibir.futuro ? <Propostas /> : null}
         {exibir.missao ? <Missao /> : null}
         <Assinatura silencio={silencio} />
-        {exibir.grupos ? <SecaoGrupos municipios={municipios} sugerido={sugerido} /> : null}
+        {mostrarGrupos ? <SecaoGrupos municipios={municipios} sugerido={sugerido} /> : null}
         {exibir.filtro ? <SecaoFiltro /> : null}
         {exibir.compartilhar ? <Compartilhar siteUrl={config.siteUrl} /> : null}
       </main>
 
       <RodapeLegal />
-      <BotaoFlutuante silencio={silencio} destino={destinoGrupo(exibir)} />
+      {destino ? <BotaoFlutuante silencio={silencio} destino={destino} /> : null}
 
       {/* Dados estruturados: ajuda o Google a entender quem é a pessoa.
 
